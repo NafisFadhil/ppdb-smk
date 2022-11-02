@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/', fn() => view('pages.index', [
+    'page' => ['title' => 'PPDB SMK Muhammadiyah Bligo'], 
+]));

@@ -1,14 +1,7 @@
 {
-    "private": true,
-    "scripts": {
-        "dev": "vite",
-        "build": "vite build"
-    },
-    "devDependencies": {
-        "axios": "^1.1.2",
-        "laravel-vite-plugin": "^0.6.0",
-        "lodash": "^4.17.19",
-        "postcss": "^8.1.14",
-        "vite": "^3.0.0"
-    }
+	"scripts": {
+		"tw:watch": "npx tailwind -c tailwind.config.js -o public/dist/css/tailwind.css -w",
+		"dev": "start php artisan serve && start npm run tw:watch",
+		"git:push": "git add . && git commit -m \"auto commit\" && git push -u origin main"
+	}
 }
