@@ -24,12 +24,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        try {
-
-            View::share('config_helpers', new \App\Helpers\Config());
-            
-        } catch (\Throwable $th) {
-            echo 'Error happen in AppServiceProvider';
-        }
+        // 
     }
 }

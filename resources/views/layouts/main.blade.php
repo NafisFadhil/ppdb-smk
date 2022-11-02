@@ -14,7 +14,7 @@
 	{{-- Css --}}
 	<link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
 	<link rel="stylesheet" href="/dist/css/tailwind.css">
-	<link rel="stylesheet" href="/dist/fonts/poppins.ttf">
+	<link rel="stylesheet" href="/dist/css/style.css">
 	@stack('styles')
 
 	{{-- Jquery --}}
@@ -24,6 +24,8 @@
 <body>
 
 	@yield('body')
+	
+	<script src="/dist/js/script.js"></script>
 	@stack('scripts')
 
 </body>

@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::get('/', fn() => view('pages.index', [
-    'page' => ['title' => 'PPDB SMK Muhammadiyah Bligo'], 
-]));
+Route::controller(\App\Http\Controllers\GeneralController::class)->group(function() {
+
+    Route::get('/', 'index');
+    Route::get('/formulir', 'formulir');
+
+});

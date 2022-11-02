@@ -210,6 +210,9 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+        'ConfigHelper' => App\Helpers\ConfigHelper::class,
+        'FormHelper' => App\Helpers\FormHelper::class,
+        'StringHelper' => App\Helpers\StringHelper::class,
     ])->toArray(),
 
 ];

@@ -17,6 +17,7 @@ class ConfigSeeder extends Seeder
     {
         DB::table('configs')->insert([
             ['key' => 'nama_sekolah', 'value' => 'SMK Muhammadiyah Bligo'],
+            ['key' => 'alamat_sekolah', 'value' => 'Desa Sapugarut Gg. 7, Kec. Buaran, Kabupaten Pekalongan, Jawa Tengah 51171'],
         ]);
     }
 }
