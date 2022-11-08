@@ -15,22 +15,23 @@ return new class extends Migration
     {
         Schema::create('identitas', function (Blueprint $table) {
             $table->id();
-
-            // Data Pribadi
-            $table->string('nisn');
+            $table->string('jalur_pendaftaran');
             $table->string('nama_lengkap');
+            $table->string('tempat_lahir');
+            $table->string('tanggal_lahir');
             $table->string('jenis_kelamin');
             $table->text('alamat_rumah');
-            $table->string('tempat_tanggal_lahir');
-
-            // Data SMP
-            $table->string('asal_smp');
-            $table->text('alamat_smp');
-
-            // Relation
-            // $table->foreignId('pendaftaran_id');
-            // $table->foreignId('daftar_ulang_id');
-            // $table->timestamps();
+            $table->string('nama_ayah');
+            $table->string('nama_ibu');
+            $table->char('jumlah_saudara_kandung',2);
+            $table->char('nik', 24);
+            $table->string('asal_sekolah');
+            $table->char('nisn', 24);
+            $table->char('no_ujian_nasional', 20);
+            $table->char('no_ijazah', 20);
+            $table->char('no_wa', 15);
+            $table->string('jurusan');
+            $table->timestamps();
         });
     }
 

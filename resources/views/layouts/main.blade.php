@@ -24,8 +24,10 @@
 <body>
 
 	@yield('body')
+
+	@include('components.alert')
 	
-	<script src="/dist/js/script.js"></script>
+	{{-- <script src="/dist/js/script.js"></script> --}}
 	@stack('scripts')
 
 </body>

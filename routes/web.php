@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\HasilPenerimaanController;
+use App\Http\Controllers\PendaftaranController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,8 +20,8 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::controller(\App\Http\Controllers\GeneralController::class)->group(function() {
-
     Route::get('/', 'index');
-    Route::get('/formulir', 'formulir');
-
 });
+
+Route::resource('/pendaftaran', PendaftaranController::class);
+Route::resource('/hasil-penerimaan', HasilPenerimaanController::class);

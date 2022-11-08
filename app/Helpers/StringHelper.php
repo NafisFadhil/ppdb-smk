@@ -14,9 +14,9 @@ class StringHelper
 		);
 	}
 
-	public static function toSlug(string $str, string $separator = '-')
+	public static function toSlug(string $str, string $separator)
 	{
-		return Str::slug($str, $separator);
+		return Str::slug($str, $separator ?? '-');
 	}
 	
 }

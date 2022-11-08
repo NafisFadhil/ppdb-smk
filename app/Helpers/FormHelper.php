@@ -19,7 +19,7 @@ class FormHelper
 			ucfirst(str_replace('_',' ',$label));
 		$attr = $input['attr'] ?? '';
 
-		return [
+		return array_replace_recursive($input, [
 			'icon' => $icon,
 			'type' => $type,
 			'variant' => $variant,
@@ -30,7 +30,7 @@ class FormHelper
 			'id' => $id,
 			'placeholder' => $placeholder,
 			'attr' => $attr,
-		];
+		]);
 	}
 	
 }

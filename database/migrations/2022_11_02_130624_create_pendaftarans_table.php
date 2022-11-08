@@ -15,8 +15,10 @@ return new class extends Migration
     {
         Schema::create('pendaftarans', function (Blueprint $table) {
             $table->id();
+            $table->string('kode')->unique();
             
-            // $table->timestamps();
+            $table->foreignId('identitas_id');
+            $table->timestamps();
         });
     }
 
