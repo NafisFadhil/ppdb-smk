@@ -1,12 +1,16 @@
-<?php $navbar_menu = [
+<?php
+$navbar_menu = [
 	['href' => '/', 'label' => 'Beranda', 'active' => '/'],
-	['href' => '/pendaftaran', 'label' => 'Pendaftaran'],
-	['href' => '/hasil-penerimaan', 'label' => 'Hasil Penerimaan'],
+	['href' => '/formulir', 'label' => 'Pendaftaran', 'desc' => 'Formulir Pendaftaran', 'active' => 'formulir'],
+	['href' => '/login', 'label' => 'Login', 'desc' => 'Login', 'dropdown' => [
+		['href' => '/login', 'label' => 'Siswa', 'desc' => 'Halaman Login Untuk Siswa Peserta PPDB'],
+		['href' => '/login/admin', 'label' => 'Admin', 'desc' => 'Halaman Login Untuk Admin PPDB']
+	]],
 	['href' => '/kontak', 'label' => 'Kontak'],
 ]; $navbar_menu_responsive = array_merge($navbar_menu);
 ?>
 
-<nav id="navbar" class="w-full relative bg-dark text-white">
+<nav id="navbar" class="w-full relative bg-primary text-white">
 	<div class="max-w-screen-xl mx-auto px-2 sm:px-4 sm:py-1">
 		<div class="flex justify-start md:justify-between gap-2 items-center">
 
@@ -18,19 +22,37 @@
 				<img src="/dist/img/logo-smk-putih.png"
 					alt="Logo {{ ConfigHelper::get('nama_sekolah') }}"
 					class="w-full h-auto max-w-[130px] md:max-w-[150px] py-2" />
-					{{-- class="w-full h-auto max-w-[150px] md:max-w-[175px] p-2" /> --}}
 			</a>
 
-			<ul class="hidden md:flex justify-center items-center gap-5">
+			<ul class="hidden md:flex justify-center items-center">
 				@foreach ($navbar_menu as $menu)
-					<?php $active = request()->is($menu['active'] ?? substr($menu['href'], 1) . '*') ?>
+				<?php $active = request()->is($menu['active'] ?? substr($menu['href'], 1).'*') ?>
 
-					<li class="">
-						<a href="{{ $menu['href'] }}" class="hover:opacity-75 transition-opacity
-							{{ $active ? 'text-primary' : '' }}">
-							{{ $menu['label'] }}
-						</a>
-					</li>
+					@isset($menu['dropdown'])
+						<li class="group relative w-full">
+							<a href="{{ $menu['href'] }}" title="{{ $menu['desc'] ?? '' }}" class="hover:opacity-75 transition-opacity
+								{{ $active ? 'text-secondary' : '' }} p-3 block">
+								{{ $menu['label'] }}
+							</a>
+							<ul class="hidden group-hover:grid grid-cols-1 grid-rows-auto absolute top-full left-0 min-w-max bg-primary rounded-b">
+								@foreach ($menu['dropdown'] as $dropdown)
+									<?php $active = request()->is($dropdown['active'] ?? substr($dropdown['href'], 1)) ?>
+									
+									<a href="{{ $dropdown['href'] }}" title="{{ $dropdown['desc'] ?? '' }}" class="hover:opacity-75 transition-opacity
+										{{ $active ? 'text-secondary' : '' }} px-3 py-1.5">
+										{{ $dropdown['label'] }}
+									</a>
+								@endforeach
+							</ul>
+						</li>
+					@else
+						<li class="relative">
+							<a href="{{ $menu['href'] }}" title="{{ $menu['desc'] ?? '' }}" class="hover:opacity-75 transition-opacity
+								{{ $active ? 'text-secondary' : '' }} p-3 block">
+								{{ $menu['label'] }}
+							</a>
+						</li>
+					@endisset
 				@endforeach
 			</ul>
 
@@ -40,7 +62,7 @@
 
 						<?php $active = request()->is($menu['active'] ?? substr($menu['href'], 1) . '*') ?>
 						<a href="{{ $menu['href'] }}" class="hover:opacity-75 transition-opacity p-3
-							{{ $active ? 'text-primary' : '' }}">
+							{{ $active ? 'text-secondary' : '' }}">
 							{{ $menu['label'] }}
 						</a>
 

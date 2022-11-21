@@ -47,7 +47,7 @@ module.exports = {
       // Custom Colors
       primary: '#235696',
       secondary: '#EFBF04',
-      dark: colors.gray['800'],
+      dark: colors.gray['900'],
       light: colors.gray['100']
     }),
     columns: {

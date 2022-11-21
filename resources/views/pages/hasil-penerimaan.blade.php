@@ -17,7 +17,6 @@
 					<th>Jenis Kelamin</th>
 					<th>NISN</th>
 					<th>Jalur Pendaftaran</th>
-					<th>Action</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -30,7 +29,6 @@
 						<td class=""> {{ $siswa->identitas->jenis_kelamin }} </td>
 						<td class=""> {{ $siswa->identitas->nisn }} </td>
 						<td class=""> {{ $siswa->identitas->jalur_pendaftaran }} </td>
-						<td class=""></td>
 					</tr>
 				@endforeach
 			</tbody>

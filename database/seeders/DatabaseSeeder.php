@@ -23,7 +23,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             ConfigSeeder::class,
-            JurusanSeeder::class,
+            UserLevelSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }

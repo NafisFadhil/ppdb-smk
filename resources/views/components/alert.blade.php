@@ -3,7 +3,7 @@
 		$alerts = $errors->get('alerts') ?? [];
 		$colors = [
 			'error' => 'bg-red-800',
-			'warning' => 'bg-yellow-800',
+			'warning' => 'bg-yellow-600',
 			'success' => 'bg-green-800'
 		]
 	?>
@@ -27,24 +27,24 @@
 				$color = $colors[$variant];
 			?>
 		
-			<div class="{{ $color }} text-white flex-1 rounded-l-lg shadow flex flex-row justify-start items-center w-full overflow-hidden cursor-pointer">
+			<div class="{{ $color }} text-white flex-1 rounded-l-lg shadow flex flex-row justify-start items-center w-full overflow-hidden cursor-pointer"
+			onclick="$(this).hide(500).delay(500).remove()">
 
-				<svg class="p-3" width="45" height="50" role="img" aria-label="{{ ucfirst($variant) }}:">
-					<use xlink:href="#svg-{{ $xvariant }}" />
-				</svg>
-				
-				<p class="flex-1 h-full leading-4 p-3 bg-white bg-opacity-10">
+				<div class="min-w-max grid place-items-center">
+					<svg class="p-3" width="50" height="50" role="img" aria-label="{{ ucfirst($variant) }}:">
+						<use xlink:href="#svg-{{ $xvariant }}" />
+					</svg>
+				</div>
+
+				<p class="flex-1 h-full leading-5 p-3">
 					{!! $msg !!}
 				</p>
 
+				<button type="button" class="p-1.5 leading-3 aspect-square mr-2">
+					<i class="fas fa-times"></i>
+				</button>
+
 			</div>
-			{{-- <div class="alert alert-{{ $variant }} d-flex align-items-center" role="alert">
-				<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="{{ ucfirst($variant) }}:">
-					<use xlink:href="#svg-{{ $xvariant }}" />
-				</svg>
-				<div>{!! $msg !!}</div>
-				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-			</div>	 --}}
 		@endforeach
 	</div>
 @endif

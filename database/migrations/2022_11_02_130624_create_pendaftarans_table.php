@@ -15,9 +15,17 @@ return new class extends Migration
     {
         Schema::create('pendaftarans', function (Blueprint $table) {
             $table->id();
-            $table->string('kode')->unique();
-            
-            $table->foreignId('identitas_id');
+            $table->char('kode', 5)->unique();
+            $table->string('nama_admin_pendaftaran')->nullable();
+            $table->string('nama_admin_du')->nullable();
+            $table->string('nama_admin_seragam')->nullable();
+
+            $table->foreignId('jurusan_id')->default(0);
+            $table->foreignId('pembayaran_id')->default(0);
+            $table->foreignId('identitas_id')->default(0);
+            $table->foreignId('seragam_id')->default(0);
+            $table->foreignId('user_id')->default(0);
+            $table->foreignId('level_id')->default(1);
             $table->timestamps();
         });
     }
@@ -29,6 +37,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pendaftarans');
+        // Schema::dropIfExists('pendaftarans');
     }
 };

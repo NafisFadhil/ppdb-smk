@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -15,10 +16,11 @@ return new class extends Migration
     {
         Schema::create('jurusans', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->string('singkatan');
-            $table->string('slug')->unique();
-            // $table->timestamps();
+            $table->char('kode', 5)->unique();
+            $table->string('jurusan');
+            $table->smallInteger('nomor');
+            $table->string('status', 5)->enum(['on','off'])->default('on');
+            $table->timestamps();
         });
     }
 

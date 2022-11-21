@@ -15,6 +15,7 @@ return [
 
     'defaults' => [
         'guard' => 'web',
+        // 'passwords' => 'identitas',
         'passwords' => 'users',
     ],
 
@@ -62,6 +63,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
+            // 'model' => App\Models\Identitas::class,
             'model' => App\Models\User::class,
         ],
 
@@ -88,6 +90,7 @@ return [
 
     'passwords' => [
         'users' => [
+            // 'provider' => 'identitas',
             'provider' => 'users',
             'table' => 'password_resets',
             'expire' => 60,
