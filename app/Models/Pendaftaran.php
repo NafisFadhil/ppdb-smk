@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Pendaftaran extends Model
 {
     use HasFactory;
+	protected $fillable = ['kode','identitas_id'];
 
     public function identitas () {
         return $this->belongsTo(Identitas::class);

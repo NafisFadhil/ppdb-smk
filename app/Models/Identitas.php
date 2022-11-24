@@ -8,7 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Identitas extends Model
 {
     use HasFactory;
-
+    protected $fillable = [
+        'jalur_pendaftaran',
+        'nama_lengkap',
+        'tanggal_lahir',
+        'jenis_kelamin',
+        'asal_sekolah',
+        'no_wa_ortu',
+        'no_wa_siswa',
+        'nama_jurusan'
+    ];
+    
     public function pendaftaran () {
         return $this->hasOne(Pendaftaran::class);
     }
