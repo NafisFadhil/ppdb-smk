@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Identitas;
 use App\Models\Pendaftaran;
 use App\Models\Jurusan;
 use App\Models\User;
@@ -16,86 +17,97 @@ class VerifikasiController extends Controller
     {
         return view('admin.pages.verifikasi.pendaftaran', [
             'page' => ['title' => 'Verifikasi Pendaftaran'],
-            'peserta' => Pendaftaran::where('level_id', 1)->with(['pembayaran', 'identitas'])->paginate()
+            'peserta' => Identitas::whereRelation('status', 'level', 'Pendaftar')
+                ->with(['pendaftaran', 'status'])->paginate()
         ]);
     }
 
-    public function pendaftaranPembayaran (Request $req, Pendaftaran $pendaftarans)
+    public function pendaftaranBiaya (Request $req, Identitas $identitas)
     {
         $creden = $req->validate([
-            'jalur_pendaftaran' => 'required',
             'biaya_pendaftaran' => 'required',
-            'ket_pendaftaran' => 'nullable',
-            'nama_admin' => 'required',
+            'admin_biaya_pendaftaran' => 'required',
         ]);
 
         try {
 
-            $pendaftarans->pembayaran->update([
-                'biaya_pendaftaran' => $creden['biaya_pendaftaran'],
-                'ket_pendaftaran' => $creden['ket_pendaftaran'],
-                'admin_pendaftaran' => $creden['nama_admin'],
-            ]);
+            $identitas->pendaftaran->update($creden);
+            $identitas->update(['status_id' => 2]);
 
-            return redirect('/admin/verifikasi/pendaftaran')->withErrors([
-                'alerts' => ['success' => [
-                    'msg' => 'Input pembayaran berhasil.',
-                ]]
+            return redirect('/admin/verifikasi-pendaftaran')->withErrors([
+                'alerts' => ['success' => 'Input pembayaran berhasil.']
             ]);
             
         } catch (\Throwable $th) {
 
             return back()->withErrors([
-                'alerts' => ['danger' => [
-                    'msg' => 'Maaf, terjadi kesalahan saat menginput pembayaran.',
-                ]]
+                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat menginput pembayaran.']
+            ]);
+            
+        }
+    }
+
+    public function pendaftaranPembayaran (Request $req, Identitas $identitas)
+    {
+        $creden = $req->validate([
+            'pembayaran_siswa' => 'required',
+            'admin_pembayaran_siswa' => 'required',
+            'lunas' => 'required',
+        ]);
+
+        try {
+
+            $identitas->pendaftaran->update($creden);
+            $identitas->update(['status_id' => 3]);
+
+            return redirect('/admin/verifikasi-pendaftaran')->withErrors([
+                'alerts' => ['success' => 'Input pembayaran siswa berhasil.']
+            ]);
+            
+        } catch (\Throwable $th) {
+
+            return back()->withErrors([
+                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat menginput pembayaran.']
             ]);
             
         }
     }
     
-    public function pendaftaranVerifikasi(Request $req, Pendaftaran $pendaftarans)
+    public function pendaftaranVerifikasi(Request $req, Identitas $identitas)
     {
         $creden = $req->validate([
-            'kode' => 'required',
-            'nama_lengkap' => 'required',
-            'nama_jurusan' => 'required',
-            'jalur_pendaftaran' => 'required',
-            'biaya_pendaftaran' => 'required',
-            'nama_admin' => 'required',
+            'admin_verifikasi_pendaftaran' => 'required',
         ]);
 
         try {
             $jurusan = Jurusan::create([
-                'kode' => Jurusan::getKode($creden['nama_jurusan']),
-                'nomor' => Jurusan::$nomor,
-                'jurusan' => $creden['nama_jurusan']
+                'identitas_id' => $identitas->id,
+                ...Jurusan::new($identitas->nama_jurusan)
             ]);
 
             $user = User::create([
-                'name' => $pendaftarans->identitas->nama_lengkap,
+                'name' => $identitas->nama_lengkap,
                 'username' => $jurusan->kode,
-                'password' => Hash::make($pendaftarans->identitas->tanggal_lahir)
+                'password' => Hash::make($identitas->tanggal_lahir),
+                'identitas_id' => $identitas->id
             ]);
     
-            $pendaftarans->update([
-                'nama_admin_pendaftaran' => $creden['nama_admin'],
-                'jurusan_id' => $jurusan->id,
-                'level_id' => $pendaftarans->level_id+1,
-                'user_id' => $user->id,
+            $identitas->pendaftaran->update([
+                'verifikasi_pendaftaran' => true,
+                ...$creden
+            ]);
+
+            $identitas->update([
+                'status_id' => 4
             ]);
             
-            return redirect('/admin/verifikasi/pendaftaran')->withErrors([
-                'alerts' => ['success' => [
-                    'msg' => 'Pendaftaran berhasil diverifikasi.',
-                ]]
+            return redirect('/admin/verifikasi-pendaftaran')->withErrors([
+                'alerts' => ['success' => 'Data berhasil diverifikasi.']
             ]);
             
         } catch (\Throwable $th) {
             return back()->withErrors([
-                'alerts' => ['danger' => [
-                    'msg' => 'Maaf, terjadi kesalahan saat memverifikasi data.',
-                ]]
+                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat memverifikasi data.']
             ]);
         }
     }
@@ -105,7 +117,8 @@ class VerifikasiController extends Controller
 	{
 		return view('admin.pages.verifikasi.daftar-ulang', [
 			'page' => ['title' => 'Verifikasi Daftar Ulang'],
-			'peserta' => Pendaftaran::where('level_id', 2)->with(['pembayaran', 'identitas'])->paginate()
+			'peserta' => Identitas::whereRelation('status', 'level', 'Daftar Ulang')
+                ->with(['pendaftaran', 'status'])->paginate(),
 		]);
 	}
 

@@ -13,16 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('daftar_ulangs', function (Blueprint $table) {
             $table->id();
-            $table->string('username')->unique();
-            $table->string('password');
             
-            $table->string('name')->nullable();
-            
-            $table->foreignId('identitas_id')->default(0);
-            $table->foreignId('level_id')->default(1);
-            $table->rememberToken();
+            $table->foreignId('identitas_id');
             $table->timestamps();
         });
     }
@@ -34,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('daftar_ulangs');
     }
 };

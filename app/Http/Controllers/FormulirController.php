@@ -2,45 +2,64 @@
 
 namespace App\Http\Controllers;
 
-use App\Metadata\Jurusan as MetadataJurusan;
-use App\Metadata\Pendaftaran as MetadataPendaftaran;
-use App\Metadata\Formulir as MetadataFormulir;
-use App\Metadata\Seragam as MetadataSeragam;
 use App\Models\Identitas;
 use App\Models\Jurusan;
-use App\Models\Pembayaran;
 use App\Models\Pendaftaran;
-use App\Models\Seragam;
-use App\Models\User;
-use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class FormulirController extends Controller
 {
 
+    protected $myvalidations = [
+        'jalur_pendaftaran', 
+        'nama_lengkap', 
+        'tanggal_lahir', 
+        'jenis_kelamin', 
+        'asal_sekolah', 
+        'no_wa_ortu', 
+        'no_wa_siswa', 
+        'nama_jurusan', 
+    ];
+
     public function index()
     {
+		$jurusan = Jurusan::getOptions();
+
         return view('pages.formulir', [
             'page' => ['title' => 'Formulir Pendaftaran'],
-            'inputs' => MetadataFormulir::inputs(),
-            // 'pendaftaran' => Pendaftaran::all()->first()
+            'inputs' => [
+                ['type' => 'radio', 'name' => 'jalur_pendaftaran', 
+                    'values' => ['Umum', 'Prestasi', 'Bintang Kelas'], 
+                ],
+                ['type' => 'text', 'name' => 'nama_lengkap', 'label' => null, 'placeholder' => null ], 
+                ['type' => 'radio', 'name' => 'jenis_kelamin', 'label' => null, 'placeholder' => null,
+                    'values' => [ 'Laki-laki', 'Perempuan']
+                ],
+                ['type' => 'date', 'name' => 'tanggal_lahir', 'label' => null, 'placeholder' => null ], 
+                ['type' => 'text', 'name' => 'asal_sekolah', 'label' => null, 'placeholder' => null ], 
+                ['type' => 'number', 'name' => 'no_wa_ortu', 'label' => 'WA Ortu/Wali', 'placeholder' => 'Ex. 08123456789' ], 
+                ['type' => 'number', 'name' => 'no_wa_siswa', 'label' => 'WA Siswa', 'placeholder' => 'Ex. 08123456789' ], 
+                ['type' => 'select', 'name' => 'nama_jurusan', 'label' => null, 'placeholder' => null,
+                    'options' => $jurusan
+                ],
+            ],
         ]);
     }
 
     public function store(Request $req)
     {
-        $creden = $req->validate(MetadataFormulir::validator());
+        $creden = $req->validate(Identitas::getValidations($this->myvalidations));
 
         try {
 
-            $kode = Pendaftaran::getKode();
             $identitas = Identitas::create($creden);
-            $pembayaran = Pembayaran::create(['bool' => true]);
             $pendaftaran = Pendaftaran::create([
-                'kode' => $kode,
-                'identitas_id' => $identitas->id,
-                'pembayaran_id' => $pembayaran->id,
+                'kode' => Pendaftaran::getKode(),
+                'identitas_id' => $identitas->id
+            ]);
+            
+            return redirect('/login')->withErrors([
+                'alerts' => ['success' => 'Pendaftaran berhasil.'],
             ]);
             
         } catch (\Exception $th) {
@@ -50,71 +69,51 @@ class FormulirController extends Controller
             ])->withInput($creden);
 
         }
-
-        return redirect('/login')->withErrors([
-            'alerts' => ['success' => 'Pendaftaran berhasil.'],
-        ]);
             
     }
 
-    public function edit(Pendaftaran $pendaftarans)
+    public function edit(Identitas $identitas)
     {
-        $new_jurusan = [['value' => '', 'label' => 'Pilih Jurusan']];
-		$jurusan = Jurusan::$jurusan;
-		foreach ($jurusan as $jrsn) $new_jurusan[] = [
-			'label' => $jrsn['nama'], 'value' => $jrsn['slug']
-		];
+		$jurusan = Jurusan::getOptions();
 
-        return view('admin.pages.edit', [
+        return view('layouts.admin-form', [
             'page' => ['title' => 'Edit Data Pendaftaran'],
-            'data' => $pendaftarans,
+            'data' => $identitas,
             'form' => [
-                'action' => '/admin/edit/'.$pendaftarans->identitas->id,
+                'action' => '/admin/edit/'.$identitas->id,
                 'button' => [
                     'variant' => 'btn-warning text-white',
                     'content' => '<i class="fas fa-pen"></i> Edit Data',
                 ],
                 'inputs' => [
-                    ['type' => 'radio', 'name' => 'jalur_pendaftaran', 'value' => $pendaftarans->identitas->jalur_pendaftaran, 'values' => ['Umum', 'Prestasi', 'Bintang Kelas']],
-                    ['name' => 'nama_lengkap', 'value' => $pendaftarans->identitas->nama_lengkap],
-                    ['name' => 'tanggal_lahir', 'value' => $pendaftarans->identitas->tanggal_lahir],
-                    ['name' => 'jenis_kelamin', 'value' => $pendaftarans->identitas->jenis_kelamin],
-                    ['name' => 'asal_sekolah', 'value' => $pendaftarans->identitas->asal_sekolah],
-                    ['type' => 'number', 'name' => 'no_wa_ortu', 'value' => $pendaftarans->identitas->no_wa_ortu],
-                    ['type' => 'number', 'name' => 'no_wa_siswa', 'value' => $pendaftarans->identitas->no_wa_siswa],
-                    ['type' => 'select', 'name' => 'nama_jurusan', 'value' => $pendaftarans->identitas->nama_jurusan, 'options' => $new_jurusan],
+                    ['type' => 'radio', 'name' => 'jalur_pendaftaran', 'value' => $identitas->jalur_pendaftaran, 'values' => ['Umum', 'Prestasi', 'Bintang Kelas']],
+                    ['name' => 'nama_lengkap', 'value' => $identitas->nama_lengkap],
+                    ['name' => 'tanggal_lahir', 'value' => $identitas->tanggal_lahir],
+                    ['name' => 'jenis_kelamin', 'value' => $identitas->jenis_kelamin],
+                    ['name' => 'asal_sekolah', 'value' => $identitas->asal_sekolah],
+                    ['type' => 'number', 'name' => 'no_wa_ortu', 'value' => $identitas->no_wa_ortu],
+                    ['type' => 'number', 'name' => 'no_wa_siswa', 'value' => $identitas->no_wa_siswa],
+                    ['name' => 'keterangan', 'value' => $identitas->pendaftaran->keterangan],
+                    ['type' => 'select', 'name' => 'nama_jurusan', 'value' => $identitas->nama_jurusan, 'options' => $jurusan],
                 ]
             ],
         ]);
     }
 
-    public function update(Request $req, Pendaftaran $pendaftarans)
+    public function update(Request $req, Identitas $identitas)
     {
 
-        $creden = $req->validate([
-            'jalur_pendaftaran' => 'required',
-            'nama_lengkap' => 'required',
-            'tanggal_lahir' => 'required',
-            'jenis_kelamin' => 'required',
-            'asal_sekolah' => 'required',
-            'no_wa_ortu' => 'required',
-            'no_wa_siswa' => 'required',
-            'nama_jurusan' => 'required',
-        ]);
+        $creden = $req->validate(Identitas::getValidations($this->myvalidations));
 
-        $identitas = Identitas::where('id', $pendaftarans->id)->update($creden);
+        $identitas = Identitas::where('id', $identitas->id)->update($creden);
 
         if ($identitas) return redirect('/admin/peserta')->withErrors([
-            'alerts' => ['success' => [
-                'msg' => 'Data peserta berhasil diubah.'
-            ]]
+            'alerts' => ['success' => 'Data peserta berhasil diubah.']
         ]);
 
         return back()->withErrors([
-            'alerts' => ['danger' => [
-                'msg' => 'Maaf, terjadi kesalahan saat mengubah data.'
-            ]]
-        ]);
+            'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat mengubah data.']
+        ])->withInput($creden);
     }
     
 }

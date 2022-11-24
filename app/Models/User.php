@@ -12,19 +12,11 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    // public function profile()
-    // {
-    //     return $this->belongsTo(UserProfile::class);
-    // }
-
-    public function level()
-    {
-        return $this->belongsTo(UserLevel::class);
-    }
-
-    public function pendaftaran()
-    {
+    public function pendaftaran () {
         return $this->hasOne(Pendaftaran::class);
+    }
+    public function level () {
+        return $this->belongsTo(UserLevel::class);
     }
 
     /**

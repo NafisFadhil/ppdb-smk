@@ -1,10 +1,11 @@
 <?php
 $id ??= 'modal';
-$size ??= '';
+$size ??= 'lg';
+$max = $size === 'max';
 ?>
 
-<div class="modal fade" id="{{ $id ?? 'modal' }}">
-	<div class="modal-dialog modal-{{ $size ?? 'lg' }}">
+<div class="modal fade" id="{{ $id }}">
+	<div class="modal-dialog modal-{{ $max ? 'xl' : $size }}" {!! $max ? 'style="max-width: max-content"' : '' !!}>
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title">{{ $title ?? '' }}</h4>
@@ -15,9 +16,6 @@ $size ??= '';
 			<div class="modal-body">
 				{!! $slot ?? $body ?? '' !!}
 			</div>
-			{{-- <div class="modal-footer justify-content-center">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div> --}}
 		</div>
 	</div>
 </div>

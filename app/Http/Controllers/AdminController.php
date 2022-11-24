@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pendaftaran;
-use Illuminate\Http\Request;
+use App\Models\Identitas;
 
 class AdminController extends Controller
 {
@@ -12,7 +11,7 @@ class AdminController extends Controller
     {
         return view('admin.pages.index', [
             'page' => ['title' => 'Dashboard Admin PPDB'],
-            'pendaftaran' => Pendaftaran::with('level')->get()
+            'peserta' => Identitas::select(['status_id'])->with('status')->get()
         ]);
     }
 
@@ -20,9 +19,9 @@ class AdminController extends Controller
     {
         $search = request('search') ?? false;
         if ($search) {
-            $peserta = Pendaftaran::whereRelation('identitas', 'nama_lengkap', 'like', "%$search%")
+            $peserta = Identitas::where('nama_lengkap', 'like', "%$search%")
                 ->latest()->paginate(25);
-        } else $peserta = Pendaftaran::latest()->with(['identitas', 'user', 'pembayaran'])->paginate(25);
+        } else $peserta = Identitas::latest()->with(['pendaftaran', 'user', 'status'])->paginate();
 
         return view('admin.pages.peserta', [
             'page' => ['title' => 'Daftar Peserta'],

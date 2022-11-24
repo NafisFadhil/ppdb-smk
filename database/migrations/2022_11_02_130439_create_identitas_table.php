@@ -17,25 +17,27 @@ return new class extends Migration
             $table->id();
             $table->string('jalur_pendaftaran');
             $table->string('nama_lengkap');
-            $table->string('tempat_lahir')->nullable();
             $table->date('tanggal_lahir');
             $table->string('jenis_kelamin');
+            $table->string('asal_sekolah');
+            $table->string('no_wa_ortu', 15);
+            $table->string('no_wa_siswa', 15);
+            $table->string('nama_jurusan', 5);
+            $table->string('tempat_lahir')->nullable();
             $table->string('alamat_desa')->nullable();
             $table->string('alamat_kec')->nullable();
             $table->string('alamat_kota_kab')->nullable();
-            $table->char('alamat_rt', 3)->nullable();
-            $table->char('alamat_rw', 3)->nullable();
+            $table->unsignedTinyInteger('alamat_rt')->nullable();
+            $table->unsignedTinyInteger('alamat_rw')->nullable();
             $table->string('nama_ayah')->nullable();
             $table->string('nama_ibu')->nullable();
-            $table->char('jumlah_saudara_kandung', 3)->nullable();
+            $table->unsignedTinyInteger('jumlah_saudara_kandung')->nullable();
             $table->char('nik', 16)->nullable();
-            $table->string('asal_sekolah');
             $table->char('nisn', 10)->nullable();
             $table->char('no_ujian_nasional', 20)->nullable();
-            $table->char('no_ijazah', 20)->nullable();
-            $table->char('no_wa_ortu', 15);
-            $table->char('no_wa_siswa', 15);
-            $table->string('nama_jurusan');
+            $table->string('no_ijazah', 30)->nullable();
+
+            $table->foreignId('status_id')->default(1);
             $table->timestamps();
         });
     }

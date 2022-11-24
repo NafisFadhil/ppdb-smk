@@ -7,10 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Jurusan extends Model
 {
-    use HasFactory;
+	use HasFactory;
 
-    public static $nomor;
+	public function identitas () {
+		return $this->belongsTo(Identitas::class);
+	}
 	
+	public static $nomor;
+
 	public static $jurusan = [
 		[
 			"nama" => "Teknik Kendaraan Ringan Otomotif",
@@ -45,26 +49,67 @@ class Jurusan extends Model
 	];
 
 	public static $kode = [
-		'teknik-kendaraan-ringan-otomotif' => 'R',
-		'teknik-bisnis-dan-sepeda motor' => 'T',
-		'teknik-komputer-dan-jaringan' => 'J',
-		'akuntansi-dan-keuangan-lembaga' => 'A',
-		'farmasi-klinis-dan-kesehatan' => 'F',
+		'tkro' => 'R',
+		'tbsm' => 'T',
+		'tkj' => 'J',
+		'akl' => 'A',
+		'fkk' => 'F',
 	];
 
-	public static function getKode (string $jurusan, int $nomor = null)
+	public static function getJurusan($value, $key = 'singkatan')
 	{
-		if (!array_key_exists($jurusan, self::$kode)) return false;
+		if ($key === 'id') return self::$jurusan[$value];
+		else {
+			foreach (self::$jurusan as $item) {
+				if ($item[$key] === $value) return $item;
+			}
+		}
+	}
+
+	public static function getKode(string $singkatan, int $nomor = null)
+	{
+		$jurusan = self::getJurusan($singkatan, 'singkatan');
+
+		if (!array_key_exists($jurusan['singkatan'], self::$kode)) return false;
+		
 		if (!$nomor) {
-			$model = Jurusan::where('jurusan', $jurusan)->latest()->limit(1)->get()->first();
+			$model = Jurusan::where('singkatan', $jurusan['singkatan'])
+				->latest()->limit(1)->get()->first();
+
 			if (!$model) {
 				self::$nomor = 1;
-				return self::$kode[$jurusan].'-001';
+				return self::$kode[$jurusan['singkatan']] . '-001';
 			}
 			self::$nomor = $nomor = $model->nomor + 1;
 		}
-		$kode = self::$kode[$jurusan];
+
+		$kode = self::$kode[$jurusan['singkatan']];
 		$xnomor = str_pad($nomor, 3, '0', STR_PAD_LEFT);
-		return $kode.'-'.$xnomor;
+		return $kode . '-' . $xnomor;
 	}
+
+	public static function getOptions()
+	{
+		$jurusan = self::$jurusan;
+		$new_jurusan = [['value' => '', 'label' => 'Pilih Jurusan']];
+		for ($i = 0; $i < count($jurusan); $i++) {
+			$new_jurusan[] = [
+				'label' => $jurusan[$i]['nama'], 'value' => $jurusan[$i]['singkatan']
+			];
+		}
+		return $new_jurusan;
+	}
+	
+	public static function new(string $singkatan)
+	{
+		$jurusan = self::getJurusan($singkatan, 'singkatan');
+		return [
+			'kode' => self::getKode($singkatan),
+			'jurusan' => $jurusan['nama'],
+			'slug' => $jurusan['slug'],
+			'singkatan' => $jurusan['singkatan'],
+			'nomor' => self::$nomor
+		];
+	}
+
 }

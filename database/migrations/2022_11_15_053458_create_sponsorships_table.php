@@ -15,11 +15,11 @@ return new class extends Migration
     {
         Schema::create('sponsorships', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_sponsorship');
-            $table->char('kelas_sponsorship', 10);
-            $table->char('no_wa_sponsorship', 15);
+            $table->string('nama');
+            $table->string('kelas', 10);
+            $table->string('no_wa', 15);
 
-            $table->foreignId('pendaftaran_id');
+            $table->foreignId('identitas_id');
             $table->timestamps();
         });
     }

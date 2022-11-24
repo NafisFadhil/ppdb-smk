@@ -9,10 +9,10 @@ use Illuminate\Http\Request;
 class PrintController extends Controller
 {
     
-    public function pendaftaran(Pendaftaran $pendaftarans)
+    public function pendaftaran(Identitas $identitas)
     {
         return view('pages.hasil-print', [
-            'siswa' => $pendaftarans,
+            'siswa' => $identitas,
             'inputs' => MetadataFormulir::inputs()
         ]);
     }

@@ -197,6 +197,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        Clockwork\Support\Laravel\ClockworkServiceProvider::class
 
     ],
 
@@ -212,7 +213,6 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        // 'ExampleClass' => App\Example\ExampleClass::class,
         'ConfigHelper' => App\Helpers\ConfigHelper::class,
         'FormHelper' => App\Helpers\FormHelper::class,
         'StringHelper' => App\Helpers\StringHelper::class,

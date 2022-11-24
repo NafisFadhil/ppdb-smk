@@ -24,12 +24,17 @@ $error = isset($errors) && $errors->has($input['name']);
 		<div class="col-12 col-sm-8">
 			@if(in_array($input['type'], ['radio', 'checkbox']))
 
-				@foreach ($input['values'] as $value)
+				@foreach ($input['values'] as $values)
 				<?php
+					if (is_array($values)) {
+						$value = $values['value'];
+						$label = $values['label'];
+					} else $value = $label = $values;
+					
 					$id = $input['id'] . mt_rand(1, 99);
-					$checked = $input['value'] === $value || old($input['name']) === $value;
+					$checked = $input['value'] == $value || old($input['name']) == $value;
 				?>
-					<div class="form-check d-inline-block">
+					<div class="form-check d-inline-block mr-2">
 						<input type="radio"
 							name="{{ $input['name'] }}"
 							id="{{ $id }}"
@@ -38,7 +43,7 @@ $error = isset($errors) && $errors->has($input['name']);
 							{{ $checked ? 'checked' : '' }}
 							{!! $input['attr'] !!}
 						/>
-						<label for="{{ $id }}" class="form-check-label">{{ $value }}</label>
+						<label for="{{ $id }}" class="form-check-label">{{ $label }}</label>
 					</div>
 				@endforeach
 			

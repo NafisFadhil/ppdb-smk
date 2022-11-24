@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
 	<link rel="stylesheet" href="/plugins/select2/css/select2.min.css">
 	@stack('styles')
-	<link rel="stylesheet" href="/plugins/adminlte/css/adminlte.min.css">
+	<link rel="stylesheet" href="/adminlte/css/adminlte.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 	<div class="wrapper">
@@ -69,6 +69,6 @@
 	</script>
 	
 	@stack('scripts')
-	<script src="/plugins/adminlte/js/adminlte.min.js"></script>
+	<script src="/adminlte/js/adminlte.min.js"></script>
 </body>
 </html>

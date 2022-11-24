@@ -3,15 +3,12 @@
 @section('content')
 	<section class="p-3">
 		<div class="rounded-lg overflow-hidden shadow-lg text-center w-screen max-w-[350px]">
-			{{-- <div class="bg-primary text-white p-4 sm:p-6">
-				<h1 class="text-2xl font-bold">Login</h1>
-			</div> --}}
 			<div class="bg-white p-4 sm:p-6">
 				<h1 class="text-4xl font-black font-sans mb-4">Login</h1>
 				<form action="/login{{ $variant ?? '' === 'admin' ? '/admin' : null }}" method="post" class="flex flex-col gap-2">
 					@csrf
 		
-					@foreach ($inputs??[] as $input)
+					@foreach ($inputs as $input)
 						<?php
 							$input = FormHelper::initInput($input);
 							$error = $errors->has($input['name']);

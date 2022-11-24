@@ -15,9 +15,9 @@
 					])
 						<form action="/admin/sponsorship" method="post">
 							@csrf <?php $inputs = [
-								['name' => 'nama_sponsorship'],
-								['name' => 'kelas_sponsorship'],
-								['name' => 'no_wa_sponsorship'],
+								['name' => 'nama'],
+								['name' => 'kelas'],
+								['name' => 'no_wa'],
 							] ?>
 
 								@foreach ($inputs as $input)
@@ -28,7 +28,7 @@
 										name="{{ $input['name'] }}"
 										placeholder="{{ $input['placeholder'] }}"
 										value="{{ $input['value'] }}"
-										class="form-control"
+										class="form-control form-control-sm"
 										{!! $input['attr'] !!}
 									/>
 								</div>
@@ -36,10 +36,10 @@
 
 								<div class="form-group form-group-sm">
 									<label class="form-label"> Siswa Pendaftaran </label>
-									<select name="pendaftaran_id" class="form-control select2" style="width: 100%">
+									<select name="identitas_id" class="form-control form-control-sm select2" style="width: 100%">
 										<option value> Pilih Siswa </option>
-										@foreach ($pendaftaran as $row)
-											<option value="{{ $row->id }}"> {{ $row->identitas->nama_lengkap }} ({{ $row->identitas->asal_sekolah }}) </option>
+										@foreach ($peserta as $row)
+											<option value="{{ $row->id }}"> {{ $row->nama_lengkap }} ({{ $row->asal_sekolah }}) </option>
 										@endforeach
 									</select>
 								</div>
@@ -76,27 +76,23 @@
 							@foreach($sponsorship as $row)
 								<tr>
 									<td>{{ $loop->iteration }}</td>
-									<td>{{ $row->nama_sponsorship }}</td>
-									<td>{{ $row->kelas_sponsorship }}</td>
-									<td>{{ $row->no_wa_sponsorship }}</td>
-									<td>{{ $row->pendaftaran->identitas->nama_lengkap }}</td>
-									<td>{{ $row->pendaftaran->identitas->asal_sekolah }}</td>
-									<td>{{ StringHelper::toTitle($row->pendaftaran->identitas->nama_jurusan) }}</td>
-									<td class="text-success" title="{{ $row->pendaftaran->level->desc }}">
-										{{ StringHelper::toTitle($row->pendaftaran->level->name) }} 
-										<?php $verified = $row->pendaftaran->verifikasi_pendaftaran ?>
-										<span class="text-{{ $verified ? 'success' : 'warning' }}">
-											({{ $verified ? 'Ter-Verifikasi' : 'Menunggu Verifikasi' }})
-										</span>
+									<td>{{ $row->nama }}</td>
+									<td>{{ $row->kelas }}</td>
+									<td>{{ $row->no_wa }}</td>
+									<td>{{ $row->identitas->nama_lengkap }}</td>
+									<td>{{ $row->identitas->asal_sekolah }}</td>
+									<td>{{ strtoupper($row->identitas->nama_jurusan) }}</td>
+									<td title="{{ $row->identitas->status->desc }}">
+										{{ $row->identitas->status->level }} ({{ $row->identitas->status->sublevel }})
 									</td>
 									<td>
-										<button type="button"
-											title="Edit Data Pendaftaran"
-											class="btn btn-sm btn-secondary"
-											onclick="window.location = '/admin/edit/{{ $row->id }}'"
-										>
-											<i class="fas fa-pen"></i>
-										</button>
+										<div class="btn-group btn-group-sm">
+
+											<button type="button" title="Edit Data Pendaftaran" class="btn btn-secondary" onclick="window.location = '/admin/sponsorship/edit/{{ $row->id }}'">
+												<i class="fas fa-pen"></i>
+											</button>
+
+										</div>
 									</td>
 								</tr>
 							@endforeach

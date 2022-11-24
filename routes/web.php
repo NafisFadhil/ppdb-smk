@@ -72,25 +72,32 @@ Route::prefix('/admin')->group(function () {
 
     });
 
-    Route::prefix('/verifikasi')->controller(VerifikasiController::class)->group(function () {
-        Route::get('/pendaftaran', 'pendaftaranIndex');
-        Route::post('/pendaftaran/pembayaran/{pendaftarans:id}', 'pendaftaranPembayaran');
-        Route::post('/pendaftaran/verifikasi/{pendaftarans:id}', 'pendaftaranVerifikasi');
-        Route::get('/daftar-ulang', 'daftarUlangIndex');
-        Route::post('/daftar-ulang/pembayaran/{pendaftarans:id}', 'daftarUlangPembayaran');
-        Route::post('/daftar-ulang/verifikasi/{pendaftarans:id}', 'daftarUlangVerifikasi');
+    Route::prefix('/verifikasi-pendaftaran')->controller(VerifikasiController::class)->group(function () {
+        Route::get('/', 'pendaftaranIndex');
+        Route::post('/biaya/{identitas:id}', 'pendaftaranBiaya');
+        Route::post('/pembayaran/{identitas:id}', 'pendaftaranPembayaran');
+        Route::post('/verifikasi/{identitas:id}', 'pendaftaranVerifikasi');
     });
 
-    Route::get('/print/{pendaftarans:id}', [PrintController::class, 'pendaftaran']);
+    Route::prefix('/verifikasi-daftar-ulang')->controller(VerifikasiController::class)->group(function () {
+        Route::get('/', 'daftarUlangIndex');
+        Route::post('/biaya/{identitas:id}', 'daftarUlangBiaya');
+        Route::post('/pembayaran/{identitas:id}', 'daftarUlangPembayaran');
+        Route::post('/verifikasi/{identitas:id}', 'daftarUlangVerifikasi');
+    });
+
+    Route::get('/print/{identitas:id}', [PrintController::class, 'pendaftaran']);
 
     Route::controller(FormulirController::class)->group(function () {
-        Route::get('/edit/{pendaftarans:id}', 'edit');
-        Route::post('/edit/{pendaftarans:id}', 'update');
+        Route::get('/edit/{identitas:id}', 'edit');
+        Route::post('/edit/{identitas:id}', 'update');
     });
 
     Route::controller(SponsorshipController::class)->group(function () {
         Route::get('/sponsorship', 'index');
         Route::post('/sponsorship', 'store');
+        Route::get('/sponsorship/edit/{sponsorship:id}', 'edit');
+        Route::post('/sponsorship/edit/{sponsorship:id}', 'update');
     });
     
 });

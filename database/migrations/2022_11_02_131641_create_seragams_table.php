@@ -16,9 +16,8 @@ return new class extends Migration
         Schema::create('seragams', function (Blueprint $table) {
             $table->id();
             $table->char('kode', 5)->unique();
-            $table->unsignedMediumInteger('harga')->default(500000);
-            $table->unsignedMediumInteger('bayar')->default(0);
-            $table->boolean('lunas')->default(false);
+            
+            $table->foreignId('identitas_id');
             $table->timestamps();
         });
     }

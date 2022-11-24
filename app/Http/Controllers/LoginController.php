@@ -13,7 +13,7 @@ class LoginController extends Controller
         return view('pages.login', [
             'page' => ['title' => 'Halaman Login Siswa'],
             'inputs' => [
-                ['type' => 'text', 'name' => 'username', 'label' => 'Kode Jurusan'],
+                ['type' => 'text', 'name' => 'username', 'label' => 'Kode Jurusan', 'attr' => 'autofocus'],
                 ['type' => 'date', 'name' => 'password', 'label' => 'Tanggal Lahir'],
             ]
         ]);
@@ -26,6 +26,8 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
+        $creden['level_id'] = 1;
+
         if (Auth::attempt($creden)) {
             $req->session()->regenerate();
             return redirect()->intended('/siswa')->withErrors([
@@ -34,7 +36,7 @@ class LoginController extends Controller
         }
         
         return back()->withErrors([
-            'alerts' => ['error' => 'Username atau password yang anda masukkan salah.']
+            'alerts' => ['error' => 'Login gagal.']
         ])->withInput($creden);
     }
 
@@ -56,19 +58,16 @@ class LoginController extends Controller
             'username' => 'required',
             'password' => 'required',
         ]);
-        // $creden['level_id'] = 7;
         
         if (Auth::attempt($creden)) {
             $req->session()->regenerate();
             return redirect()->intended('/admin')->withErrors([
-                'alerts' => ['success' => [
-                    'msg' => 'Login berhasil.'
-                ]]
+                'alerts' => ['success' => 'Login berhasil.']
             ]);
         }
         
         return back()->withErrors([
-            'alerts' => ['error' => 'Username atau password yang anda masukkan salah.']
+            'alerts' => ['error' => 'Login gagal.']
         ])->withInput($creden);
     }
 
@@ -85,7 +84,7 @@ class LoginController extends Controller
             
         } catch (\Throwable $th) {
             return back()->withErrors([
-                'alerts' => ['error' => 'Maaf, terjadi kesalahan saat mengeluarkan user.']
+                'alerts' => ['error' => 'Maaf, terjadi kesalahan saat mencoba logout.']
             ]);
         }
         
