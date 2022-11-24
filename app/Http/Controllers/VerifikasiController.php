@@ -28,7 +28,6 @@ class VerifikasiController extends Controller
             'biaya_pendaftaran' => 'required',
             'admin_biaya_pendaftaran' => 'required',
         ]);
-
         try {
 
             $identitas->pendaftaran->update($creden);
@@ -78,24 +77,19 @@ class VerifikasiController extends Controller
         $creden = $req->validate([
             'admin_verifikasi_pendaftaran' => 'required',
         ]);
-
         try {
-            $jurusan = Jurusan::create([
-                'identitas_id' => $identitas->id,
-                ...Jurusan::new($identitas->nama_jurusan)
-            ]);
-
+            
+            $jur = Jurusan::new($identitas->nama_jurusan);
+            $jur['identitas_id'] = $identitas->id;
+            $jurusan = Jurusan::create($jur);
             $user = User::create([
                 'name' => $identitas->nama_lengkap,
                 'username' => $jurusan->kode,
                 'password' => Hash::make($identitas->tanggal_lahir),
                 'identitas_id' => $identitas->id
             ]);
-    
-            $identitas->pendaftaran->update([
-                'verifikasi_pendaftaran' => true,
-                ...$creden
-            ]);
+            $creden['verifikasi_pendaftaran'] = true;
+            $identitas->pendaftaran->update($creden);
 
             $identitas->update([
                 'status_id' => 4

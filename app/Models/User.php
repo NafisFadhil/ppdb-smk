@@ -11,6 +11,12 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+    protected $fillable = [
+        'name',
+        'username',
+        'password',
+        'identitas_id'
+    ];
 
     public function pendaftaran () {
         return $this->hasOne(Pendaftaran::class);

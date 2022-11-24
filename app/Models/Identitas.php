@@ -16,7 +16,8 @@ class Identitas extends Model
         'asal_sekolah',
         'no_wa_ortu',
         'no_wa_siswa',
-        'nama_jurusan'
+        'nama_jurusan',
+        'status_id'
     ];
     
     public function pendaftaran () {

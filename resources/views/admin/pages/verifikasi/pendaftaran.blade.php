@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 <?php 
-$inputs = [
+$input_s = [
 	'biaya' => function ($row) {
 		return [
 			['name' => 'jalur_pendaftaran', 'value' => $row->jalur_pendaftaran ?? '', 'attr' => 'readonly'],
@@ -76,141 +76,118 @@ $inputs = [
 									{{ $row->status->sublevel }}
 								</td>
 								<td>
-									<?php 
+								<?php 
 										$xpembayaran = isset($row->pendaftaran->biaya_pendaftaran);
 										$xpembayaransiswa = isset($row->pendaftaran->pembayaran_siswa);
 										$xverifikasi = $row->pendaftaran->verifikasi_pendaftaran;
+										
 									?>
 
-									<div class="btn-group btn-group-sm mb-1">
+								<div class="btn-group btn-group-sm mb-1">
 
+									{{-- Input Pembayaran --}}
+									<button type="button" title="Masukkan Biaya Pendaftaran" data-toggle="modal" data-target="#modalInputan{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 1 ? 'disabled' : '' }} >
+										<i class="fas fa-dollar-sign"></i> 
+										@if($row->status_id === 1)
+											@push('modals')
+												@component('admin.components.modal', [
+													'id' => 'modalInputan'.$row->id,
+													'title' => 'Input Biaya Pendaftaran'
+												])
 
+												<form action="/admin/verifikasi-pendaftaran/biaya/{{ $row->id }}" method="post"> @csrf
+													<?php $subinputs = $input_s['biaya']($row) ?>	
 
+													@foreach ($subinputs as $input)
+														@include('admin.components.input', ['input' => $input])
+													@endforeach
 
-
-
-										{{-- Input Pembayaran --}}
-										<button type="button" title="Masukkan Biaya Pendaftaran" data-toggle="modal" data-target="#modalInputan{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 1 ? 'disabled' : '' }} >
-											<i class="fas fa-dollar-sign"></i> 
-											@if($row->status_id === 1)
-												@push('modals')
-													@component('admin.components.modal', [
-														'id' => 'modalInputan'.$row->id,
-														'title' => 'Input Biaya Pendaftaran'
-													])
-	
-													<form action="/admin/verifikasi-pendaftaran/biaya/{{ $row->id }}" method="post"> @csrf
-														<?php $subinputs = $inputs['biaya']($row) ?>	
-
-														@foreach ($subinputs as $input)
-															@include('admin.components.input', ['input' => $input])
-														@endforeach
-	
-														<div class="form-group text-center">
-															<button class="btn btn-secondary">
-																Submit
-															</button>
-														</div>
-														
-													</form>
+													<div class="form-group text-center">
+														<button class="btn btn-secondary">
+															Submit
+														</button>
+													</div>
 													
-													@endcomponent
-												@endpush
-											@endif
-										</button>
+												</form>
+												
+												@endcomponent
+											@endpush
+										@endif
+									</button>
 
+									{{-- Verifikasi Pembayaran --}}
+									<button type="button" title="Verifikasi Pembayaran Siswa" data-toggle="modal" data-target="#modalPembayaran{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 2 ? 'disabled' : '' }} >
+										<i class="fas fa-check"></i>
+										@if($row->status_id < 3)
+											@push('modals')
+												@component('admin.components.modal', [
+													'id' => 'modalPembayaran'.$row->id,
+													'title' => 'Verifikasi Pembayaran Siswa',
+												])
 
+												<form action="/admin/verifikasi-pendaftaran/pembayaran/{{ $row->id }}" method="post">
+													@csrf <?php $subinputs = $input_s['pembayaran']($row) ?>
 
+													{{-- <div class="row"> --}}
+														{{-- @foreach ($subinputers as $subinputs) --}}
+															{{-- <div class="col-12 col-md-6"> --}}
+																@foreach ($subinputs as $input)
+																	@include('admin.components.input', ['input' => $input])
+																@endforeach
+															{{-- </div> --}}
+														{{-- @endforeach --}}
+													{{-- </div> --}}
 
-
-
-
-
-
-
-										{{-- Verifikasi Pembayaran --}}
-										<button type="button" title="Verifikasi Pembayaran Siswa" data-toggle="modal" data-target="#modalPembayaran{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 2 ? 'disabled' : '' }} >
-											<i class="fas fa-check"></i>
-											@if($row->status_id < 3)
-												@push('modals')
-													@component('admin.components.modal', [
-														'id' => 'modalPembayaran'.$row->id,
-														'title' => 'Verifikasi Pembayaran Siswa',
-													])
-	
-													<form action="/admin/verifikasi-pendaftaran/pembayaran/{{ $row->id }}" method="post">
-														@csrf <?php $subinputs = $inputs['pembayaran']($row) ?>
-	
-														{{-- <div class="row"> --}}
-															{{-- @foreach ($subinputers as $subinputs) --}}
-																{{-- <div class="col-12 col-md-6"> --}}
-																	@foreach ($subinputs as $input)
-																		@include('admin.components.input', ['input' => $input])
-																	@endforeach
-																{{-- </div> --}}
-															{{-- @endforeach --}}
-														{{-- </div> --}}
-	
-														<div class="form-group text-center">
-															<button class="btn btn-secondary">
-																<i class="fas fa-check"></i> Verifikasi
-															</button>
-														</div>
-														
-													</form>
+													<div class="form-group text-center">
+														<button class="btn btn-secondary">
+															<i class="fas fa-check"></i> Verifikasi
+														</button>
+													</div>
 													
-													@endcomponent
-												@endpush
-											@endif
-										</button>
+												</form>
+												
+												@endcomponent
+											@endpush
+										@endif
+									</button>
 
+									{{-- Verifikasi Pendaftaran --}}
+									<button type="button" title="Verifikasi Pendaftaran" data-toggle="modal" data-target="#modalVerifikasi{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 3 ? 'disabled' : '' }} >
+										<i class="fas fa-user-check"></i>
+										@if($row->status_id === 3)
+											@push('modals')
+												@component('admin.components.modal', [
+													'id' => 'modalVerifikasi'.$row->id,
+													'title' => 'Verifikasi Siswa',
+													'size' => 'xl'
+												])
 
+												<form action="/admin/verifikasi-pendaftaran/verifikasi/{{ $row->id }}" method="post">
+													@csrf <?php $subinputs = $input_s['verifikasi']($row) ?>
 
+													{{-- <div class="row"> --}}
+														{{-- @foreach ($subinputs as $subinput) --}}
+															{{-- <div class="col-12 col-md-6"> --}}
+																@foreach ($subinputs as $input)
+																	@include('admin.components.input', ['input' => $input])
+																@endforeach
+															{{-- </div> --}}
+														{{-- @endforeach --}}
+													{{-- </div> --}}
 
-
-
-
-
-
-
-										{{-- Verifikasi Pendaftaran --}}
-										<button type="button" title="Verifikasi Pendaftaran" data-toggle="modal" data-target="#modalVerifikasi{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 3 ? 'disabled' : '' }} >
-											<i class="fas fa-user-check"></i>
-											@if($row->status_id === 3)
-												@push('modals')
-													@component('admin.components.modal', [
-														'id' => 'modalVerifikasi'.$row->id,
-														'title' => 'Verifikasi Siswa',
-														'size' => 'xl'
-													])
-	
-													<form action="/admin/verifikasi-pendaftaran/verifikasi/{{ $row->id }}" method="post">
-														@csrf <?php $subinputs = $inputs['verifikasi']($row) ?>
-	
-														{{-- <div class="row"> --}}
-															{{-- @foreach ($subinputs as $subinput) --}}
-																{{-- <div class="col-12 col-md-6"> --}}
-																	@foreach ($subinputs as $input)
-																		@include('admin.components.input', ['input' => $input])
-																	@endforeach
-																{{-- </div> --}}
-															{{-- @endforeach --}}
-														{{-- </div> --}}
-	
-														<div class="form-group text-center">
-															<button class="btn btn-secondary">
-																<i class="fas fa-check"></i> Verifikasi
-															</button>
-														</div>
-														
-													</form>
+													<div class="form-group text-center">
+														<button class="btn btn-secondary">
+															<i class="fas fa-check"></i> Verifikasi
+														</button>
+													</div>
 													
-													@endcomponent
-												@endpush
-											@endif
-										</button>
-									</div>
-
+												</form>
+												
+												@endcomponent
+											@endpush
+										@endif
+									</button>
+								</div>
 
 
 
