@@ -49,7 +49,8 @@ class FormulirController extends Controller
     public function store(Request $req)
     {
         $creden = $req->validate(Identitas::getValidations($this->myvalidations));
-
+        $creden['nama_lengkap'] = strtoupper($creden['nama_lengkap']);
+        $creden['asal_sekolah'] = strtoupper($creden['asal_sekolah']);
         try {
 
             $identitas = Identitas::create($creden);
