@@ -13,6 +13,15 @@ $adm === 'super-admin' ? [[
 ]] : [
 	['href' => '/admin/verifikasi-'.$adm, 'label' => 'Verifikasi '.StringHelper::toTitle($adm), 'icon' => 'fas fa-check']
 ],
+$adm === 'super-admin' ? [[
+	'variant' => 'dropdown', 'href' => '/admin/laporan', 'label' => 'Laporan', 'icon' => 'fas fa-solid fa-print', 'dropdown' => [
+		['href' => '/admin/laporan-pendaftaran', 'label' => 'Pendaftaran'],
+		['href' => '/admin/laporan-daftar-ulang', 'label' => 'Daftar Ulang'],
+		['href' => '/admin/laporan-seragam', 'label' => 'Seragam'],
+	]
+]] : [
+	['href' => '/admin/laporan-'.$adm, 'label' => 'Laporan '.StringHelper::toTitle($adm), 'icon' => 'fas fa-solid fa-print']
+],
 [
 	['href' => '/admin/sponsorship', 'label' => 'Sponsorship', 'icon' => 'fas fa-user'],
 	['href' => '/logout', 'label' => 'Logout', 'icon' => 'fas fa-power-off'],

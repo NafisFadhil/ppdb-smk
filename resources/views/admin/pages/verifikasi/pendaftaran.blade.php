@@ -47,7 +47,7 @@ $input_s = [
 <div class="row gap-2">
 	<div class="col-12">
 		<div class="card">
-			<div class="card-body">
+			<div class="card-body">    
 				<table id="xtable" class="w-100 table table-sm table-bordered table-hover table-responsive">
 					<thead>
 						<tr>

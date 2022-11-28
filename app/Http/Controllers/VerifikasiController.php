@@ -15,10 +15,11 @@ class VerifikasiController extends Controller
     // Pendaftaran
     public function pendaftaranIndex()
     {
+        
         return view('admin.pages.verifikasi.pendaftaran', [
             'page' => ['title' => 'Verifikasi Pendaftaran'],
             'peserta' => Identitas::whereRelation('status', 'level', 'Pendaftar')
-                ->with(['pendaftaran', 'status'])->paginate()
+                ->with(['pendaftaran', 'status'])->paginate(),
         ]);
     }
 

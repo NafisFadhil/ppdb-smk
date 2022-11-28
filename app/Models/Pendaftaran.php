@@ -14,7 +14,8 @@ class Pendaftaran extends Model
 		'biaya_pendaftaran',
 		'admin_biaya_pendaftaran',
 		'verifikasi_pendaftaran',
-		'admin_verifikasi_pendaftaran'
+		'admin_verifikasi_pendaftaran',
+		
 	];
 
     public function identitas () {

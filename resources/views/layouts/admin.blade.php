@@ -10,6 +10,24 @@
 	<link rel="stylesheet" href="/plugins/select2/css/select2.min.css">
 	@stack('styles')
 	<link rel="stylesheet" href="/adminlte/css/adminlte.min.css">
+	<style>
+		@media print {
+			body * {
+				visibility: hidden;
+			}
+			#print-element, #print-element * {
+				visibility: visible;
+			}
+			#cetak-pdf-button, #cetak-pdf-button *{
+				visibility: hidden;
+			}
+			#print-element {
+				position: absolute;
+				left: 0;
+				top: 0;
+			}
+		}
+	</style>
 </head>
 <body class="hold-transition sidebar-mini">
 	<div class="wrapper">

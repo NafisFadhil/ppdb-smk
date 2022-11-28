@@ -7,6 +7,7 @@ use App\Http\Controllers\PrintController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\SponsorshipController;
 use App\Http\Controllers\VerifikasiController;
+use App\Http\Controllers\LaporanController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -98,6 +99,11 @@ Route::prefix('/admin')->group(function () {
         Route::post('/sponsorship', 'store');
         Route::get('/sponsorship/edit/{sponsorship:id}', 'edit');
         Route::post('/sponsorship/edit/{sponsorship:id}', 'update');
+    });
+
+    Route::controller(LaporanController::class)->group(function () {
+        Route::get('/laporan-pendaftaran', 'indexPendaftaran')->name('laporan.pendaftaran');
+        Route::post('/filter-pendaftaran', 'filterPendaftaran');
     });
     
 });
