@@ -15,29 +15,62 @@ class StatusSeeder extends Seeder
      */
     public function run()
     {
-        $level = ['Pendaftar', 'Daftar Ulang', 'Seragam'];
-        $sublevel = [
-            'Menunggu Input Pembayaran',
-            'Menunggu Pembayaran Siswa',
-            'Menunggu Verifikasi Admin',
-        ];
-        $status = [
-            'Menunggu admin menginputkan nominal pembayaran.',
-            'Menunggu siswa melakukan pembayaran biaya pendaftaran.',
-            'Menunggu admin melakukan verifikasi data siswa.',
-        ];
-
-        $seeds = [];
-        foreach ($level as $lvl) {
-            for ($i = 0; $i < count($sublevel); $i++) {
-                $seeds[] = [
-                    'level' => $lvl,
-                    'sublevel' => $sublevel[$i],
-                    'desc' => $status[$i]
-                ];
-            }
-        }
-        
-        DB::table('statuses')->insert($seeds);
+        DB::table('statuses')->insert([
+            [
+                'level' => 'Pendaftar',
+                'sublevel' => 'Menunggu Input Pembayaran',
+                'desc' => 'Menunggu admin menginputkan nominal biaya pendaftaran.',
+            ],
+            [
+                'level' => 'Pendaftar',
+                'sublevel' => 'Menunggu Pembayaran Siswa',
+                'desc' => 'Menunggu siswa melakukan pembayaran.',
+            ],
+            [
+                'level' => 'Pendaftar',
+                'sublevel' => 'Menunggu Verifikasi Admin',
+                'desc' => 'Menunggu admin melakukan verifikasi.',
+            ],
+            [
+                'level' => 'Daftar Ulang',
+                'sublevel' => 'Menunggu Pengisian Formulir',
+                'desc' => 'Menunggu siswa mengisi formulir daftar ulang.',
+            ],
+            [
+                'level' => 'Daftar Ulang',
+                'sublevel' => 'Menunggu Input Pembayaran',
+                'desc' => 'Menunggu admin menginputkan nominal biaya daftar ulang.',
+            ],
+            [
+                'level' => 'Daftar Ulang',
+                'sublevel' => 'Menunggu Pembayaran Siswa',
+                'desc' => 'Menunggu siswa melakukan pembayaran.',
+            ],
+            [
+                'level' => 'Daftar Ulang',
+                'sublevel' => 'Menunggu Verifikasi Admin',
+                'desc' => 'Menunggu admin melakukan verifikasi.',
+            ],
+            [
+                'level' => 'Seragam',
+                'sublevel' => 'Menunggu Input Pembayaran',
+                'desc' => 'Menunggu admin menginputkan nominal biaya seragam.',
+            ],
+            [
+                'level' => 'Seragam',
+                'sublevel' => 'Menunggu Pembayaran Siswa',
+                'desc' => 'Menunggu siswa melakukan pembayaran.',
+            ],
+            [
+                'level' => 'Seragam',
+                'sublevel' => 'Menunggu Verifikasi Admin',
+                'desc' => 'Menunggu admin melakukan verifikasi.',
+            ],
+            [
+                'level' => 'Lulus',
+                'sublevel' => 'Sudah Diterima',
+                'desc' => 'Siswa telah menyelesaikan tahapan PPDB Online',
+            ],
+        ]);
     }
 }

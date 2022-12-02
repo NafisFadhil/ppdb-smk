@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DaftarUlangController;
 use App\Http\Controllers\FormulirController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PrintController;
@@ -59,9 +60,12 @@ Route::controller(LoginController::class)->group(function () {
 Route::prefix('/siswa')->controller(SiswaController::class)->group(function () {
 
     Route::get('/', 'index');
-    Route::get('/profil', 'profil');
-    Route::post('/profil', 'update');
     
+});
+
+Route::controller(DaftarUlangController::class)->group(function () {
+    Route::get('/siswa/daftar-ulang', 'index');
+    Route::post('/siswa/daftar-ulang', 'store');
 });
 
 Route::prefix('/admin')->group(function () {

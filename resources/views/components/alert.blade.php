@@ -41,7 +41,7 @@
 				</p>
 
 				<button type="button" class="p-1.5 leading-3 aspect-square mr-2">
-					<i class="fas fa-times"></i>
+					<i class="fa fa-times"></i>
 				</button>
 
 			</div>

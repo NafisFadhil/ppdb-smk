@@ -2,7 +2,7 @@
 	<?php $alerts = $errors->get('alerts') ?? [] ?>
 		@foreach ($alerts as $variant => $msg)
 		<?php 
-			$icon = 'fas fa-lg ' . ($variant === 'success' ? 'fa-check' : 'fa-exclamation-triangle')
+			$icon = 'fa fa-lg ' . ($variant === 'success' ? 'fa-check' : 'fa-exclamation-triangle')
 		?>
 		
 		<script>

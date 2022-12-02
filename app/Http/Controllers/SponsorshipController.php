@@ -55,7 +55,7 @@ class SponsorshipController extends Controller
                 'action' => '/admin/sponsorship/edit/'.$sponsorship->id,
                 'button' => [
                     'variant' => 'btn-warning text-white',
-                    'content' => '<i class="fas fa-pen"></i> Edit Data',
+                    'content' => '<i class="fa fa-pen"></i> Edit Data',
                 ],
                 'inputs' => [
                     ['name' => 'nama', 'value' => $sponsorship->nama],

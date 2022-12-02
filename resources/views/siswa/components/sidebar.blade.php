@@ -1,13 +1,14 @@
 <?php $sidebar = array_merge(
 	[
-		['href' => '/siswa', 'label' => 'Beranda', 'icon' => 'fas fa-home'],
-		['href' => '/siswa/profil', 'label' => 'Edit Profil', 'icon' => 'fas fa-user-cog'],
-		['href' => '/logout', 'label' => 'Keluar', 'icon' => 'fas fa-power-off'],
+		['href' => '/siswa', 'label' => 'Beranda', 'icon' => 'fa fa-home'],
+		['href' => '/siswa/daftar-ulang', 'label' => 'Daftar Ulang', 'icon' => 'fa fa-user'],
+		['href' => '/siswa/seragam', 'label' => 'Seragam', 'icon' => 'fa fa-tshirt'],
+		['href' => '/logout', 'label' => 'Keluar', 'icon' => 'fa fa-power-off'],
 	]
 ) ?>
 <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 " id="sidenav-main">
 	<div class="sidenav-header">
-		<i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+		<i class="fa fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
 		<a class="navbar-brand m-0" href="/siswa">
 			<img src="/dist/img/logo-smk-kotak.png" class="navbar-brand-img h-100"
 				alt="Logo {{ ConfigHelper::get('nama_sekolah') }}">
@@ -22,7 +23,7 @@
 
 				<li class="nav-item">
 					<a class="nav-link {{ $active ? 'active' : '' }}" href="{{ $item['href'] }}">
-						<div class="icon shadow border-radius-md bg-white text-center me-2 p-2 d-flex align-items-center justify-content-center">
+						<div class="icon shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center" style="width: 37px;height: 37px">
 							<i class="{{ $item['icon'] }} fa-md" style="color: {{ $active ? 'white' : 'black' }}"></i>
 						</div>
 						<span class="nav-link-text ms-1">{{ $item['label'] }}</span>

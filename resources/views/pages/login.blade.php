@@ -25,14 +25,14 @@
 							/>
 							@error($input['name'])
 								<p class="col-span-3 text-sm text-red-800">
-									<i class="fas fa-exclamation-triangle mr-1"></i> {{ __($message) }}
+									<i class="fa fa-exclamation-triangle mr-1"></i> {{ __($message) }}
 								</p>
 							@enderror
 						</div>
 					@endforeach			
 		
 					<button type="submit" class=" py-1.5 px-5 rounded-lg bg-primary text-white hover:opacity-90 mt-2 max-w-max mx-auto">
-						Login <i class="fas fa-sign-in-alt"></i>
+						Login <i class="fa fa-sign-in-alt"></i>
 					</button>
 					
 				</form>

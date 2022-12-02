@@ -16,7 +16,7 @@
 			
 			<div class="mt-3 w-full flex flex-row justify-center items-center gap-2">
 				<button type="submit" class="p-2 px-6 bg-primary text-white rounded-lg shadow max-w-max">
-					Daftar <i class="fas fa-sign-in-alt"></i>
+					Daftar <i class="fa fa-sign-in-alt"></i>
 				</button>
 			</div>
 		</div>

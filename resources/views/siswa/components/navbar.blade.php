@@ -25,7 +25,7 @@
 
 					@if($loop->first)
 						<li class="breadcrumb-item text-sm">
-							<a class="opacity-5 text-dark" href="{{ $xpaths }}"><i class="fas fa-home"></i></a>
+							<a class="opacity-5 text-dark" href="{{ $xpaths }}"><i class="fa fa-home"></i></a>
 						</li>
 					@elseif($loop->last)
 						<li class="breadcrumb-item text-sm text-dark active" aria-current="page">

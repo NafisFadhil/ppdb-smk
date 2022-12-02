@@ -35,7 +35,7 @@
 			</div>
 			<div class="flex flex-row justify-center items-center">
 				<button type="submit" class="py-1 px-3 bg-primary text-white rounded-lg shadow-lg max-w-max hover:opacity-90 transition-opacity">
-					<i class="fas fa-search"></i> Cari
+					<i class="fa fa-search"></i> Cari
 				</button>
 			</div>
 		</form>
@@ -80,7 +80,7 @@
 
 				<?php $url = '/pendaftaran/print/cetak?kode='.$pendaftaran->kode.'&nisn='.$pendaftaran->identitas->nisn ?>
 				<a href="{{ $url }}" target="_blank" class="p-2 px-6 bg-light rounded-lg shadow max-w-max hover:brightness-90 transition">
-					<i class="fas fa-print"></i> Print
+					<i class="fa fa-print"></i> Print
 				</a>
 				
 			@else

@@ -28,7 +28,7 @@
                             <option value="all">Semua Tahun</option>
                         </select>
                     </div>
-                    <button class="btn btn-primary" type="submit"><i class="fas fa-solid fa-filter"></i> Filter</button>
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-solid fa-filter"></i> Filter</button>
                 </form>
                 <hr>
                 @if(session()->get('laporan'))
@@ -37,7 +37,7 @@
                     <div class="d-flex justify-content-end mt-5 mb-3">
                         <div>
                             <button class="btn btn-primary" id="cetak-pdf-button">
-                                <i class="fas fa-solid fa-print"></i> Cetak PDF
+                                <i class="fa fa-solid fa-print"></i> Cetak PDF
                             </button>
                         </div>
                     </div>

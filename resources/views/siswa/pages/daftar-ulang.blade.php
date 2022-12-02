@@ -2,7 +2,7 @@
 
 <?php 
 $user = auth()->user();
-$identitas = $user->pendaftaran->identitas;
+$identitas = $user->identitas;
 $forms = [
 	[
 		[
@@ -59,7 +59,10 @@ $forms = [
 ?>
 
 @section('main')
-	<div class="row">
+	{{-- <div class="row"> --}}
+		<form action="/siswa/daftar-ulang" method="POST" class="row">
+		@csrf
+
 		@foreach ($forms as $form)
 			<div class="col-12 col-md-6 row gap-4" style="height: max-content">
 
@@ -69,11 +72,8 @@ $forms = [
 							<div class="card-header pb-0">
 								<h5> {{ $subform['title'] ?? '' }} </h5>
 							</div>
+
 							<div class="card-body">
-								@if(!isset($subform['variant']))
-									<form action="/siswa/profil" method="POST" role="form">
-										@csrf
-								@endif
 								
 								@foreach ($subform['inputs'] as $input)
 									<?php $input = FormHelper::initInput($input) ?>
@@ -82,6 +82,7 @@ $forms = [
 										<label for="{{ $input['id'] }}" class="form-label">
 											{{ $input['label'] }}
 										</label>
+
 										<input type="{{ $input['type'] }}"
 											name="{{ $input['name'] }}"
 											id="{{ $input['id'] }}"
@@ -92,15 +93,6 @@ $forms = [
 									</div>
 								@endforeach
 
-								@if(!isset($subform['variant']))
-									<div class="w-100 text-center">
-										<button type="submit" class="btn btn-sm bg-gradient-primary m-0" onclick="return confirm('Anda yakin untuk mengubah data?')">
-											Edit
-										</button>
-									</div>
-								
-									</form>
-								@endif
 							</div>
 						</div>
 					</div>
@@ -108,5 +100,13 @@ $forms = [
 				
 			</div>
 		@endforeach
-	</div>
+
+		<div class="col-12 text-center mt-4">
+			<button type="submit" class="btn bg-gradient-primary">
+				Submit
+			</button>
+		</div>
+
+	</form>
+	{{-- </div> --}}
 @endsection

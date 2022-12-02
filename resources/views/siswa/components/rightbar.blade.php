@@ -1,6 +1,6 @@
 <div class="fixed-plugin">
 	<a class="fixed-plugin-button text-dark position-fixed p-2 lh-1">
-		<i class="fas fa-sm fa-cog"></i>
+		<i class="fa fa-sm fa-cog"></i>
 	</a>
 	<div class="card shadow-lg" style="max-width: 90vw">
 		<div class="card-header pb-0 pt-3 ">

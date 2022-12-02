@@ -78,7 +78,7 @@ $error = isset($errors) && $errors->has($input['name']);
 									</div>
 									@error($subinput['name'] ?? null)
 										<p class="col-span-1 text-sm text-red-800">
-											<i class="fas fa-exclamation-triangle mr-1"></i> {{ __($message) }}
+											<i class="fa fa-exclamation-triangle mr-1"></i> {{ __($message) }}
 										</p>
 									@enderror
 								</div>

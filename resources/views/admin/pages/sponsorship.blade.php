@@ -6,7 +6,7 @@
 		<div class="card">
 			<div class="card-body">
 				<button class="btn btn-block btn-primary mx-auto" data-toggle="modal" data-target="#modalTambahSponsorship" style="max-width: max-content">
-					<i class="fas fa-plus"></i> Tambah Sponsorship
+					<i class="fa fa-plus"></i> Tambah Sponsorship
 				</button>
 				@push('modals')
 					@component('admin.components.modal', [
@@ -89,7 +89,7 @@
 										<div class="btn-group btn-group-sm">
 
 											<button type="button" title="Edit Data Pendaftaran" class="btn btn-secondary" onclick="window.location = '/admin/sponsorship/edit/{{ $row->id }}'">
-												<i class="fas fa-pen"></i>
+												<i class="fa fa-pen"></i>
 											</button>
 
 										</div>

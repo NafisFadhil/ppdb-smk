@@ -91,7 +91,7 @@ $inputs = [
 
 										{{-- Input Pembayaran --}}
 										<button type="button" title="Masukkan Biaya Pendaftaran" data-toggle="modal" data-target="#modalInputan{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 1 ? 'disabled' : '' }} >
-											<i class="fas fa-dollar-sign"></i> 
+											<i class="fa fa-dollar-sign"></i> 
 											@if($row->status_id === 1)
 												@push('modals')
 													@component('admin.components.modal', [
@@ -130,7 +130,7 @@ $inputs = [
 
 										{{-- Verifikasi Pembayaran --}}
 										<button type="button" title="Verifikasi Pembayaran Siswa" data-toggle="modal" data-target="#modalPembayaran{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 2 ? 'disabled' : '' }} >
-											<i class="fas fa-check"></i>
+											<i class="fa fa-check"></i>
 											@if($row->status_id < 3)
 												@push('modals')
 													@component('admin.components.modal', [
@@ -153,7 +153,7 @@ $inputs = [
 	
 														<div class="form-group text-center">
 															<button class="btn btn-secondary">
-																<i class="fas fa-check"></i> Verifikasi
+																<i class="fa fa-check"></i> Verifikasi
 															</button>
 														</div>
 														
@@ -175,7 +175,7 @@ $inputs = [
 
 										{{-- Verifikasi Pendaftaran --}}
 										<button type="button" title="Verifikasi Pendaftaran" data-toggle="modal" data-target="#modalVerifikasi{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 3 ? 'disabled' : '' }} >
-											<i class="fas fa-user-check"></i>
+											<i class="fa fa-user-check"></i>
 											@if($row->status_id === 3)
 												@push('modals')
 													@component('admin.components.modal', [
@@ -199,7 +199,7 @@ $inputs = [
 	
 														<div class="form-group text-center">
 															<button class="btn btn-secondary">
-																<i class="fas fa-check"></i> Verifikasi
+																<i class="fa fa-check"></i> Verifikasi
 															</button>
 														</div>
 														
@@ -224,7 +224,7 @@ $inputs = [
 									<div class="btn-group btn-group-sm">
 										{{-- Details --}}
 										<button type="button" title="Detail Siswa" data-toggle="modal" data-target="#modalDetail{{ $row->id }}" class="btn btn-secondary" >
-											<i class="fas fa-eye"></i> 
+											<i class="fa fa-eye"></i> 
 											@push('modals')
 												@component('admin.components.modal', [
 													'id' => 'modalDetail'.$row->id,
@@ -269,12 +269,12 @@ $inputs = [
 
 										{{-- Edit --}}
 										<button type="button" title="Edit Data Pendaftaran" class="btn btn-secondary" onclick="window.location = '/admin/edit/{{ $row->id }}'">
-											<i class="fas fa-pen"></i> 
+											<i class="fa fa-pen"></i> 
 										</button>
 										
 										{{-- Print --}}
 										<button type="button" title="Cetak Lembar Pendaftaran" class="btn btn-secondary" {{ $xverifikasi ? '' : 'disabled' }} onclick="window.location = '/admin/print/{{ $row->id }}'" >
-											<i class="fas fa-print"></i>
+											<i class="fa fa-print"></i>
 										</button>
 										
 									</div>

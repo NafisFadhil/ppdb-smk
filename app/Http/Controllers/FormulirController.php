@@ -84,7 +84,7 @@ class FormulirController extends Controller
                 'action' => '/admin/edit/'.$identitas->id,
                 'button' => [
                     'variant' => 'btn-warning text-white',
-                    'content' => '<i class="fas fa-pen"></i> Edit Data',
+                    'content' => '<i class="fa fa-pen"></i> Edit Data',
                 ],
                 'inputs' => [
                     ['type' => 'radio', 'name' => 'jalur_pendaftaran', 'value' => $identitas->jalur_pendaftaran, 'values' => ['Umum', 'Prestasi', 'Bintang Kelas']],

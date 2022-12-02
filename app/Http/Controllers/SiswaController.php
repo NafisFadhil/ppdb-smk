@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Status;
 use Illuminate\Http\Request;
 
 class SiswaController extends Controller
@@ -10,11 +11,12 @@ class SiswaController extends Controller
     public function index()
     {
         return view('siswa.pages.index', [
-            'page' => ['title' => 'Beranda - Halaman Siswa', 'subtitle' => 'Beranda']
+            'page' => ['title' => 'Beranda - Halaman Siswa', 'subtitle' => 'Beranda'],
+            'xstatus' => Status::all()
         ]);
     }
 
-    public function profil()
+    public function daftar_ulang()
     {
         return view('siswa.pages.profil', [
             'page' => ['title' => 'Edit Profil - Halaman Siswa', 'subtitle' => 'Edit Profil']

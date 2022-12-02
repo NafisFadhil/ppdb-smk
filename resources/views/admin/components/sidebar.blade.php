@@ -1,30 +1,31 @@
 <?php
 $adm = str_replace('admin-', '', auth()->user()->level->name ?? '');
 $menu = array_merge([
-	['href' => '/admin', 'label' => 'Beranda', 'icon' => 'fas fa-tachometer-alt'],
-	['href' => '/admin/peserta', 'label' => 'Semua Peserta', 'icon' => 'fas fa-users'],
+	['href' => '/admin', 'label' => 'Beranda', 'icon' => 'fa fa-tachometer-alt'],
+	['href' => '/admin/peserta', 'label' => 'Semua Peserta', 'icon' => 'fa fa-users'],
+	['href' => '/admin/tambah-peserta', 'label' => 'Tambah Peserta', 'icon' => 'fa fa-user-plus'],
 ],
 $adm === 'super-admin' ? [[
-	'variant' => 'dropdown', 'href' => '/admin/verifikasi', 'label' => 'Verifikasi', 'icon' => 'fas fa-check', 'dropdown' => [
+	'variant' => 'dropdown', 'href' => '/admin/verifikasi', 'label' => 'Verifikasi', 'icon' => 'fa fa-check', 'dropdown' => [
 		['href' => '/admin/verifikasi-pendaftaran', 'label' => 'Pendaftaran'],
 		['href' => '/admin/verifikasi-daftar-ulang', 'label' => 'Daftar Ulang'],
 		['href' => '/admin/verifikasi-seragam', 'label' => 'Seragam'],
 	]
 ]] : [
-	['href' => '/admin/verifikasi-'.$adm, 'label' => 'Verifikasi '.StringHelper::toTitle($adm), 'icon' => 'fas fa-check']
+	['href' => '/admin/verifikasi-'.$adm, 'label' => 'Verifikasi '.StringHelper::toTitle($adm), 'icon' => 'fa fa-check']
 ],
 $adm === 'super-admin' ? [[
-	'variant' => 'dropdown', 'href' => '/admin/laporan', 'label' => 'Laporan', 'icon' => 'fas fa-solid fa-print', 'dropdown' => [
+	'variant' => 'dropdown', 'href' => '/admin/laporan', 'label' => 'Laporan', 'icon' => 'fa fa-solid fa-print', 'dropdown' => [
 		['href' => '/admin/laporan-pendaftaran', 'label' => 'Pendaftaran'],
 		['href' => '/admin/laporan-daftar-ulang', 'label' => 'Daftar Ulang'],
 		['href' => '/admin/laporan-seragam', 'label' => 'Seragam'],
 	]
 ]] : [
-	['href' => '/admin/laporan-'.$adm, 'label' => 'Laporan '.StringHelper::toTitle($adm), 'icon' => 'fas fa-solid fa-print']
+	['href' => '/admin/laporan-'.$adm, 'label' => 'Laporan '.StringHelper::toTitle($adm), 'icon' => 'fa fa-solid fa-print']
 ],
 [
-	['href' => '/admin/sponsorship', 'label' => 'Sponsorship', 'icon' => 'fas fa-user'],
-	['href' => '/logout', 'label' => 'Logout', 'icon' => 'fas fa-power-off'],
+	['href' => '/admin/sponsorship', 'label' => 'Sponsorship', 'icon' => 'fa fa-user'],
+	['href' => '/logout', 'label' => 'Logout', 'icon' => 'fa fa-power-off'],
 ],
 );?>
 
@@ -57,7 +58,7 @@ $adm === 'super-admin' ? [[
 				<input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
 				<div class="input-group-append">
 					<button class="btn btn-sidebar">
-						<i class="fas fa-search fa-fw"></i>
+						<i class="fa fa-search fa-fw"></i>
 					</button>
 				</div>
 			</div>
@@ -85,7 +86,7 @@ $adm === 'super-admin' ? [[
 									<p>
 										{{ $nav['label'] }}
 										@if($dropdown)
-											<i class="right fas fa-angle-left"></i>
+											<i class="right fa fa-angle-left"></i>
 										@endif
 									</p>
 								</a>

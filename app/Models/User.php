@@ -18,8 +18,8 @@ class User extends Authenticatable
         'identitas_id'
     ];
 
-    public function pendaftaran () {
-        return $this->hasOne(Pendaftaran::class);
+    public function identitas () {
+        return $this->belongsTo(Identitas::class);
     }
     public function level () {
         return $this->belongsTo(UserLevel::class);

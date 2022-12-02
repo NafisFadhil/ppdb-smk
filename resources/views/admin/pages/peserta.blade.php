@@ -9,7 +9,7 @@
 					<div class="input-group">
 						<div class="input-group-prepend">
 							<div class="input-group-text">
-								<i class="fas fa-search"></i>
+								<i class="fa fa-search"></i>
 							</div>
 						</div>
 						<input type="search" name="search" id="search" class="form-control vw-100" value="{{ old('search') ?? request('search') ?? '' }}" placeholder="Cari nama siswa..." style="max-width: 400px" autofocus>
@@ -63,7 +63,7 @@
 									<div class="btn-group btn-group-sm">
 
 										<button type="button" title="Detail Siswa" data-toggle="modal" data-target="#modalDetail{{ $row->id }}" class="btn btn-secondary" >
-											<i class="fas fa-eye"></i> 
+											<i class="fa fa-eye"></i> 
 											@push('modals')
 												@component('admin.components.modal', [
 													'id' => 'modalDetail'.$row->id,
@@ -101,7 +101,7 @@
 
 										{{-- Edit --}}
 										<button type="button" title="Edit Data Pendaftaran" class="btn btn-secondary" onclick="window.location = '/admin/edit/{{ $row->id }}'">
-											<i class="fas fa-pen"></i>
+											<i class="fa fa-pen"></i>
 										</button>
 
 									</div>
