@@ -6,6 +6,7 @@ use App\Models\Identitas;
 use App\Models\Pendaftaran;
 use App\Models\Jurusan;
 use App\Models\User;
+use App\Models\Dupayment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -114,8 +115,27 @@ class VerifikasiController extends Controller
 			'page' => ['title' => 'Verifikasi Daftar Ulang'],
 			'peserta' => Identitas::whereRelation('status', 'level', 'Daftar Ulang')
                 ->with(['pendaftaran', 'status'])->paginate(),
+            'payment' => Dupayment::all()
 		]);
 	}
+
+    public function duPayment(Request $req){
+        $req->validate([
+            'Umum' => 'required', 
+            'Prestasi' => 'required', 
+            'Bidikmisi' => 'required', 
+        ]);
+        try{
+            $data = $req->all();
+            foreach($data as $k => $r):
+                $k != "_token" && Dupayment::where('jalur_pendaftaran',$k)->update(['payment' => $r]);
+            endforeach;
+        }catch (\Throwable $th) {
+            return back()->withErrors([
+                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat edit data.']
+            ]);
+        }
+    }
 
 	public function daftarUlangPembayaran()
 	{

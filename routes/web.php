@@ -86,6 +86,7 @@ Route::prefix('/admin')->group(function () {
 
     Route::prefix('/verifikasi-daftar-ulang')->controller(VerifikasiController::class)->group(function () {
         Route::get('/', 'daftarUlangIndex');
+        Route::post('/payment-edit', 'duPayment');
         Route::post('/biaya/{identitas:id}', 'daftarUlangBiaya');
         Route::post('/pembayaran/{identitas:id}', 'daftarUlangPembayaran');
         Route::post('/verifikasi/{identitas:id}', 'daftarUlangVerifikasi');
