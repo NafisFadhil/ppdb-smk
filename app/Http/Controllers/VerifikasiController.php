@@ -7,8 +7,11 @@ use App\Models\Pendaftaran;
 use App\Models\Jurusan;
 use App\Models\User;
 use App\Models\Dupayment;
+use App\Models\DaftarUlang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+
 
 class VerifikasiController extends Controller
 {
@@ -92,7 +95,12 @@ class VerifikasiController extends Controller
             ]);
             $creden['verifikasi_pendaftaran'] = true;
             $identitas->pendaftaran->update($creden);
-
+            DaftarUlang::create([
+                'identitas_id' => $identitas->id,
+                'pembayaran' => 0,
+                'angsuran' => 0,
+                'lunas' => 0,
+            ]);
             $identitas->update([
                 'status_id' => 4
             ]);
@@ -111,10 +119,22 @@ class VerifikasiController extends Controller
     // Daftar Ulang
     public function daftarUlangIndex()
 	{
+        $du = DB::table('identitas as i')
+                ->join('pendaftarans as p', 'p.identitas_id', '=', 'i.id') 
+                ->where('p.verifikasi_pendaftaran','=','1')
+                ->join('jurusans as j','j.identitas_id','=','i.id')
+                ->join('dupayments as dp', 'dp.jalur_pendaftaran','=','i.jalur_pendaftaran')
+                ->join('daftar_ulangs as du', 'du.identitas_id','=','i.id')
+                ->select('j.kode','i.nama_lengkap','i.jalur_pendaftaran',
+                'i.jenis_kelamin','i.asal_sekolah','i.nama_jurusan','i.id', 'du.angsuran','du.pembayaran',
+                \DB::raw('(CASE 
+                        WHEN du.pembayaran = dp.payment THEN "lunas" 
+                        ELSE CONCAT("Pembayaran kurang Rp ",FORMAT(dp.payment-du.pembayaran, 2, "id_ID") ) 
+                        END) AS status'))
+                ->paginate();
 		return view('admin.pages.verifikasi.daftar-ulang', [
 			'page' => ['title' => 'Verifikasi Daftar Ulang'],
-			'peserta' => Identitas::whereRelation('status', 'level', 'Daftar Ulang')
-                ->with(['pendaftaran', 'status'])->paginate(),
+			'peserta' => $du,
             'payment' => Dupayment::all()
 		]);
 	}
@@ -130,6 +150,9 @@ class VerifikasiController extends Controller
             foreach($data as $k => $r):
                 $k != "_token" && Dupayment::where('jalur_pendaftaran',$k)->update(['payment' => $r]);
             endforeach;
+            return redirect('/admin/verifikasi-daftar-ulang')->withErrors([
+                'alerts' => ['success' => 'Data berhasil di update']
+            ]);
         }catch (\Throwable $th) {
             return back()->withErrors([
                 'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat edit data.']

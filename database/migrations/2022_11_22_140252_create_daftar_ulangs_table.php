@@ -15,7 +15,9 @@ return new class extends Migration
     {
         Schema::create('daftar_ulangs', function (Blueprint $table) {
             $table->id();
-            
+            $table->string('pembayaran');
+            $table->string('angsuran');
+            $table->string('lunas');
             $table->foreignId('identitas_id');
             $table->timestamps();
         });

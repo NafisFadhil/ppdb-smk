@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class DaftarUlang extends Model
 {
     use HasFactory;
+    protected $fillable = ["pembayaran","angsuran","lunas","identitas_id"];
 
     public function identitas () {
         return $this->belongsTo(Identitas::class);
