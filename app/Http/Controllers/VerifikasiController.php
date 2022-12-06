@@ -127,7 +127,7 @@ class VerifikasiController extends Controller
                 ->join('daftar_ulangs as du', 'du.identitas_id','=','i.id')
                 ->select('j.kode','i.nama_lengkap','i.jalur_pendaftaran',
                 'i.jenis_kelamin','i.asal_sekolah','i.nama_jurusan','i.id', 'du.angsuran','du.pembayaran',
-                \DB::raw('(CASE 
+                DB::raw('(CASE 
                         WHEN du.pembayaran = dp.payment THEN "lunas" 
                         ELSE CONCAT("Pembayaran kurang Rp ",FORMAT(dp.payment-du.pembayaran, 2, "id_ID") ) 
                         END) AS status'))
