@@ -10,9 +10,39 @@ class JalurPendaftaran extends Model
     // use HasFactory;
 
     public $timestamps = false;
+
+    protected static $jalurs;
     
     public function identitases () {
         return $this->hasMany(Identitas::class);
+    }
+
+    public static function getOptions()
+    {
+        self::$jalurs = $jalurs = JalurPendaftaran::all();
+        $result = [];
+        foreach ($jalurs as $jalur) {
+            if (isset($jalur->subjalur1)) continue;
+        
+            $opt = $jalur->jalur;
+            if (isset($jalur->subjalur1)) {
+                $opt .= ' ' . $jalur->subjalur1;
+            } $result[] = ['label' => $opt, 'value' => $jalur->id];
+        } return $result;
+    }
+
+    public static function getAdvancedOptions()
+    {
+        self::$jalurs = $jalurs = JalurPendaftaran::all();
+        $result = [];
+        foreach ($jalurs as $jalur) {
+            $opt = $jalur->jalur;
+            if (isset($jalur->subjalur1)) {
+                $opt .= ' ' . $jalur->subjalur1;
+            } if (isset($jalur->subjalur2) && isset($jalur->subjalur3)) {
+                $opt .= ' (' . $jalur->subjalur2 . ' ' . $jalur->subjalur3 .')';
+            } $result[] = ['label' => $opt, 'value' => $jalur->id];
+        } return $result;
     }
     
 }

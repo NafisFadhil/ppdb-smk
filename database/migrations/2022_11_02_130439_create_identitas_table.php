@@ -20,9 +20,9 @@ return new class extends Migration
             $table->date('tanggal_lahir');
             $table->string('jenis_kelamin');
             $table->string('asal_sekolah');
-            $table->string('no_wa_ortu', 15);
             $table->string('no_wa_siswa', 15);
             $table->string('nama_jurusan', 5);
+            $table->string('no_wa_ortu', 15)->nullable();
             $table->string('tempat_lahir')->nullable();
             $table->string('alamat_desa')->nullable();
             $table->string('alamat_kec')->nullable();
