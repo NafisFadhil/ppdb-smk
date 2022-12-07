@@ -1,43 +1,111 @@
 @extends('layouts.admin')
 
 <?php 
-$input_s = [
+$inputs = [
 	'biaya' => function ($row) {
 		return [
-			['name' => 'jalur_pendaftaran', 'value' => $row->jalur_pendaftaran ?? '', 'attr' => 'readonly'],
-			['type' => 'number', 'name' => 'biaya_pendaftaran', 'value' => $row->pendaftaran->biaya_pendaftaran ?? 0],
-			['name' => 'admin_biaya_pendaftaran', 'label' => 'Nama Admin', 'value' => auth()->user()->name ?? auth()->user()->username, 'attr' => 'readonly'],
+			[
+				'name' => 'nama_lengkap',
+				'value' => $row->nama_lengkap,
+				'attr' => 'disabled'
+			],
+			[
+				'name' => 'jalur_pendaftaran',
+				'value' => ModelHelper::getJalur($row->jalur_pendaftaran),
+				'attr' => 'disabled'
+			],
+			[
+				'name' => 'admin_pendaftaran',
+				'value' => auth()->user()->name ?? auth()->user()->username,
+				'attr' => 'readonly'
+			],
+			[
+				'type' => 'number',
+				'name' => 'biaya_pendaftaran',
+				'value' => $row->tagihan->biaya_pendaftaran
+			],
 		];
 	},
+
 	'pembayaran' => function ($row) {
 		return [
-			// [
-				['name' => 'kode', 'value' => $row->pendaftaran->kode ?? '', 'attr' => 'readonly'],
-				['name' => 'nama_lengkap', 'value' => $row->nama_lengkap ?? '', 'attr' => 'readonly'],
-				['name' => 'nama_jurusan', 'label' => 'Jurusan', 'value' => StringHelper::toCapital($row->nama_jurusan ?? ''), 'attr' => 'readonly'],
-				['name' => 'jalur_pendaftaran', 'value' => $row->jalur_pendaftaran ?? '', 'attr' => 'readonly'],
-				['name' => 'admin_pembayaran_siswa', 'label' => 'Nama Admin', 'value' => auth()->user()->name ?? auth()->user()->username, 'attr' => 'readonly'],
-				['name' => 'biaya_pendaftaran', 'value' => NumberHelper::toRupiah($row->pendaftaran->biaya_pendaftaran ?? 0), 'attr' => 'readonly'],
-				['type' => 'number', 'name' => 'pembayaran_siswa', 'value' => $row->pendaftaran->pembayaran_siswa ?? $row->pendaftaran->biaya_pendaftaran],
-				['type' => 'radio', 'name' => 'lunas', 'value' => !$row->pendaftaran->lunas, 'values' => [
-					['label' => 'Belum', 'value' => false],
-					['label' => 'Sudah', 'value' => true],
-				]],
-			// ],
-			// [
-			// ]
+			[
+				'name' => 'nama_lengkap',
+				'value' => $row->nama_lengkap ?? '',
+				'attr' => 'disabled'
+			],
+			[
+				'name' => 'jalur_pendaftaran',
+				'value' => ModelHelper::getJalur($row->jalur_pendaftaran),
+				'attr' => 'disabled'
+			],
+			[
+				'name' => 'admin',
+				'label' => 'Nama Admin',
+				'value' => auth()->user()->name ?? auth()->user()->username,
+				'attr' => 'readonly'
+			],
+			[
+				'name' => 'biaya_pendaftaran',
+				'value' => NumberHelper::toRupiah($row->tagihan->biaya_pendaftaran),
+				'attr' => 'disabled'
+			],
+			[
+				'name' => 'tagihan_pendaftaran',
+				'value' => NumberHelper::toRupiah($row->tagihan->tagihan_pendaftaran),
+				'attr' => 'disabled'
+			],
+			[
+				'type' => 'number',
+				'name' => 'bayar',
+			],
 		];
 	},
+
 	'verifikasi' => function ($row) {
 		return [
-			['name' => 'kode', 'value' => $row->pendaftaran->kode ?? '', 'attr' => 'readonly'],
-			['name' => 'nama_lengkap', 'value' => $row->nama_lengkap ?? '', 'attr' => 'readonly'],
-			['name' => 'jenis_kelamin', 'value' => $row->jenis_kelamin ?? '', 'attr' => 'readonly'],
-			['name' => 'nama_jurusan', 'label' => 'Jurusan', 'value' => StringHelper::toCapital($row->nama_jurusan ?? ''), 'attr' => 'readonly'],
-			['name' => 'jalur_pendaftaran', 'value' => $row->jalur_pendaftaran ?? '', 'attr' => 'readonly'],
-			['name' => 'biaya_pendaftaran', 'value' => NumberHelper::toRupiah($row->pendaftaran->biaya_pendaftaran ?? ''), 'attr' => 'readonly'],
-			['name' => 'status_pembayaran', 'value' => $row->pendaftaran->lunas ? 'Lunas' : 'Belum Lunas', 'attr' => 'readonly'],
-			['name' => 'admin_verifikasi_pendaftaran', 'label' => 'Nama Admin', 'value' => auth()->user()->name ?? auth()->user()->username, 'attr' => 'readonly'],
+			[
+				'name' => 'kode',
+				'value' => $row->pendaftaran->kode ?? '',
+				'attr' => 'disabled'
+			],
+			[
+				'name' => 'nama_lengkap',
+				'value' => $row->nama_lengkap ?? '',
+				'attr' => 'disabled'
+			],
+			[
+				'name' => 'jenis_kelamin',
+				'value' => $row->jenis_kelamin ?? '',
+				'attr' => 'disabled'
+			],
+			[
+				'name' => 'nama_jurusan',
+				'label' => 'Jurusan',
+				'value' => StringHelper::toCapital($row->nama_jurusan ?? ''),
+				'attr' => 'disabled'
+			],
+			[
+				'name' => 'jalur_pendaftaran',
+				'value' => ModelHelper::getJalur($row->jalur_pendaftaran),
+				'attr' => 'disabled'
+			],
+			[
+				'name' => 'biaya_pendaftaran',
+				'value' => NumberHelper::toRupiah($row->tagihan->biaya_pendaftaran ?? ''),
+				'attr' => 'disabled'
+			],
+			[
+				'name' => 'status_pembayaran',
+				'value' => $row->tagihan->lunas_pendaftaran ? 'Lunas' : 'Belum Lunas',
+				'attr' => 'disabled'
+			],
+			[
+				'name' => 'admin_verifikasi',
+				'label' => 'Nama Admin',
+				'value' => auth()->user()->name ?? auth()->user()->username,
+				'attr' => 'readonly'
+		],
 		];
 	}
 ];
@@ -68,7 +136,7 @@ $input_s = [
 								<td>{{ $loop->iteration }}</td>
 								<td>{{ $row->pendaftaran->kode }}</td>
 								<td>{{ $row->nama_lengkap }}</td>
-								<td>{{ $row->jalur_pendaftaran }}</td>
+								<td>{{ ModelHelper::getJalur($row->jalur_pendaftaran) }}</td>
 								<td>{{ $row->jenis_kelamin }}</td>
 								<td>{{ $row->asal_sekolah }}</td>
 								<td>{{ StringHelper::toCapital($row->nama_jurusan) }}</td>
@@ -76,170 +144,73 @@ $input_s = [
 									{{ $row->status->sublevel }}
 								</td>
 								<td>
-								<?php 
-										$xpembayaran = isset($row->pendaftaran->biaya_pendaftaran);
-										$xpembayaransiswa = isset($row->pendaftaran->pembayaran_siswa);
-										$xverifikasi = $row->pendaftaran->verifikasi_pendaftaran;
-										
-									?>
+									<?php 
+											$xpembayaran = isset($row->tagihan->biaya_pendaftaran);
+											$xpembayaransiswa = isset($row->pendaftaran->pembayaran_siswa);
+											$xverifikasi = $row->pendaftaran->verifikasi_pendaftaran;
+											
+										?>
 
-								<div class="btn-group btn-group-sm mb-1">
-
-									{{-- Input Pembayaran --}}
-									<button type="button" title="Masukkan Biaya Pendaftaran" data-toggle="modal" data-target="#modalInputan{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 1 ? 'disabled' : '' }} >
-										<i class="fa fa-dollar-sign"></i> 
-										@if($row->status_id === 1)
-											@push('modals')
-												@component('admin.components.modal', [
-													'id' => 'modalInputan'.$row->id,
-													'title' => 'Input Biaya Pendaftaran'
+									<div class="btn-group btn-group-sm mb-1">
+										{{-- Input Pembayaran --}}
+										<button type="button" title="Konfirmasi Biaya Pendaftaran" data-toggle="modal"
+										data-target="#modalInputan{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 1 ? 'disabled' : '' }} >
+											<i class="fa fa-dollar-sign"></i> 
+											@if($row->status_id === 1)
+												@include('admin.modals.pendaftaran.1_verifikasi_biaya_pendaftaran', [
+													'row' => $row,
+													'subinputs' => $inputs['biaya']($row)
 												])
+											@endif
+										</button>
 
-												<form action="/admin/verifikasi-pendaftaran/biaya/{{ $row->id }}" method="post"> @csrf
-													<?php $subinputs = $input_s['biaya']($row) ?>	
-
-													@foreach ($subinputs as $input)
-														@include('admin.components.input', ['input' => $input])
-													@endforeach
-
-													<div class="form-group text-center">
-														<button class="btn btn-secondary">
-															Submit
-														</button>
-													</div>
-													
-												</form>
-												
-												@endcomponent
-											@endpush
-										@endif
-									</button>
-
-									{{-- Verifikasi Pembayaran --}}
-									<button type="button" title="Verifikasi Pembayaran Siswa" data-toggle="modal" data-target="#modalPembayaran{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 2 ? 'disabled' : '' }} >
-										<i class="fa fa-check"></i>
-										@if($row->status_id < 3)
-											@push('modals')
-												@component('admin.components.modal', [
-													'id' => 'modalPembayaran'.$row->id,
-													'title' => 'Verifikasi Pembayaran Siswa',
+										{{-- Verifikasi Pembayaran --}}
+										<button type="button" title="Verifikasi Pembayaran Siswa" data-toggle="modal"
+										data-target="#modalPembayaran{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 2 ? 'disabled' : '' }} >
+											<i class="fa fa-check"></i>
+											@if($row->status_id < 3)
+												@include('admin.modals.pendaftaran.2_input_pembayaran', [
+													'row' => $row,
+													'subinputs' => $inputs['pembayaran']($row)
 												])
+											@endif
+										</button>
 
-												<form action="/admin/verifikasi-pendaftaran/pembayaran/{{ $row->id }}" method="post">
-													@csrf <?php $subinputs = $input_s['pembayaran']($row) ?>
-
-													{{-- <div class="row"> --}}
-														{{-- @foreach ($subinputers as $subinputs) --}}
-															{{-- <div class="col-12 col-md-6"> --}}
-																@foreach ($subinputs as $input)
-																	@include('admin.components.input', ['input' => $input])
-																@endforeach
-															{{-- </div> --}}
-														{{-- @endforeach --}}
-													{{-- </div> --}}
-
-													<div class="form-group text-center">
-														<button class="btn btn-secondary">
-															<i class="fa fa-check"></i> Verifikasi
-														</button>
-													</div>
-													
-												</form>
-												
-												@endcomponent
-											@endpush
-										@endif
-									</button>
-
-									{{-- Verifikasi Pendaftaran --}}
-									<button type="button" title="Verifikasi Pendaftaran" data-toggle="modal" data-target="#modalVerifikasi{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 3 ? 'disabled' : '' }} >
-										<i class="fa fa-user-check"></i>
-										@if($row->status_id === 3)
-											@push('modals')
-												@component('admin.components.modal', [
-													'id' => 'modalVerifikasi'.$row->id,
-													'title' => 'Verifikasi Siswa',
-													'size' => 'xl'
+										{{-- Verifikasi Pendaftaran --}}
+										<button type="button" title="Verifikasi Pendaftaran" data-toggle="modal"
+										data-target="#modalVerifikasi{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 3 ? 'disabled' : '' }} >
+											<i class="fa fa-user-check"></i>
+											@if($row->status_id === 3)
+												@include('admin.modals.pendaftaran.3_verifikasi_pendaftaran', [
+													'row' => $row,
+													'subinputs' => $inputs['verifikasi']($row)
 												])
-
-												<form action="/admin/verifikasi-pendaftaran/verifikasi/{{ $row->id }}" method="post">
-													@csrf <?php $subinputs = $input_s['verifikasi']($row) ?>
-
-													{{-- <div class="row"> --}}
-														{{-- @foreach ($subinputs as $subinput) --}}
-															{{-- <div class="col-12 col-md-6"> --}}
-																@foreach ($subinputs as $input)
-																	@include('admin.components.input', ['input' => $input])
-																@endforeach
-															{{-- </div> --}}
-														{{-- @endforeach --}}
-													{{-- </div> --}}
-
-													<div class="form-group text-center">
-														<button class="btn btn-secondary">
-															<i class="fa fa-check"></i> Verifikasi
-														</button>
-													</div>
-													
-												</form>
-												
-												@endcomponent
-											@endpush
-										@endif
-									</button>
-								</div>
-
-
-
-
-
-
-
-
-
+											@endif
+										</button>
+									</div>
 
 									<div class="btn-group btn-group-sm">
 										{{-- Details --}}
-										<button type="button" title="Detail Siswa" data-toggle="modal" data-target="#modalDetail{{ $row->id }}" class="btn btn-secondary" >
+										<button type="button" title="Detail Siswa" data-toggle="modal"
+										data-target="#modalDetail{{ $row->id }}" class="btn btn-secondary" >
 											<i class="fa fa-eye"></i> 
-											@push('modals')
-												@component('admin.components.modal', [
-													'id' => 'modalDetail'.$row->id,
-													'title' => 'Detail Siswa',
-													'size' => 'max'
-												])
-	
-													<?php $inputs = [
-														['Kode Pendaftaran', $row->pendaftaran->kode],
-														['Jalur Pendaftaran', $row->jalur_pendaftaran],
-														['Nama Lengkap', $row->nama_lengkap],
-														['Jenis Kelamin', $row->jenis_kelamin],
-														['Asal Sekolah', $row->asal_sekolah],
-														['Jurusan', StringHelper::toCapital($row->nama_jurusan)],
-														['Biaya Pendaftaran', NumberHelper::toRupiah($row->pendaftaran->biaya_pendaftaran)],
-														['Lunas', ($row->pendaftaran->lunas ? 'Lunas' : 'Belum Lunas')],
-														['No Wa Ortu', $row->no_wa_ortu],
-														['No Wa Siswa', $row->no_wa_siswa],
-														['Keterangan', $row->pendaftaran->keterangan],
-													] ?>
-													<ol>
-														@foreach ($inputs as $input)
-															<li> <b>{{ $input[0] }}</b> : {{ $input[1] }} </li>
-														@endforeach
-													</ol>
-	
-												@endcomponent
-											@endpush
+											@include('admin.modals.general.detail', [
+												'row' => $row,
+												'inputs' => [
+													['Kode Pendaftaran', $row->pendaftaran->kode],
+													['Jalur Pendaftaran', ModelHelper::getJalur($row->jalur_pendaftaran)],
+													['Nama Lengkap', $row->nama_lengkap],
+													['Jenis Kelamin', $row->jenis_kelamin],
+													['Asal Sekolah', $row->asal_sekolah],
+													['Jurusan', StringHelper::toCapital($row->nama_jurusan)],
+													['Biaya Pendaftaran', NumberHelper::toRupiah($row->tagihan->biaya_pendaftaran)],
+													['Lunas', ($row->pendaftaran->lunas ? 'Lunas' : 'Belum Lunas')],
+													['No Wa Ortu', $row->no_wa_ortu],
+													['No Wa Siswa', $row->no_wa_siswa],
+													['Keterangan', $row->pendaftaran->keterangan],
+												]
+											])
 										</button>
-
-
-
-
-
-
-
-
-
 
 										{{-- Edit --}}
 										<button type="button" title="Edit Data Pendaftaran" class="btn btn-secondary" onclick="window.location = '/admin/edit/{{ $row->id }}'">
@@ -257,6 +228,7 @@ $input_s = [
 						@endforeach
 					</tbody>
 				</table>
+
 				{!! $peserta->links() !!}
 			</div>
 		</div>

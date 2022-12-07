@@ -49,13 +49,10 @@
 								<td>{{ $row->pendaftaran->kode }}</td>
 								<td>{{ isset($row->jurusan->kode) ? $row->jurusan->kode : '-' }}</td>
 								<td>{{ $row->nama_lengkap }}</td>
-								<td>{{ $row->jalur_pendaftaran }}</td>
+								<td>{{ ModelHelper::getJalur($row->jalur_pendaftaran) }}</td>
 								<td>{{ $row->jenis_kelamin }}</td>
 								<td>{{ $row->asal_sekolah }}</td>
 								<td>{{ strtoupper($row->nama_jurusan) }}</td>
-								{{-- <td>{{ $row->nama_admin_pendaftaran }}</td>
-								<td>{{ $row->nama_admin_du }}</td>
-								<td>{{ $row->nama_admin_seragam }}</td> --}}
 								<td class="text-success" title="{{ $row->status->desc }}">
 									{{ $row->status->level }} ({{ $row->status->sublevel }})
 								</td>

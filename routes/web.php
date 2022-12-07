@@ -36,15 +36,13 @@ Route::controller(FormulirController::class)->group(function () {
 
     Route::get('/formulir', 'index');
     Route::post('/formulir', 'store');
-    // Route::get('/pendaftaran/print', 'print');
-    // Route::get('/pendaftaran/print/cetak', 'cetak');
 
 });
 
 Route::get('/test', function () {
     // $jurusan = \App\Models\Jurusan::where('jurusan', 'akuntansi-dan-keuangan-lembaga')->latest()->limit(1)->get()->first()->toArray();
     // return \App\Metadata\Pendaftaran::getKode();
-    return view('pages.hasil-print');
+    // return view('pages.hasil-print');
 });
 
 Route::controller(LoginController::class)->group(function () {
@@ -60,21 +58,25 @@ Route::controller(LoginController::class)->group(function () {
 Route::prefix('/siswa')->controller(SiswaController::class)->group(function () {
 
     Route::get('/', 'index');
+
+    Route::controller(DaftarUlangController::class)->group(function () {
+        Route::get('/daftar-ulang', 'index');
+        Route::post('/daftar-ulang', 'store');
+    });
     
 });
 
-Route::controller(DaftarUlangController::class)->group(function () {
-    Route::get('/siswa/daftar-ulang', 'index');
-    Route::post('/siswa/daftar-ulang', 'store');
-});
 
 Route::prefix('/admin')->group(function () {
 
     Route::controller(AdminController::class)->group(function () {
-        
         Route::get('/', 'index');
         Route::get('/peserta', 'peserta');
+    });
 
+    Route::controller(FormulirController::class)->group(function () {
+        Route::get('/tambah-peserta', 'tambah');
+        Route::post('/tambah-peserta', 'store');
     });
 
     Route::prefix('/verifikasi-pendaftaran')->controller(VerifikasiController::class)->group(function () {

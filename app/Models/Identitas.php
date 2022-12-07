@@ -54,9 +54,23 @@ class Identitas extends Model
         'tanggal_lahir' => 'required|date',
         'jenis_kelamin' => 'required|string',
         'asal_sekolah' => 'required|string',
-        'no_wa_ortu' => 'required|numeric|digits_between:10,14',
         'no_wa_siswa' => 'required|numeric|digits_between:10,14',
         'nama_jurusan' => 'required|string',
+        // Advanced Form Inputs
+        'no_wa_ortu' => 'nullable|numeric|digits_between:10,14',
+        'tempat_lahir' => 'nullable|string',
+        'alamat_desa' => 'nullable|string',
+        'alamat_kec' => 'nullable|string',
+        'alamat_kota_kab' => 'nullable|string',
+        'alamat_rt' => 'nullable|numeric',
+        'alamat_rw' => 'nullable|numeric',
+        'nama_ayah' => 'nullable|string',
+        'nama_ibu' => 'nullable|string',
+        'jumlah_saudara_kandung' => 'nullable|numeric',
+        'nik' => 'nullable|numeric|digits:16',
+        'nisn' => 'nullable|numeric|digits:10',
+        'no_ujian_nasional' => 'nullable|numeric',
+        'no_ijazah' => 'nullable|numeric',
     ];
 
     public static function getValidations(array $names)

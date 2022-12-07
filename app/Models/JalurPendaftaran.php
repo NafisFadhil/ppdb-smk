@@ -11,16 +11,15 @@ class JalurPendaftaran extends Model
 
     public $timestamps = false;
 
-    protected static $jalurs;
-    
     public function identitases () {
         return $this->hasMany(Identitas::class);
     }
 
     public static function getOptions()
     {
-        self::$jalurs = $jalurs = JalurPendaftaran::all();
-        $result = [];
+        $jalurs = JalurPendaftaran::all();
+        $result = [['label' => '--Pilih Jalur Pendaftaran--', 'value' => '']];
+        
         foreach ($jalurs as $jalur) {
             if (isset($jalur->subjalur1)) continue;
         
@@ -33,14 +32,14 @@ class JalurPendaftaran extends Model
 
     public static function getAdvancedOptions()
     {
-        self::$jalurs = $jalurs = JalurPendaftaran::all();
-        $result = [];
+        $jalurs = JalurPendaftaran::all();
+        $result = [['label' => '--Pilih Jalur Pendaftaran--', 'value' => '']];
         foreach ($jalurs as $jalur) {
             $opt = $jalur->jalur;
             if (isset($jalur->subjalur1)) {
                 $opt .= ' ' . $jalur->subjalur1;
             } if (isset($jalur->subjalur2) && isset($jalur->subjalur3)) {
-                $opt .= ' (' . $jalur->subjalur2 . ' ' . $jalur->subjalur3 .')';
+                $opt .= ' (' . $jalur->subjalur2 . ' Tingkat ' . $jalur->subjalur3 .')';
             } $result[] = ['label' => $opt, 'value' => $jalur->id];
         } return $result;
     }

@@ -29,7 +29,22 @@ class FormulirController extends Controller
         'jenis_kelamin', 
         'asal_sekolah', 
         'no_wa_siswa', 
-        'nama_jurusan', 
+        'nama_jurusan',
+        // Advanced Form Inputs
+        'no_wa_ortu',
+        'tempat_lahir',
+        'alamat_desa',
+        'alamat_kec',
+        'alamat_kota_kab',
+        'alamat_rt',
+        'alamat_rw',
+        'nama_ayah',
+        'nama_ibu',
+        'jumlah_saudara_kandung',
+        'nik',
+        'nisn',
+        'no_ujian_nasional',
+        'no_ijazah',
     ];
 
     protected function getFormInputs ($data = [])
@@ -38,21 +53,21 @@ class FormulirController extends Controller
         $jalurs = JalurPendaftaran::getOptions();
 
         return [
-            ['type' => 'radio', 'name' => 'jalur_pendaftaran_id', 'value' => $data['jalur_pendaftaran_id'],
+            ['type' => 'radio', 'name' => 'jalur_pendaftaran_id', 'value' => $data['jalur_pendaftaran_id']??null,
                 'label' => 'Jalur Pendaftaran', 'values' => $jalurs
             ],
-            ['type' => 'text', 'name' => 'nama_lengkap', 'value' => $data['nama_lengkap'],
+            ['type' => 'text', 'name' => 'nama_lengkap', 'value' => $data['nama_lengkap']??null,
                 'label' => null, 'placeholder' => null ], 
-            ['type' => 'radio', 'name' => 'jenis_kelamin', 'value' => $data['jenis_kelamin'],
+            ['type' => 'radio', 'name' => 'jenis_kelamin', 'value' => $data['jenis_kelamin']??null,
                 'label' => null, 'placeholder' => null, 'values' => [ 'Laki-laki', 'Perempuan']
             ],
-            ['type' => 'date', 'name' => 'tanggal_lahir', 'value' => $data['tanggal_lahir'],
+            ['type' => 'date', 'name' => 'tanggal_lahir', 'value' => $data['tanggal_lahir']??null,
                 'label' => null, 'placeholder' => null ], 
-            ['type' => 'text', 'name' => 'asal_sekolah', 'value' => $data['asal_sekolah'],
+            ['type' => 'text', 'name' => 'asal_sekolah', 'value' => $data['asal_sekolah']??null,
                 'label' => null, 'placeholder' => null ], 
-            ['type' => 'number', 'name' => 'no_wa_siswa', 'value' => $data['no_wa_siswa'],
+            ['type' => 'number', 'name' => 'no_wa_siswa', 'value' => $data['no_wa_siswa']??null,
                 'label' => 'WA Siswa', 'placeholder' => 'Cth. 08123456789' ], 
-            ['type' => 'select', 'name' => 'nama_jurusan', 'value' => $data['nama_jurusan'],
+            ['type' => 'select', 'name' => 'nama_jurusan', 'value' => $data['nama_jurusan']??null,
                 'label' => null, 'placeholder' => null, 'options' => $jurusan
             ],
         ];
@@ -62,22 +77,52 @@ class FormulirController extends Controller
     {
         $jurusan = Jurusan::getOptions();
         $jalurs = JalurPendaftaran::getAdvancedOptions();
+        $kelamins = ['Laki-laki', 'Perempuan'];
 
         return [
-            ['type' => 'select', 'name' => 'jalur_pendaftaran_id', 'value' => $data['jalur_pendaftaran_id'],
-                'label' => 'Jalur Pendaftaran', 'options' => $jalurs],
-            ['type' => 'text', 'name' => 'nama_lengkap', 'value' => $data['nama_lengkap'],
-                'label' => null, 'placeholder' => null ], 
-            ['type' => 'radio', 'name' => 'jenis_kelamin', 'value' => $data['jenis_kelamin'],
-                'label' => null, 'placeholder' => null, 'values' => [ 'Laki-laki', 'Perempuan'] ],
-            ['type' => 'date', 'name' => 'tanggal_lahir', 'value' => $data['tanggal_lahir'],
-                'label' => null, 'placeholder' => null ], 
-            ['type' => 'text', 'name' => 'asal_sekolah', 'value' => $data['asal_sekolah'],
-                'label' => null, 'placeholder' => null ], 
-            ['type' => 'number', 'name' => 'no_wa_siswa', 'value' => $data['no_wa_siswa'],
-                'label' => 'WA Siswa', 'placeholder' => 'Cth. 08123456789' ], 
-            ['type' => 'select', 'name' => 'nama_jurusan', 'value' => $data['nama_jurusan'],
-                'label' => null, 'placeholder' => null, 'options' => $jurusan],
+            ['type' => 'select', 'name' => 'jalur_pendaftaran_id', 'value' => $data['jalur_pendaftaran_id']??null,
+                'label' => 'Jalur Pendaftaran', 'options' => $jalurs, 'opts' => ['required']],
+            ['type' => 'text', 'name' => 'nama_lengkap', 'value' => $data['nama_lengkap']??null,
+                'label' => null, 'placeholder' => null, 'opts' => ['required']], 
+            ['type' => 'radio', 'name' => 'jenis_kelamin', 'value' => $data['jenis_kelamin']??null,
+                'label' => null, 'placeholder' => null, 'values' => $kelamins, 'opts' => ['required']],
+            ['type' => 'date', 'name' => 'tanggal_lahir', 'value' => $data['tanggal_lahir']??null,
+                'label' => null, 'placeholder' => null, 'opts' => ['required']], 
+            ['type' => 'text', 'name' => 'asal_sekolah', 'value' => $data['asal_sekolah']??null,
+                'label' => null, 'placeholder' => null, 'opts' => ['required']], 
+            ['type' => 'number', 'name' => 'no_wa_siswa', 'value' => $data['no_wa_siswa']??null,
+                'label' => 'WA Siswa', 'placeholder' => 'Cth. 08123456789', 'opts' => ['required']], 
+            ['type' => 'select', 'name' => 'nama_jurusan', 'value' => $data['nama_jurusan']??null,
+                'label' => null, 'placeholder' => null, 'options' => $jurusan, 'opts' => ['required']],
+            // Advanced Form Inputs
+            ['type' => 'number', 'name' => 'no_wa_ortu', 'value' => $data['no_wa_ortu']??null,
+                'label' => null, 'placeholder' => null],
+            ['type' => 'text', 'name' => 'tempat_lahir', 'value' => $data['tempat_lahir']??null,
+                'label' => null, 'placeholder' => null],
+            ['type' => 'text', 'name' => 'alamat_desa', 'value' => $data['alamat_desa']??null,
+                'label' => null, 'placeholder' => null],
+            ['type' => 'text', 'name' => 'alamat_kec', 'value' => $data['alamat_kec']??null,
+                'label' => null, 'placeholder' => null],
+            ['type' => 'text', 'name' => 'alamat_kota_kab', 'value' => $data['alamat_kota_kab']??null,
+                'label' => null, 'placeholder' => null],
+            ['type' => 'number', 'name' => 'alamat_rt', 'value' => $data['alamat_rt']??null,
+                'label' => null, 'placeholder' => null],
+            ['type' => 'number', 'name' => 'alamat_rw', 'value' => $data['alamat_rw']??null,
+                'label' => null, 'placeholder' => null],
+            ['type' => 'text', 'name' => 'nama_ayah', 'value' => $data['nama_ayah']??null,
+                'label' => null, 'placeholder' => null],
+            ['type' => 'text', 'name' => 'nama_ibu', 'value' => $data['nama_ibu']??null,
+                'label' => null, 'placeholder' => null],
+            ['type' => 'number', 'name' => 'jumlah_saudara_kandung', 'value' => $data['jumlah_saudara_kandung']??null,
+                'label' => null, 'placeholder' => null],
+            ['type' => 'number', 'name' => 'nik', 'value' => $data['nik']??null,
+                'label' => null, 'placeholder' => null],
+            ['type' => 'number', 'name' => 'nisn', 'value' => $data['nisn']??null,
+                'label' => null, 'placeholder' => null],
+            ['type' => 'number', 'name' => 'no_ujian_nasional', 'value' => $data['no_ujian_nasional']??null,
+                'label' => null, 'placeholder' => null],
+            ['type' => 'number', 'name' => 'no_ijazah', 'value' => $data['no_ijazah']??null,
+                'label' => null, 'placeholder' => null],
         ];
     }
 
@@ -93,13 +138,23 @@ class FormulirController extends Controller
     {
         return view('admin.pages.forms', [
             'page' => ['title' => 'Tambah Pendaftaran'],
-            'inputs' => $this->getAdvancedFormInputs(),
+            'form' => [
+                'action' => '/admin/tambah-peserta',
+                'button' => [
+                    'variant' => 'btn-primary text-white',
+                    'content' => '<i class="fa fa-plus"></i> Tambah Data',
+                ],
+                'inputs' => $this->getAdvancedFormInputs()
+            ],
         ]);
     }
 
     public function store(Request $req)
     {
-        $creden = $req->validate(Identitas::getValidations($this->myValidations));
+        $isadmin = $req->user()->level_id !== 1;
+        $creden = $req->validate(Identitas::getValidations(
+            $isadmin ? $this->myAdvancedValidations : $this->myValidations
+        ));
         // $creden['nama_lengkap'] = strtoupper($creden['nama_lengkap']);
         // $creden['asal_sekolah'] = strtoupper($creden['asal_sekolah']);
         

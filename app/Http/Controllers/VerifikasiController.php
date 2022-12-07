@@ -8,6 +8,7 @@ use App\Models\Jurusan;
 use App\Models\User;
 use App\Models\Dupayment;
 use App\Models\DaftarUlang;
+use App\Models\Pembayaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -31,21 +32,25 @@ class VerifikasiController extends Controller
     {
         $creden = $req->validate([
             'biaya_pendaftaran' => 'required',
-            'admin_biaya_pendaftaran' => 'required',
+            'admin_pendaftaran' => 'required',
         ]);
         try {
 
-            $identitas->pendaftaran->update($creden);
-            $identitas->update(['status_id' => 2]);
+            $identitas->tagihan->update([
+                ...$creden,
+                'tagihan_pendaftaran' => $creden['biaya_pendaftaran']
+            ]);
+
+            $identitas->update(['status_id' => $identitas->status_id+1]);
 
             return redirect('/admin/verifikasi-pendaftaran')->withErrors([
-                'alerts' => ['success' => 'Input pembayaran berhasil.']
+                'alerts' => ['success' => 'Verifikasi biaya pendaftaran berhasil.']
             ]);
             
         } catch (\Throwable $th) {
 
             return back()->withErrors([
-                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat menginput pembayaran.']
+                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat memverifikasi biaya pendaftaran.']
             ]);
             
         }
@@ -54,21 +59,37 @@ class VerifikasiController extends Controller
     public function pendaftaranPembayaran (Request $req, Identitas $identitas)
     {
         $creden = $req->validate([
-            'pembayaran_siswa' => 'required',
-            'admin_pembayaran_siswa' => 'required',
-            'lunas' => 'required',
+            'bayar' => 'required',
+            'admin' => 'required',
         ]);
-
+        
         try {
+            
+            $kurang = $identitas->tagihan->tagihan_pendaftaran - $creden['bayar'];
+            $calc = [
+                'kurang' => $kurang < 0 ? 0 : $kurang,
+                'lunas' => $kurang <= 0
+            ];
 
-            $identitas->pendaftaran->update($creden);
-            $identitas->update(['status_id' => 3]);
+            $pembayaran = Pembayaran::create([
+                'type' => 'pendaftaran',
+                'kurang' => $calc['kurang'],
+                'tagihan_id' => $identitas->tagihan->id,
+                ...$creden,
+            ]);
+            $tagihan = $identitas->tagihan->update([
+                'tagihan_pendaftaran' => $calc['kurang'],
+                'lunas_pendaftaran' => $calc['lunas']
+            ]);
+
+            if ($calc['lunas']) $identitas->update(['status_id' => $identitas->status_id+1]);
 
             return redirect('/admin/verifikasi-pendaftaran')->withErrors([
                 'alerts' => ['success' => 'Input pembayaran siswa berhasil.']
             ]);
             
         } catch (\Throwable $th) {
+            throw $th;
 
             return back()->withErrors([
                 'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat menginput pembayaran.']
@@ -80,33 +101,34 @@ class VerifikasiController extends Controller
     public function pendaftaranVerifikasi(Request $req, Identitas $identitas)
     {
         $creden = $req->validate([
-            'admin_verifikasi_pendaftaran' => 'required',
+            'admin_verifikasi' => 'required',
         ]);
+
         try {
             
-            $jur = Jurusan::new($identitas->nama_jurusan);
-            $jur['identitas_id'] = $identitas->id;
-            $jurusan = Jurusan::create($jur);
+            $jurusan = Jurusan::create([
+                'identitas_id' => $identitas->id,
+                ...Jurusan::new($identitas->nama_jurusan),
+            ]);
             $user = User::create([
                 'name' => $identitas->nama_lengkap,
                 'username' => $jurusan->kode,
                 'password' => Hash::make($identitas->tanggal_lahir),
                 'identitas_id' => $identitas->id
             ]);
-            $creden['verifikasi_pendaftaran'] = true;
-            $identitas->pendaftaran->update($creden);
-            DaftarUlang::create([
+            $identitas->pendaftaran->update([
+                'verifikasi' => true,
+                ...$creden
+            ]);
+            $du = DaftarUlang::create([
                 'identitas_id' => $identitas->id,
-                'pembayaran' => 0,
-                'angsuran' => 0,
-                'lunas' => 0,
             ]);
             $identitas->update([
-                'status_id' => 4
+                'status_id' => $identitas->status_id+1
             ]);
             
             return redirect('/admin/verifikasi-pendaftaran')->withErrors([
-                'alerts' => ['success' => 'Data berhasil diverifikasi.']
+                'alerts' => ['success' => 'Siswa berhasil diverifikasi.']
             ]);
             
         } catch (\Throwable $th) {
@@ -127,7 +149,7 @@ class VerifikasiController extends Controller
                 ->join('daftar_ulangs as du', 'du.identitas_id','=','i.id')
                 ->select('j.kode','i.nama_lengkap','i.jalur_pendaftaran',
                 'i.jenis_kelamin','i.asal_sekolah','i.nama_jurusan','i.id', 'du.angsuran','du.pembayaran',
-                \DB::raw('(CASE 
+                DB::raw('(CASE 
                         WHEN du.pembayaran = dp.payment THEN "lunas" 
                         ELSE CONCAT("Pembayaran kurang Rp ",FORMAT(dp.payment-du.pembayaran, 2, "id_ID") ) 
                         END) AS status'))

@@ -19,6 +19,7 @@ $error = isset($errors) && $errors->has($input['name']);
 	<div class="form-group row">
 		<label for="{{ $input['id'] }}" class="form-label col-12 col-sm-4">
 			{{ $input['label'] }}
+			{!! in_array('required', $input['opts']) ? '<small class="text-primary"><b>*</b></small>' : '' !!}
 		</label>
 		
 		<div class="col-12 col-sm-8">

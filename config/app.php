@@ -217,6 +217,7 @@ return [
         'FormHelper' => App\Helpers\FormHelper::class,
         'StringHelper' => App\Helpers\StringHelper::class,
         'NumberHelper' => App\Helpers\NumberHelper::class,
+        'ModelHelper' => App\Helpers\ModelHelper::class,
     ])->toArray(),
 
 ];
