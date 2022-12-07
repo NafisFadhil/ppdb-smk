@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DaftarUlangController;
+use App\Http\Controllers\DUSeragamController;
 use App\Http\Controllers\FormulirController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PrintController;
@@ -59,9 +60,9 @@ Route::prefix('/siswa')->controller(SiswaController::class)->group(function () {
 
     Route::get('/', 'index');
 
-    Route::controller(DaftarUlangController::class)->group(function () {
-        Route::get('/daftar-ulang', 'index');
-        Route::post('/daftar-ulang', 'store');
+    Route::controller(DUSeragamController::class)->group(function () {
+        Route::get('/duseragam', 'index');
+        Route::post('/duseragam', 'store');
     });
     
 });
@@ -86,12 +87,14 @@ Route::prefix('/admin')->group(function () {
         Route::post('/verifikasi/{identitas:id}', 'pendaftaranVerifikasi');
     });
 
-    Route::prefix('/verifikasi-daftar-ulang')->controller(VerifikasiController::class)->group(function () {
-        Route::get('/', 'daftarUlangIndex');
-        Route::post('/payment-edit', 'duPayment');
-        Route::post('/biaya/{identitas:id}', 'daftarUlangBiaya');
-        Route::post('/pembayaran/{identitas:id}', 'daftarUlangPembayaran');
-        Route::post('/verifikasi/{identitas:id}', 'daftarUlangVerifikasi');
+    Route::prefix('/verifikasi-duseragam')->controller(VerifikasiController::class)->group(function () {
+        Route::get('/', 'duSeragamIndex');
+        Route::post('/biaya-duseragam/{identitas:id}', 'duSeragamBiaya');
+
+        Route::post('/pembayaran-daftar-ulang/{identitas:id}', 'daftarUlangPembayaran');
+        Route::post('/pembayaran-seragam/{identitas:id}', 'seragamPembayaran');
+        
+        Route::post('/verifikasi/{identitas:id}', 'duSeragamVerifikasi');
     });
 
     Route::get('/print/{identitas:id}', [PrintController::class, 'pendaftaran']);

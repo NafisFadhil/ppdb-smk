@@ -32,37 +32,22 @@ class StatusSeeder extends Seeder
                 'desc' => 'Menunggu admin melakukan verifikasi.',
             ],
             [
-                'level' => 'Daftar Ulang',
+                'level' => 'Daftar Ulang & Seragam',
                 'sublevel' => 'Menunggu Pengisian Formulir',
                 'desc' => 'Menunggu siswa mengisi formulir daftar ulang.',
             ],
             [
-                'level' => 'Daftar Ulang',
+                'level' => 'Daftar Ulang & Seragam',
                 'sublevel' => 'Menunggu Input Pembayaran',
                 'desc' => 'Menunggu admin menginputkan nominal biaya daftar ulang.',
             ],
             [
-                'level' => 'Daftar Ulang',
+                'level' => 'Daftar Ulang & Seragam',
                 'sublevel' => 'Menunggu Pembayaran Siswa',
                 'desc' => 'Menunggu siswa melakukan pembayaran.',
             ],
             [
-                'level' => 'Daftar Ulang',
-                'sublevel' => 'Menunggu Verifikasi Admin',
-                'desc' => 'Menunggu admin melakukan verifikasi.',
-            ],
-            [
-                'level' => 'Seragam',
-                'sublevel' => 'Menunggu Input Pembayaran',
-                'desc' => 'Menunggu admin menginputkan nominal biaya seragam.',
-            ],
-            [
-                'level' => 'Seragam',
-                'sublevel' => 'Menunggu Pembayaran Siswa',
-                'desc' => 'Menunggu siswa melakukan pembayaran.',
-            ],
-            [
-                'level' => 'Seragam',
+                'level' => 'Daftar Ulang & Seragam',
                 'sublevel' => 'Menunggu Verifikasi Admin',
                 'desc' => 'Menunggu admin melakukan verifikasi.',
             ],

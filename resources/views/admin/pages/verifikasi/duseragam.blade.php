@@ -2,7 +2,7 @@
 
 <?php 
 $inputs = [
-	'biaya' => function ($row) {
+	'biaya_duseragam' => function ($row) {
 		return [
 			[
 				'name' => 'nama_lengkap',
@@ -15,19 +15,24 @@ $inputs = [
 				'attr' => 'disabled'
 			],
 			[
-				'name' => 'admin_pendaftaran',
+				'name' => 'admin_duseragam',
 				'value' => auth()->user()->name ?? auth()->user()->username,
 				'attr' => 'readonly'
 			],
 			[
 				'type' => 'number',
-				'name' => 'biaya_pendaftaran',
-				'value' => $row->tagihan->biaya_pendaftaran
+				'name' => 'biaya_daftar_ulang',
+				'value' => $row->tagihan->biaya_daftar_ulang
+			],
+			[
+				'type' => 'number',
+				'name' => 'biaya_seragam',
+				'value' => $row->tagihan->biaya_seragam
 			],
 		];
 	},
 
-	'pembayaran' => function ($row) {
+	'pembayaran_daftar_ulang' => function ($row) {
 		return [
 			[
 				'name' => 'nama_lengkap',
@@ -46,13 +51,48 @@ $inputs = [
 				'attr' => 'readonly'
 			],
 			[
-				'name' => 'biaya_pendaftaran',
-				'value' => NumberHelper::toRupiah($row->tagihan->biaya_pendaftaran),
+				'name' => 'biaya_daftar_ulang',
+				'value' => NumberHelper::toRupiah($row->tagihan->biaya_daftar_ulang),
 				'attr' => 'disabled'
 			],
 			[
-				'name' => 'tagihan_pendaftaran',
-				'value' => NumberHelper::toRupiah($row->tagihan->tagihan_pendaftaran),
+				'name' => 'tagihan_daftar_ulang',
+				'value' => NumberHelper::toRupiah($row->tagihan->tagihan_daftar_ulang),
+				'attr' => 'disabled'
+			],
+			[
+				'type' => 'number',
+				'name' => 'bayar',
+			],
+		];
+	},
+
+	'pembayaran_seragam' => function ($row) {
+		return [
+			[
+				'name' => 'nama_lengkap',
+				'value' => $row->nama_lengkap ?? '',
+				'attr' => 'disabled'
+			],
+			[
+				'name' => 'jalur_pendaftaran',
+				'value' => ModelHelper::getJalur($row->jalur_pendaftaran),
+				'attr' => 'disabled'
+			],
+			[
+				'name' => 'admin',
+				'label' => 'Nama Admin',
+				'value' => auth()->user()->name ?? auth()->user()->username,
+				'attr' => 'readonly'
+			],
+			[
+				'name' => 'biaya_seragam',
+				'value' => NumberHelper::toRupiah($row->tagihan->biaya_seragam),
+				'attr' => 'disabled'
+			],
+			[
+				'name' => 'tagihan_seragam',
+				'value' => NumberHelper::toRupiah($row->tagihan->tagihan_seragam),
 				'attr' => 'disabled'
 			],
 			[
@@ -65,8 +105,8 @@ $inputs = [
 	'verifikasi' => function ($row) {
 		return [
 			[
-				'name' => 'kode',
-				'value' => $row->pendaftaran->kode ?? '',
+				'name' => 'kode_jurusan',
+				'value' => $row->jurusan->kode ?? '',
 				'attr' => 'disabled'
 			],
 			[
@@ -91,13 +131,23 @@ $inputs = [
 				'attr' => 'disabled'
 			],
 			[
-				'name' => 'biaya_pendaftaran',
-				'value' => NumberHelper::toRupiah($row->tagihan->biaya_pendaftaran ?? ''),
+				'name' => 'biaya_daftar_ulang',
+				'value' => NumberHelper::toRupiah($row->tagihan->biaya_daftar_ulang ?? ''),
 				'attr' => 'disabled'
 			],
 			[
-				'name' => 'status_pembayaran',
-				'value' => $row->tagihan->lunas_pendaftaran ? 'Lunas' : 'Belum Lunas',
+				'name' => 'biaya_seragam',
+				'value' => NumberHelper::toRupiah($row->tagihan->biaya_seragam ?? ''),
+				'attr' => 'disabled'
+			],
+			[
+				'name' => 'status_pembayaran_daftar_ulang',
+				'value' => $row->tagihan->lunas_daftar_ulang ? 'Lunas' : 'Belum Lunas',
+				'attr' => 'disabled'
+			],
+			[
+				'name' => 'status_pembayaran_seragam',
+				'value' => $row->tagihan->lunas_seragam ? 'Lunas' : 'Belum Lunas',
 				'attr' => 'disabled'
 			],
 			[
@@ -134,7 +184,7 @@ $inputs = [
 						@foreach($peserta as $row)
 							<tr>
 								<td>{{ $loop->iteration }}</td>
-								<td>{{ $row->pendaftaran->kode }}</td>
+								<td>{{ $row->jurusan->kode }}</td>
 								<td>{{ $row->nama_lengkap }}</td>
 								<td>{{ ModelHelper::getJalur($row->jalur_pendaftaran) }}</td>
 								<td>{{ $row->jenis_kelamin }}</td>
@@ -144,44 +194,49 @@ $inputs = [
 									{{ $row->status->sublevel }}
 								</td>
 								<td>
-									<?php 
-											$xpembayaran = isset($row->tagihan->biaya_pendaftaran);
-											$xpembayaransiswa = isset($row->pendaftaran->pembayaran_siswa);
-											$xverifikasi = $row->pendaftaran->verifikasi_pendaftaran;
-											
-										?>
-
 									<div class="btn-group btn-group-sm mb-1">
-										{{-- Input Pembayaran --}}
-										<button type="button" title="Konfirmasi Biaya Pendaftaran" data-toggle="modal"
-										data-target="#modalBiaya{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 1 ? 'disabled' : '' }} >
+										{{-- DUSeragam --}}
+										<button type="button" title="Konfirmasi Biaya Daftar Ulang & Seragam" data-toggle="modal"
+										data-target="#modalBiaya{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 5 ? 'disabled' : '' }} >
 											<i class="fa fa-dollar-sign"></i> 
-											@if($row->status_id === 1)
-												@include('admin.modals.pendaftaran.1_verifikasi_biaya_pendaftaran', [
+											@if($row->status_id === 5)
+												@include('admin.modals.duseragam.1_verifikasi_biaya_duseragam', [
 													'row' => $row,
-													'subinputs' => $inputs['biaya']($row)
+													'subinputs' => $inputs['biaya_duseragam']($row)
 												])
 											@endif
 										</button>
 
-										{{-- Verifikasi Pembayaran --}}
-										<button type="button" title="Verifikasi Pembayaran Siswa" data-toggle="modal"
-										data-target="#modalPembayaran{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 2 ? 'disabled' : '' }} >
-											<i class="fa fa-check"></i>
-											@if($row->status_id < 3)
-												@include('admin.modals.pendaftaran.2_input_pembayaran', [
+
+										<button type="button" title="Input Pembayaran Daftar Ulang" data-toggle="modal"
+										data-target="#modalPembayaranDaftarUlang{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 6 || $row->tagihan->lunas_daftar_ulang == true ? 'disabled' : '' }} >
+											DU<i class="fa fa-check"></i>
+											@if($row->status_id === 6)
+												@include('admin.modals.daftar_ulang.input_pembayaran', [
 													'row' => $row,
-													'subinputs' => $inputs['pembayaran']($row)
+													'subinputs' => $inputs['pembayaran_daftar_ulang']($row)
 												])
 											@endif
 										</button>
 
-										{{-- Verifikasi Pendaftaran --}}
-										<button type="button" title="Verifikasi Pendaftaran" data-toggle="modal"
-										data-target="#modalVerifikasi{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 3 ? 'disabled' : '' }} >
+										{{-- Seragam --}}
+										<button type="button" title="Input Pembayaran Seragam" data-toggle="modal"
+										data-target="#modalPembayaranSeragam{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 6 || $row->tagihan->lunas_seragam == true ? 'disabled' : '' }} >
+											S<i class="fa fa-check"></i>
+											@if($row->status_id === 6)
+												@include('admin.modals.seragam.input_pembayaran', [
+													'row' => $row,
+													'subinputs' => $inputs['pembayaran_seragam']($row)
+												])
+											@endif
+										</button>
+
+										{{-- Verifikasi DU & Seragam --}}
+										<button type="button" title="Verifikasi DU & Seragam" data-toggle="modal"
+										data-target="#modalVerifikasi{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 7 ? 'disabled' : '' }} >
 											<i class="fa fa-user-check"></i>
-											@if($row->status_id === 3)
-												@include('admin.modals.pendaftaran.3_verifikasi_pendaftaran', [
+											@if($row->status_id === 7)
+												@include('admin.modals.duseragam.2_verifikasi_duseragam', [
 													'row' => $row,
 													'subinputs' => $inputs['verifikasi']($row)
 												])
@@ -197,17 +252,18 @@ $inputs = [
 											@include('admin.modals.general.detail', [
 												'row' => $row,
 												'inputs' => [
-													['Kode Pendaftaran', $row->pendaftaran->kode],
+													['Kode DU & Seragam', $row->duseragam->kode],
 													['Jalur Pendaftaran', ModelHelper::getJalur($row->jalur_pendaftaran)],
 													['Nama Lengkap', $row->nama_lengkap],
 													['Jenis Kelamin', $row->jenis_kelamin],
 													['Asal Sekolah', $row->asal_sekolah],
 													['Jurusan', StringHelper::toCapital($row->nama_jurusan)],
-													['Biaya Pendaftaran', NumberHelper::toRupiah($row->tagihan->biaya_pendaftaran)],
-													['Lunas', ($row->pendaftaran->lunas ? 'Lunas' : 'Belum Lunas')],
-													['No Wa Ortu', $row->no_wa_ortu],
+													['Biaya Daftar Ulang', NumberHelper::toRupiah($row->tagihan->biaya_daftar_ulang)],
+													['Biaya Seragam', NumberHelper::toRupiah($row->tagihan->biaya_seragam)],
+													['Tagihan Daftar Ulang', ($row->tagihan->tagihan_daftar_ulang ? 'Lunas' : 'Kurang ' . NumberHelper::toRupiah($row->tagihan->tagihan_daftar_ulang))],
+													['Tagihan Seragam', ($row->tagihan->tagihan_seragam ? 'Lunas' : 'Kurang ' . NumberHelper::toRupiah($row->tagihan->tagihan_seragam))],
 													['No Wa Siswa', $row->no_wa_siswa],
-													['Keterangan', $row->pendaftaran->keterangan],
+													['Keterangan', $row->duseragam->keterangan],
 												]
 											])
 										</button>
@@ -243,12 +299,12 @@ $inputs = [
 										</button>
 
 										{{-- Edit --}}
-										<button type="button" title="Edit Data Pendaftaran" class="btn btn-secondary" onclick="window.location = '/admin/edit/{{ $row->id }}'">
+										<button type="button" title="Edit Data DU & Seragam" class="btn btn-secondary" onclick="window.location = '/admin/edit/{{ $row->id }}'">
 											<i class="fa fa-pen"></i> 
 										</button>
 										
 										{{-- Print --}}
-										<button type="button" title="Cetak Lembar Pendaftaran" class="btn btn-secondary" {{ $xverifikasi ? '' : 'disabled' }} onclick="window.location = '/admin/print/{{ $row->id }}'" >
+										<button type="button" title="Cetak Lembar DU & Seragam" class="btn btn-secondary" {{ $row->duseragam->verifikasi ? '' : 'disabled' }} onclick="window.location = '/admin/print/{{ $row->id }}'" >
 											<i class="fa fa-print"></i>
 										</button>
 										

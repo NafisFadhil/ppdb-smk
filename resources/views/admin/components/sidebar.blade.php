@@ -1,20 +1,20 @@
 <?php
 $adm = str_replace('admin-', '', auth()->user()->level->name ?? '');
+$isadm = auth()->user()->level->name === 'super-admin';
 $menu = array_merge([
 	['href' => '/admin', 'label' => 'Beranda', 'icon' => 'fa fa-tachometer-alt'],
 	['href' => '/admin/peserta', 'label' => 'Semua Peserta', 'icon' => 'fa fa-users'],
 	['href' => '/admin/tambah-peserta', 'label' => 'Tambah Peserta', 'icon' => 'fa fa-user-plus'],
 ],
-$adm === 'super-admin' ? [[
+$isadm ? [[
 	'variant' => 'dropdown', 'href' => '/admin/verifikasi', 'label' => 'Verifikasi', 'icon' => 'fa fa-check', 'dropdown' => [
 		['href' => '/admin/verifikasi-pendaftaran', 'label' => 'Pendaftaran'],
-		['href' => '/admin/verifikasi-daftar-ulang', 'label' => 'Daftar Ulang'],
-		['href' => '/admin/verifikasi-seragam', 'label' => 'Seragam'],
+		['href' => '/admin/verifikasi-duseragam', 'label' => 'DU & Seragam'],
 	]
 ]] : [
 	['href' => '/admin/verifikasi-'.$adm, 'label' => 'Verifikasi '.StringHelper::toTitle($adm), 'icon' => 'fa fa-check']
 ],
-$adm === 'super-admin' ? [[
+$isadm ? [[
 	'variant' => 'dropdown', 'href' => '/admin/laporan', 'label' => 'Laporan', 'icon' => 'fa fa-solid fa-print', 'dropdown' => [
 		['href' => '/admin/laporan-pendaftaran', 'label' => 'Pendaftaran'],
 		['href' => '/admin/laporan-daftar-ulang', 'label' => 'Daftar Ulang'],

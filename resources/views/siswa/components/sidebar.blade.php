@@ -1,8 +1,7 @@
 <?php $sidebar = array_merge(
 	[
 		['href' => '/siswa', 'label' => 'Beranda', 'icon' => 'fa fa-home'],
-		['href' => '/siswa/daftar-ulang', 'label' => 'Daftar Ulang', 'icon' => 'fa fa-user'],
-		['href' => '/siswa/seragam', 'label' => 'Seragam', 'icon' => 'fa fa-tshirt'],
+		['href' => '/siswa/duseragam', 'label' => 'DU & Seragam', 'icon' => 'fa fa-user'],
 		['href' => '/logout', 'label' => 'Keluar', 'icon' => 'fa fa-power-off'],
 	]
 ) ?>

@@ -1,14 +1,14 @@
 @push('modals')
 	@component('admin.components.modal', [
-		'id' => 'modalPembayaran'.$row->id,
-		'title' => 'Input Pembayaran',
+		'id' => 'modalVerifikasi'.$row->id,
+		'title' => 'Verifikasi Daftar Ulang & Seragam',
 	])
 
-	<form action="/admin/verifikasi-pendaftaran/pembayaran/{{ $row->id }}" method="post">
+	<form action="/admin/verifikasi-duseragam/verifikasi/{{ $row->id }}" method="post">
 		@csrf
 
 		{{-- <div class="row"> --}}
-			{{-- @foreach ($subinputers as $subinputs) --}}
+			{{-- @foreach ($subinputs as $subinput) --}}
 			{{-- <div class="col-12 col-md-6"> --}}
 				@foreach ($subinputs as $input)
 				@include('admin.components.input', [
@@ -20,7 +20,7 @@
 
 		<div class="form-group text-center">
 			<button class="btn btn-secondary">
-				<i class="fa fa-check"></i> Submit
+				<i class="fa fa-check"></i> Verifikasi
 			</button>
 		</div>
 

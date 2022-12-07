@@ -23,11 +23,14 @@ class Identitas extends Model
     public function pendaftaran () {
         return $this->hasOne(Pendaftaran::class);
     }
-    public function daftar_ulang () {
-        return $this->hasOne(DaftarUlang::class);
-    }
-    public function seragam () {
-        return $this->hasOne(Seragam::class);
+    // public function daftar_ulang () {
+    //     return $this->hasOne(DaftarUlang::class);
+    // }
+    // public function seragam () {
+    //     return $this->hasOne(Seragam::class);
+    // }
+    public function duseragam () {
+        return $this->hasOne(DUSeragam::class);
     }
     public function user () {
         return $this->hasOne(User::class);

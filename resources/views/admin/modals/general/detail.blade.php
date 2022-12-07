@@ -1,13 +1,23 @@
 @push('modals')
 	@component('admin.components.modal', [
-		'id' => 'modalDetail'.$row->id,
-		'title' => 'Detail Siswa',
+		'id' => $card['id'] ?? 'modalDetail'.$row->id,
+		'title' => $card['title'] ?? 'Detail Siswa',
 		'size' => 'max'
 	])
 
 		<ol>
 			@foreach ($inputs as $input)
-				<li> <b>{{ $input[0] }}</b> : {{ $input[1] }} </li>
+				@if(!isset($input[0]) || is_null($input[0]))
+					<br>
+					@continue
+				@endif
+				<li>
+					<b>{{ $input[0] }}</b>
+					@isset($input[1])
+						: {{ $input[1] }}
+					@endisset
+				</li>
+
 			@endforeach
 		</ol>
 

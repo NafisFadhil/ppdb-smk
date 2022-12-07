@@ -1,10 +1,10 @@
 @push('modals')
 	@component('admin.components.modal', [
-		'id' => 'modalPembayaran'.$row->id,
-		'title' => 'Input Pembayaran',
+		'id' => 'modalPembayaranDaftarUlang'.$row->id,
+		'title' => 'Input Pembayaran Daftar Ulang',
 	])
 
-	<form action="/admin/verifikasi-pendaftaran/pembayaran/{{ $row->id }}" method="post">
+	<form action="/admin/verifikasi-duseragam/pembayaran-daftar-ulang/{{ $row->id }}" method="post">
 		@csrf
 
 		{{-- <div class="row"> --}}

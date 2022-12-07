@@ -1,10 +1,10 @@
 @push('modals')
 	@component('admin.components.modal', [
 		'id' => 'modalBiaya'.$row->id,
-		'title' => 'Input Biaya Pendaftaran'
+		'title' => 'Input Biaya Daftar Ulang & Seragam'
 	])
 
-	<form action="/admin/verifikasi-pendaftaran/biaya/{{ $row->id }}" method="post">
+	<form action="/admin/verifikasi-duseragam/biaya-duseragam/{{ $row->id }}" method="post">
 		@csrf
 
 		@foreach ($subinputs as $input)
