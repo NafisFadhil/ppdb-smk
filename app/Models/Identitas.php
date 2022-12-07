@@ -2,23 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+// use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Identitas extends Model
 {
-    use HasFactory;
-    protected $fillable = [
-        'jalur_pendaftaran',
-        'nama_lengkap',
-        'tanggal_lahir',
-        'jenis_kelamin',
-        'asal_sekolah',
-        'no_wa_ortu',
-        'no_wa_siswa',
-        'nama_jurusan',
-        'status_id'
-    ];
+    // use HasFactory;
+    // protected $fillable = [
+    //     'jalur_pendaftaran',
+    //     'nama_lengkap',
+    //     'tanggal_lahir',
+    //     'jenis_kelamin',
+    //     'asal_sekolah',
+    //     'no_wa_ortu',
+    //     'no_wa_siswa',
+    //     'nama_jurusan',
+    //     'status_id'
+    // ];
     
     public function pendaftaran () {
         return $this->hasOne(Pendaftaran::class);
@@ -38,12 +38,18 @@ class Identitas extends Model
     public function jurusan () {
         return $this->hasOne(Jurusan::class);
     }
+    public function tagihan () {
+        return $this->hasOne(Tagihan::class);
+    }
+    public function jalur_pendaftaran () {
+        return $this->belongsTo(JalurPendaftaran::class);
+    }
     public function status () {
         return $this->belongsTo(Status::class);
     }
 
     public static $validations = [
-        'jalur_pendaftaran' => 'required|string',
+        'jalur_pendaftaran_id' => 'required|numeric',
         'nama_lengkap' => 'required|string',
         'tanggal_lahir' => 'required|date',
         'jenis_kelamin' => 'required|string',

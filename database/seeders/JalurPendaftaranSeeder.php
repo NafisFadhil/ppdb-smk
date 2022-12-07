@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\JalurPendaftaran;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class JalurPendaftaranSeeder extends Seeder
 {
@@ -15,7 +15,7 @@ class JalurPendaftaranSeeder extends Seeder
      */
     public function run()
     {
-        JalurPendaftaran::create([
+        DB::table('jalur_pendaftarans')->insert([
             // Umum
             [
                 'jalur' => 'Umum',

@@ -11,4 +11,8 @@ class JalurPendaftaran extends Model
 
     public $timestamps = false;
     
+    public function identitases () {
+        return $this->hasMany(Identitas::class);
+    }
+    
 }

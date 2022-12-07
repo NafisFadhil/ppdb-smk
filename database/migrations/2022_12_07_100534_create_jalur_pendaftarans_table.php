@@ -23,6 +23,7 @@ return new class extends Migration
 
             $table->unsignedMediumInteger('biaya_pendaftaran')->default(0);
             $table->unsignedMediumInteger('biaya_daftar_ulang')->default(0);
+            $table->unsignedMediumInteger('biaya_seragam')->default(0);
             $table->unsignedMediumInteger('biaya_bonus')->default(0);
 
             // $table->timestamps();
