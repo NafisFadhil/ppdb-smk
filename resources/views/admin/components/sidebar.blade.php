@@ -25,6 +25,7 @@ $isadm ? [[
 ],
 [
 	['href' => '/admin/sponsorship', 'label' => 'Sponsorship', 'icon' => 'fa fa-user'],
+	['href' => '/admin/pembayaran', 'label' => 'Pembayaran', 'icon' => 'fa fa-dollar-sign'],
 	['href' => '/logout', 'label' => 'Logout', 'icon' => 'fa fa-power-off'],
 ],
 );?>

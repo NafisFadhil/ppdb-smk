@@ -18,7 +18,7 @@ class JalurPendaftaran extends Model
     public static function getOptions()
     {
         $jalurs = JalurPendaftaran::all();
-        $result = [['label' => '--Pilih Jalur Pendaftaran--', 'value' => '']];
+        $result = [];
         
         foreach ($jalurs as $jalur) {
             if (isset($jalur->subjalur1)) continue;

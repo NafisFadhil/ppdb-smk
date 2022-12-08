@@ -10,6 +10,7 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\SponsorshipController;
 use App\Http\Controllers\VerifikasiController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\PembayaranController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -78,6 +79,11 @@ Route::prefix('/admin')->group(function () {
     Route::controller(FormulirController::class)->group(function () {
         Route::get('/tambah-peserta', 'tambah');
         Route::post('/tambah-peserta', 'store');
+    });
+
+    Route::controller(PembayaranController::class)->group(function () {
+        Route::get('/pembayaran', 'index');
+        // Route::post('/pembayaran', 'store');
     });
 
     Route::prefix('/verifikasi-pendaftaran')->controller(VerifikasiController::class)->group(function () {
