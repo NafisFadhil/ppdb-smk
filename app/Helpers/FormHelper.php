@@ -18,6 +18,7 @@ class FormHelper
 		$placeholder = $input['placeholder'] ??
 			ucfirst(str_replace('_',' ',$label));
 		$attr = $input['attr'] ?? '';
+		$opts = $input['opts'] ?? [];
 
 		return array_replace_recursive($input, [
 			'icon' => $icon,
@@ -30,6 +31,7 @@ class FormHelper
 			'id' => $id,
 			'placeholder' => $placeholder,
 			'attr' => $attr,
+			'opts' => $opts,
 		]);
 	}
 	

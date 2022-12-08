@@ -92,7 +92,7 @@ class Jurusan extends Model
 	public static function getOptions()
 	{
 		$jurusan = self::$jurusan;
-		$new_jurusan = [['value' => '', 'label' => 'Pilih Jurusan']];
+		$new_jurusan = [['value' => '', 'label' => '--Pilih Jurusan--']];
 		for ($i = 0; $i < count($jurusan); $i++) {
 			$new_jurusan[] = [
 				'label' => $jurusan[$i]['nama'], 'value' => $jurusan[$i]['singkatan']

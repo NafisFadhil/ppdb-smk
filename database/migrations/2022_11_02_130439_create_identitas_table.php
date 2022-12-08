@@ -15,14 +15,14 @@ return new class extends Migration
     {
         Schema::create('identitas', function (Blueprint $table) {
             $table->id();
-            $table->string('jalur_pendaftaran');
+            // $table->string('jalur_pendaftaran');
             $table->string('nama_lengkap');
             $table->date('tanggal_lahir');
             $table->string('jenis_kelamin');
             $table->string('asal_sekolah');
-            $table->string('no_wa_ortu', 15);
             $table->string('no_wa_siswa', 15);
             $table->string('nama_jurusan', 5);
+            $table->string('no_wa_ortu', 15)->nullable();
             $table->string('tempat_lahir')->nullable();
             $table->string('alamat_desa')->nullable();
             $table->string('alamat_kec')->nullable();
@@ -37,6 +37,7 @@ return new class extends Migration
             $table->char('no_ujian_nasional', 20)->nullable();
             $table->string('no_ijazah', 30)->nullable();
 
+            $table->foreignId('jalur_pendaftaran_id');
             $table->foreignId('status_id')->default(1);
             $table->timestamps();
         });

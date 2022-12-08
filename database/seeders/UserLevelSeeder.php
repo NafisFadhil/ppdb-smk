@@ -16,6 +16,11 @@ class UserLevelSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('user_levels')->insert(UserLevel::$level);
+        DB::table('user_levels')->insert([
+            ['id' => 1, 'name' => 'siswa', 'desc' => 'Siswa peserta PPDB.'],
+            ['id' => 2, 'name' => 'admin-pendaftaran', 'desc' => 'Panitia PPDB bagian pendaftaran.'],
+            ['id' => 3, 'name' => 'admin-duseragam', 'desc' => 'Panitia PPDB bagian daftar ulang dan seragam.'],
+            ['id' => 4, 'name' => 'super-admin', 'desc' => 'Top Level Privilege'],
+        ]);
     }
 }

@@ -21,9 +21,16 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-
-        \App\Models\Identitas::create([
-            'jalur_pendaftaran' => 'Prestasi',
+        
+        $this->call([
+            ConfigSeeder::class,
+            UserLevelSeeder::class,
+            UserSeeder::class,
+            StatusSeeder::class,
+            JalurPendaftaranSeeder::class,
+        ]);
+        
+        $identitas = \App\Models\Identitas::create([
             'nama_lengkap' => 'Slamet Kopling',
             'tanggal_lahir' => now(),
             'jenis_kelamin' => 'Laki-laki',
@@ -31,17 +38,20 @@ class DatabaseSeeder extends Seeder
             'no_wa_siswa' => '085123456789',
             'asal_sekolah' => 'MTS Hindu Bogor',
             'nama_jurusan' => 'tbsm',
+            'jalur_pendaftaran_id' => 2,
+        ]);
+        $tagihan = \App\Models\Tagihan::create([
+            'biaya_pendaftaran' => $identitas->jalur_pendaftaran->biaya_pendaftaran,
+            'tagihan_pendaftaran' => $identitas->jalur_pendaftaran->biaya_pendaftaran,
+            'biaya_daftar_ulang' => $identitas->jalur_pendaftaran->biaya_daftar_ulang,
+            'tagihan_daftar_ulang' => $identitas->jalur_pendaftaran->biaya_daftar_ulang,
+            'biaya_seragam' => $identitas->jalur_pendaftaran->biaya_seragam,
+            'tagihan_seragam' => $identitas->jalur_pendaftaran->biaya_seragam,
+            'identitas_id' => $identitas->id,
         ]);
         \App\Models\Pendaftaran::create([
             'kode' => 'P-001',
-            'identitas_id' => 1,
-        ]);
-
-        $this->call([
-            ConfigSeeder::class,
-            UserLevelSeeder::class,
-            UserSeeder::class,
-            StatusSeeder::class,
+            'identitas_id' => $identitas->id,
         ]);
     }
 }

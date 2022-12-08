@@ -35,9 +35,6 @@
 							<th>Jenis Kelamin</th>
 							<th>Asal Sekolah</th>
 							<th>Jurusan</th>
-							{{-- <th>Admin Pendaftaran</th>
-							<th>Admin DU</th>
-							<th>Admin Seragam</th> --}}
 							<th>Status</th>
 							<th>Tindakan</th>
 						</tr>
@@ -49,13 +46,10 @@
 								<td>{{ $row->pendaftaran->kode }}</td>
 								<td>{{ isset($row->jurusan->kode) ? $row->jurusan->kode : '-' }}</td>
 								<td>{{ $row->nama_lengkap }}</td>
-								<td>{{ $row->jalur_pendaftaran }}</td>
+								<td>{{ ModelHelper::getJalur($row->jalur_pendaftaran) }}</td>
 								<td>{{ $row->jenis_kelamin }}</td>
 								<td>{{ $row->asal_sekolah }}</td>
 								<td>{{ strtoupper($row->nama_jurusan) }}</td>
-								{{-- <td>{{ $row->nama_admin_pendaftaran }}</td>
-								<td>{{ $row->nama_admin_du }}</td>
-								<td>{{ $row->nama_admin_seragam }}</td> --}}
 								<td class="text-success" title="{{ $row->status->desc }}">
 									{{ $row->status->level }} ({{ $row->status->sublevel }})
 								</td>
@@ -64,39 +58,49 @@
 
 										<button type="button" title="Detail Siswa" data-toggle="modal" data-target="#modalDetail{{ $row->id }}" class="btn btn-secondary" >
 											<i class="fa fa-eye"></i> 
-											@push('modals')
-												@component('admin.components.modal', [
-													'id' => 'modalDetail'.$row->id,
-													'title' => 'Detail Siswa',
-													'size' => 'max'
-												])
-	
-													<?php $inputs = [
+											@include('admin.modals.general.detail', [
+												'row' => $row,
+												'inputs' => [
 														['Kode Pendaftaran', $row->pendaftaran->kode],
-														['Jalur Pendaftaran', $row->jalur_pendaftaran],
+														['Kode Jurusan', $row->jurusan->kode],
+														['Jalur Pendaftaran', ModelHelper::getJalur($row->jalur_pendaftaran)],
 														['Nama Lengkap', $row->nama_lengkap],
 														['Jenis Kelamin', $row->jenis_kelamin],
 														['Asal Sekolah', $row->asal_sekolah],
 														['Jurusan', StringHelper::toCapital($row->nama_jurusan)],
-														['Biaya Pendaftaran', NumberHelper::toRupiah($row->pendaftaran->biaya_pendaftaran)],
-														['No Wa Ortu', $row->no_wa_ortu],
 														['No Wa Siswa', $row->no_wa_siswa],
-														['Keterangan', $row->pendaftaran->keterangan],
-														['Admin Input Nominal Pembayaran', $row->pendaftaran->admin_biaya_pendaftaran],
-														['Admin Input Pembayaran Siswa', $row->pendaftaran->admin_pembayaran_siswa],
-														['Admin Verifikasi Pendaftaran', $row->pendaftaran->admin_verifikasi_pendaftaran],
-													] ?>
-													<ol>
-														@foreach ($inputs as $input)
-															<li>
-																<b>{{ $input[0] }}</b> 
-																@isset($input[1]) : {{ $input[1] }} @endisset
-															</li>
-														@endforeach
-													</ol>
-	
-												@endcomponent
-											@endpush
+													]
+											])
+										</button>
+
+										<button type="button" title="Detail Tagihan" data-toggle="modal" data-target="#modalDetailTagihan{{ $row->id }}" class="btn btn-secondary" >
+											<i class="fa fa-search-dollar"></i> 
+											@include('admin.modals.general.detail', [
+												'row' => $row,
+												'card' => [
+													'id' => 'modalDetailTagihan'.$row->id,
+													'title' => 'Detail Biaya dan Tagihan'
+												],
+												'inputs' => [
+													['Pendaftaran'],
+														['Biaya Pendaftaran', NumberHelper::toRupiah($row->tagihan->biaya_pendaftaran)],
+														['Tagihan Pendaftaran', NumberHelper::toRupiah($row->tagihan->tagihan_pendaftaran)],
+														['Status Pendaftaran', $row->tagihan->lunas_pendaftaran ? 'Lunas' : 'Belum Lunas'],
+														['Admin Biaya Pendaftaran', $row->tagihan->admin_pendaftaran],
+														[],
+														['Daftar Ulang'],
+														['Biaya Daftar Ulang', NumberHelper::toRupiah($row->tagihan->biaya_daftar_ulang)],
+														['Tagihan Daftar Ulang', NumberHelper::toRupiah($row->tagihan->tagihan_daftar_ulang)],
+														['Status Daftar Ulang', $row->tagihan->lunas_daftar_ulang ? 'Lunas' : 'Belum Lunas'],
+														['Admin Biaya Daftar Ulang', $row->tagihan->admin_daftar_ulang],
+														[],
+														['Seragam'],
+														['Biaya Seragam', NumberHelper::toRupiah($row->tagihan->biaya_seragam)],
+														['Tagihan Seragam', NumberHelper::toRupiah($row->tagihan->tagihan_seragam)],
+														['Status Seragam', $row->tagihan->lunas_seragam ? 'Lunas' : 'Belum Lunas'],
+														['Admin Biaya Seragam', $row->tagihan->admin_seragam],
+													]
+											])
 										</button>
 
 										{{-- Edit --}}

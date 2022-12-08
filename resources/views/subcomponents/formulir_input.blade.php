@@ -26,14 +26,18 @@ $no ??= '00';
 			@if(in_array($input['type'], ['radio', 'checkbox']))
 
 				<div class="flex flex-wrap flex-row items-center gap-x-4 gap-y-2">
-					@foreach ($input['values'] as $value)
+					@foreach ($input['values'] as $option)
 					<?php
+						if (is_array($option)) {
+							$value = $option['value'];
+							$label = $option['label'];
+						} else $value = $label = $option;
 						$id = $input['id'] . mt_rand(1, 99);
 						$checked = $input['value'] === $value || old($input['name']) === $value;
 					?>
 						<div class="flex flex-nowrap gap-2 items-center">
-							<input type="radio" name="{{ $input['name'] }}" id="{{ $id }}" value="{{ $value }}" {{ $checked ? 'checked' : '' }}>
-							<label for="{{ $id }}" class="">{{ $value }}</label>
+							<input type="radio" name="{{ $input['name'] }}" id="{{ $id }}" value="{{ $value }}" {{ $checked ? 'checked selected' : '' }}>
+							<label for="{{ $id }}" class="">{{ $label }}</label>
 						</div>
 					@endforeach
 				</div>

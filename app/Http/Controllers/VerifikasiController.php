@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Identitas;
-use App\Models\Pendaftaran;
+// use App\Models\Pendaftaran;
 use App\Models\Jurusan;
 use App\Models\User;
-use App\Models\Dupayment;
-use App\Models\DaftarUlang;
+// use App\Models\Dupayment;
+// use App\Models\DaftarUlang;
+use App\Models\DUSeragam;
+use App\Models\Pembayaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\DB;
 
 
 class VerifikasiController extends Controller
@@ -31,21 +33,25 @@ class VerifikasiController extends Controller
     {
         $creden = $req->validate([
             'biaya_pendaftaran' => 'required',
-            'admin_biaya_pendaftaran' => 'required',
+            'admin_pendaftaran' => 'required',
         ]);
         try {
 
-            $identitas->pendaftaran->update($creden);
-            $identitas->update(['status_id' => 2]);
+            $identitas->tagihan->update([
+                ...$creden,
+                'tagihan_pendaftaran' => $creden['biaya_pendaftaran']
+            ]);
+
+            $identitas->update(['status_id' => $identitas->status_id+1]);
 
             return redirect('/admin/verifikasi-pendaftaran')->withErrors([
-                'alerts' => ['success' => 'Input pembayaran berhasil.']
+                'alerts' => ['success' => 'Verifikasi biaya pendaftaran berhasil.']
             ]);
             
         } catch (\Throwable $th) {
 
             return back()->withErrors([
-                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat menginput pembayaran.']
+                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat memverifikasi biaya pendaftaran.']
             ]);
             
         }
@@ -54,21 +60,37 @@ class VerifikasiController extends Controller
     public function pendaftaranPembayaran (Request $req, Identitas $identitas)
     {
         $creden = $req->validate([
-            'pembayaran_siswa' => 'required',
-            'admin_pembayaran_siswa' => 'required',
-            'lunas' => 'required',
+            'bayar' => 'required',
+            'admin' => 'required',
         ]);
-
+        
         try {
+            
+            $kurang = $identitas->tagihan->tagihan_pendaftaran - $creden['bayar'];
+            $calc = [
+                'kurang' => $kurang < 0 ? 0 : $kurang,
+                'lunas' => $kurang <= 0
+            ];
 
-            $identitas->pendaftaran->update($creden);
-            $identitas->update(['status_id' => 3]);
+            $pembayaran = Pembayaran::create([
+                'type' => 'pendaftaran',
+                'kurang' => $calc['kurang'],
+                'tagihan_id' => $identitas->tagihan->id,
+                ...$creden,
+            ]);
+            $tagihan = $identitas->tagihan->update([
+                'tagihan_pendaftaran' => $calc['kurang'],
+                'lunas_pendaftaran' => $calc['lunas']
+            ]);
+
+            if ($calc['lunas']) $identitas->update(['status_id' => $identitas->status_id+1]);
 
             return redirect('/admin/verifikasi-pendaftaran')->withErrors([
                 'alerts' => ['success' => 'Input pembayaran siswa berhasil.']
             ]);
             
         } catch (\Throwable $th) {
+            throw $th;
 
             return back()->withErrors([
                 'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat menginput pembayaran.']
@@ -80,33 +102,35 @@ class VerifikasiController extends Controller
     public function pendaftaranVerifikasi(Request $req, Identitas $identitas)
     {
         $creden = $req->validate([
-            'admin_verifikasi_pendaftaran' => 'required',
+            'admin_verifikasi' => 'required',
         ]);
+
         try {
             
-            $jur = Jurusan::new($identitas->nama_jurusan);
-            $jur['identitas_id'] = $identitas->id;
-            $jurusan = Jurusan::create($jur);
+            $jurusan = Jurusan::create([
+                'identitas_id' => $identitas->id,
+                ...Jurusan::new($identitas->nama_jurusan),
+            ]);
             $user = User::create([
                 'name' => $identitas->nama_lengkap,
                 'username' => $jurusan->kode,
                 'password' => Hash::make($identitas->tanggal_lahir),
                 'identitas_id' => $identitas->id
             ]);
-            $creden['verifikasi_pendaftaran'] = true;
-            $identitas->pendaftaran->update($creden);
-            DaftarUlang::create([
+            $identitas->pendaftaran->update([
+                'verifikasi' => true,
+                ...$creden
+            ]);
+            $duseragam = DUSeragam::create([
+                'kode' => DUSeragam::getKode(),
                 'identitas_id' => $identitas->id,
-                'pembayaran' => 0,
-                'angsuran' => 0,
-                'lunas' => 0,
             ]);
             $identitas->update([
-                'status_id' => 4
+                'status_id' => $identitas->status_id+1
             ]);
             
             return redirect('/admin/verifikasi-pendaftaran')->withErrors([
-                'alerts' => ['success' => 'Data berhasil diverifikasi.']
+                'alerts' => ['success' => 'Siswa berhasil diverifikasi.']
             ]);
             
         } catch (\Throwable $th) {
@@ -116,56 +140,159 @@ class VerifikasiController extends Controller
         }
     }
     
-    // Daftar Ulang
-    public function daftarUlangIndex()
+    // Daftar Ulang & Seragam
+    public function duSeragamIndex()
 	{
-        $du = DB::table('identitas as i')
-                ->join('pendaftarans as p', 'p.identitas_id', '=', 'i.id') 
-                ->where('p.verifikasi_pendaftaran','=','1')
-                ->join('jurusans as j','j.identitas_id','=','i.id')
-                ->join('dupayments as dp', 'dp.jalur_pendaftaran','=','i.jalur_pendaftaran')
-                ->join('daftar_ulangs as du', 'du.identitas_id','=','i.id')
-                ->select('j.kode','i.nama_lengkap','i.jalur_pendaftaran',
-                'i.jenis_kelamin','i.asal_sekolah','i.nama_jurusan','i.id', 'du.angsuran','du.pembayaran',
-                DB::raw('(CASE 
-                        WHEN du.pembayaran = dp.payment THEN "lunas" 
-                        ELSE CONCAT("Pembayaran kurang Rp ",FORMAT(dp.payment-du.pembayaran, 2, "id_ID") ) 
-                        END) AS status'))
-                ->paginate();
-		return view('admin.pages.verifikasi.daftar-ulang', [
-			'page' => ['title' => 'Verifikasi Daftar Ulang'],
-			'peserta' => $du,
-            'payment' => Dupayment::all()
-		]);
+        return view('admin.pages.verifikasi.duseragam', [
+            'page' => ['title' => 'Verifikasi DU & Seragam'],
+            'peserta' => Identitas::whereRelation('status', 'level', 'Daftar Ulang & Seragam')
+                ->with(['pendaftaran', 'tagihan', 'status'])->paginate(),
+        ]);
 	}
 
-    public function duPayment(Request $req){
-        $req->validate([
-            'Umum' => 'required', 
-            'Prestasi' => 'required', 
-            'Bidikmisi' => 'required', 
+    public function duSeragamBiaya(Request $req, Identitas $identitas)
+    {
+        $creden = $req->validate([
+            'biaya_daftar_ulang' => 'required',
+            'biaya_seragam' => 'required',
+            'admin_duseragam' => 'required',
         ]);
-        try{
-            $data = $req->all();
-            foreach($data as $k => $r):
-                $k != "_token" && Dupayment::where('jalur_pendaftaran',$k)->update(['payment' => $r]);
-            endforeach;
-            return redirect('/admin/verifikasi-daftar-ulang')->withErrors([
-                'alerts' => ['success' => 'Data berhasil di update']
+
+        try {
+
+            $identitas->tagihan->update([
+                ...$creden,
+                'tagihan_daftar_ulang' => $creden['biaya_daftar_ulang'],
+                'tagihan_seragam' => $creden['biaya_seragam'],
+                'admin_daftar_ulang' => $creden['admin_duseragam'],
+                'admin_seragam' => $creden['admin_duseragam'],
             ]);
-        }catch (\Throwable $th) {
+
+            $identitas->update(['status_id' => $identitas->status_id+1]);
+
+            return redirect('/admin/verifikasi-duseragam')->withErrors([
+                'alerts' => ['success' => 'Verifikasi biaya daftar ulang dan seragam berhasil.']
+            ]);
+            
+        } catch (\Throwable $th) {
+
             return back()->withErrors([
-                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat edit data.']
+                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat memverifikasi biaya daftar ulang dan seragam.']
             ]);
+            
         }
     }
 
-	public function daftarUlangPembayaran()
+	public function daftarUlangPembayaran(Request $req, Identitas $identitas)
 	{
+        $creden = $req->validate([
+            'bayar' => 'required',
+            'admin' => 'required',
+        ]);
+        
+        try {
+            
+            $kurang = $identitas->tagihan->tagihan_daftar_ulang - $creden['bayar'];
+            $calc = [
+                'kurang' => $kurang < 0 ? 0 : $kurang,
+                'lunas' => $kurang <= 0
+            ];
+
+            $pembayaran = Pembayaran::create([
+                'type' => 'daftar_ulang',
+                'kurang' => $calc['kurang'],
+                'tagihan_id' => $identitas->tagihan->id,
+                ...$creden,
+            ]);
+            $tagihan = $identitas->tagihan->update([
+                'tagihan_daftar_ulang' => $calc['kurang'],
+                'lunas_daftar_ulang' => $calc['lunas']
+            ]);
+
+            if ($calc['lunas'] && $identitas->tagihan->lunas_seragam) {
+                $identitas->update(['status_id' => $identitas->status_id+1]);
+            }
+
+            return redirect('/admin/verifikasi-duseragam')->withErrors([
+                'alerts' => ['success' => 'Input pembayaran daftar ulang siswa berhasil.']
+            ]);
+            
+        } catch (\Throwable $th) {
+
+            return back()->withErrors([
+                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat menginput pembayaran.']
+            ]);
+            
+        }
+	}
+
+    public function seragamPembayaran(Request $req, Identitas $identitas)
+    {
+        $creden = $req->validate([
+            'bayar' => 'required',
+            'admin' => 'required',
+        ]);
+        
+        try {
+            
+            $kurang = $identitas->tagihan->tagihan_seragam - $creden['bayar'];
+            $calc = [
+                'kurang' => $kurang < 0 ? 0 : $kurang,
+                'lunas' => $kurang <= 0
+            ];
+
+            $pembayaran = Pembayaran::create([
+                'type' => 'seragam',
+                'kurang' => $calc['kurang'],
+                'tagihan_id' => $identitas->tagihan->id,
+                ...$creden,
+            ]);
+            $tagihan = $identitas->tagihan->update([
+                'tagihan_seragam' => $calc['kurang'],
+                'lunas_seragam' => $calc['lunas']
+            ]);
+
+            if ($calc['lunas'] && $identitas->tagihan->lunas_daftar_ulang) {
+                $identitas->update(['status_id' => $identitas->status_id+1]);
+            }
+
+            return redirect('/admin/verifikasi-duseragam')->withErrors([
+                'alerts' => ['success' => 'Input pembayaran seragam siswa berhasil.']
+            ]);
+            
+        } catch (\Throwable $th) {
+            return back()->withErrors([
+                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat menginput pembayaran.']
+            ]);
+            
+        }
 	}
     
-	public function daftarUlangVerifikasi()
+	public function duSeragamVerifikasi(Request $req, Identitas $identitas)
 	{
+        $creden = $req->validate([
+            'admin_verifikasi' => 'required',
+        ]);
+
+        try {
+            
+            $identitas->duseragam->update([
+                'verifikasi' => true,
+                ...$creden
+            ]);
+            $identitas->update([
+                'status_id' => $identitas->status_id+1
+            ]);
+            
+            return redirect('/admin/verifikasi-duseragam')->withErrors([
+                'alerts' => ['success' => 'Siswa berhasil diverifikasi.']
+            ]);
+            
+        } catch (\Throwable $th) {
+            return back()->withErrors([
+                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat memverifikasi data.']
+            ]);
+        }
 	}
     
 }

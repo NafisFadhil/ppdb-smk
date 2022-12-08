@@ -22,7 +22,7 @@
 			['Asal Sekolah', $identitas->asal_sekolah],
 			['Jenis Kelamin', $identitas->jenis_kelamin],
 			['Tanggal Lahir', $identitas->tanggal_lahir],
-			['Jalur Pendaftaran', $identitas->jalur_pendaftaran],
+			['Jalur Pendaftaran', ModelHelper::getJalur($identitas->jalur_pendaftaran)],
 			['Jurusan', StringHelper::toCapital($identitas->nama_jurusan)],
 		]
 	];

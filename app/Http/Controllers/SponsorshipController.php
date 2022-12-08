@@ -48,7 +48,7 @@ class SponsorshipController extends Controller
         foreach ($peserta as $item) {
             $newpeserta[] = ['value' => $item->id, 'label' => "$item->nama_lengkap ($item->asal_sekolah)"];
         }
-        return view('layouts.admin-form', [
+        return view('admin.pages.forms', [
             'page' => ['title' => 'Edit Data Sponsorship'],
             'data' => $sponsorship,
             'form' => [

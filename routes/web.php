@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DaftarUlangController;
+use App\Http\Controllers\DUSeragamController;
 use App\Http\Controllers\FormulirController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PrintController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\SponsorshipController;
 use App\Http\Controllers\VerifikasiController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\PembayaranController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,15 +38,13 @@ Route::controller(FormulirController::class)->group(function () {
 
     Route::get('/formulir', 'index');
     Route::post('/formulir', 'store');
-    // Route::get('/pendaftaran/print', 'print');
-    // Route::get('/pendaftaran/print/cetak', 'cetak');
 
 });
 
 Route::get('/test', function () {
     // $jurusan = \App\Models\Jurusan::where('jurusan', 'akuntansi-dan-keuangan-lembaga')->latest()->limit(1)->get()->first()->toArray();
     // return \App\Metadata\Pendaftaran::getKode();
-    return view('pages.hasil-print');
+    // return view('pages.hasil-print');
 });
 
 Route::controller(LoginController::class)->group(function () {
@@ -60,21 +60,30 @@ Route::controller(LoginController::class)->group(function () {
 Route::prefix('/siswa')->controller(SiswaController::class)->group(function () {
 
     Route::get('/', 'index');
+
+    Route::controller(DUSeragamController::class)->group(function () {
+        Route::get('/duseragam', 'index');
+        Route::post('/duseragam', 'store');
+    });
     
 });
 
-Route::controller(DaftarUlangController::class)->group(function () {
-    Route::get('/siswa/daftar-ulang', 'index');
-    Route::post('/siswa/daftar-ulang', 'store');
-});
 
 Route::prefix('/admin')->group(function () {
 
     Route::controller(AdminController::class)->group(function () {
-        
         Route::get('/', 'index');
         Route::get('/peserta', 'peserta');
+    });
 
+    Route::controller(FormulirController::class)->group(function () {
+        Route::get('/tambah-peserta', 'tambah');
+        Route::post('/tambah-peserta', 'store');
+    });
+
+    Route::controller(PembayaranController::class)->group(function () {
+        Route::get('/pembayaran', 'index');
+        // Route::post('/pembayaran', 'store');
     });
 
     Route::prefix('/verifikasi-pendaftaran')->controller(VerifikasiController::class)->group(function () {
@@ -84,12 +93,14 @@ Route::prefix('/admin')->group(function () {
         Route::post('/verifikasi/{identitas:id}', 'pendaftaranVerifikasi');
     });
 
-    Route::prefix('/verifikasi-daftar-ulang')->controller(VerifikasiController::class)->group(function () {
-        Route::get('/', 'daftarUlangIndex');
-        Route::post('/payment-edit', 'duPayment');
-        Route::post('/biaya/{identitas:id}', 'daftarUlangBiaya');
-        Route::post('/pembayaran/{identitas:id}', 'daftarUlangPembayaran');
-        Route::post('/verifikasi/{identitas:id}', 'daftarUlangVerifikasi');
+    Route::prefix('/verifikasi-duseragam')->controller(VerifikasiController::class)->group(function () {
+        Route::get('/', 'duSeragamIndex');
+        Route::post('/biaya-duseragam/{identitas:id}', 'duSeragamBiaya');
+
+        Route::post('/pembayaran-daftar-ulang/{identitas:id}', 'daftarUlangPembayaran');
+        Route::post('/pembayaran-seragam/{identitas:id}', 'seragamPembayaran');
+        
+        Route::post('/verifikasi/{identitas:id}', 'duSeragamVerifikasi');
     });
 
     Route::get('/print/{identitas:id}', [PrintController::class, 'pendaftaran']);

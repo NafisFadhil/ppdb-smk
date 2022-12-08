@@ -17,16 +17,9 @@ return new class extends Migration
             $table->id();
             $table->char('kode', 5)->unique();
 
-            $table->unsignedMediumInteger('biaya_pendaftaran')->nullable();
-            $table->string('admin_biaya_pendaftaran')->nullable();
-
-            $table->unsignedMediumInteger('pembayaran_siswa')->nullable();
-            $table->string('admin_pembayaran_siswa')->nullable();
+            $table->boolean('verifikasi')->default(false);
+            $table->string('admin_verifikasi')->nullable();
             
-            $table->boolean('verifikasi_pendaftaran')->default(false);
-            $table->string('admin_verifikasi_pendaftaran')->nullable();
-            
-            $table->boolean('lunas')->default(false);
             $table->string('keterangan')->nullable();
 
             $table->foreignId('identitas_id');
