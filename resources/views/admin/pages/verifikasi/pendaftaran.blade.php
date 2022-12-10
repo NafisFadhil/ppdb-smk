@@ -24,6 +24,11 @@ $inputs = [
 				'name' => 'biaya_pendaftaran',
 				'value' => $row->tagihan->biaya_pendaftaran
 			],
+			[
+				'name' => 'keterangan',
+				'placeholder' => '(Opsional)',
+				'value' => $row->tagihan->keterangan
+			],
 		];
 	},
 
@@ -58,6 +63,7 @@ $inputs = [
 			[
 				'type' => 'number',
 				'name' => 'bayar',
+				'value' => $row->tagihan->tagihan_pendaftaran
 			],
 		];
 	},
@@ -101,11 +107,17 @@ $inputs = [
 				'attr' => 'disabled'
 			],
 			[
+				'name' => 'keterangan',
+				'placeholder' => '(Opsional)',
+				'value' => $row->tagihan->keterangan,
+				'attr' => 'disabled'
+			],
+			[
 				'name' => 'admin_verifikasi',
 				'label' => 'Nama Admin',
 				'value' => auth()->user()->name ?? auth()->user()->username,
 				'attr' => 'readonly'
-		],
+			],
 		];
 	}
 ];
@@ -202,17 +214,16 @@ $inputs = [
 													['Nama Lengkap', $row->nama_lengkap],
 													['Jenis Kelamin', $row->jenis_kelamin],
 													['Asal Sekolah', $row->asal_sekolah],
+													['No Wa Siswa', $row->no_wa_siswa],
 													['Jurusan', StringHelper::toCapital($row->nama_jurusan)],
 													['Biaya Pendaftaran', NumberHelper::toRupiah($row->tagihan->biaya_pendaftaran)],
 													['Lunas', ($row->pendaftaran->lunas ? 'Lunas' : 'Belum Lunas')],
-													['No Wa Ortu', $row->no_wa_ortu],
-													['No Wa Siswa', $row->no_wa_siswa],
-													['Keterangan', $row->pendaftaran->keterangan],
+													['Keterangan', $row->tagihan->keterangan],
 												]
 											])
 										</button>
 
-										<button type="button" title="Detail Tagihan" data-toggle="modal" data-target="#modalDetailTagihan{{ $row->id }}" class="btn btn-secondary" >
+										{{-- <button type="button" title="Detail Tagihan" data-toggle="modal" data-target="#modalDetailTagihan{{ $row->id }}" class="btn btn-secondary" >
 											<i class="fa fa-search-dollar"></i> 
 											@include('admin.modals.general.detail', [
 												'row' => $row,
@@ -240,6 +251,16 @@ $inputs = [
 														['Admin Biaya Seragam', $row->tagihan->admin_seragam],
 													]
 											])
+										</button> --}}
+
+										{{-- Tagihan --}}
+										<button type="button" title="Detail Tagihan" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/tagihan/{{ $row->id }}'">
+											<i class="fa">T</i>
+										</button>
+
+										{{-- Pembayaran --}}
+										<button type="button" title="Detail Pembayaran" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}'">
+											<i class="fa">P</i>
 										</button>
 
 										{{-- Edit --}}

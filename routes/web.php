@@ -11,6 +11,8 @@ use App\Http\Controllers\SponsorshipController;
 use App\Http\Controllers\VerifikasiController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\TagihanController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -74,6 +76,13 @@ Route::prefix('/admin')->group(function () {
     Route::controller(AdminController::class)->group(function () {
         Route::get('/', 'index');
         Route::get('/peserta', 'peserta');
+        Route::get('/tagihan/{identitas:id}', 'tagihan');
+        Route::get('/pembayaran/{identitas:id}', 'pembayaran');
+    });
+
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/profil', 'admprofil');
+        Route::post('/profil', 'postAdmprofil');
     });
 
     Route::controller(FormulirController::class)->group(function () {
@@ -81,10 +90,14 @@ Route::prefix('/admin')->group(function () {
         Route::post('/tambah-peserta', 'store');
     });
 
-    Route::controller(PembayaranController::class)->group(function () {
-        Route::get('/pembayaran', 'index');
-        // Route::post('/pembayaran', 'store');
-    });
+    // Route::controller(TagihanController::class)->group(function () {
+    //     Route::get('/tagihan', 'index');
+    // });
+
+    // Route::controller(PembayaranController::class)->group(function () {
+    //     Route::get('/pembayaran', 'index');
+    //     // Route::post('/pembayaran', 'store');
+    // });
 
     Route::prefix('/verifikasi-pendaftaran')->controller(VerifikasiController::class)->group(function () {
         Route::get('/', 'pendaftaranIndex');

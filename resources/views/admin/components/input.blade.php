@@ -17,12 +17,20 @@ $error = isset($errors) && $errors->has($input['name']);
 @else
 
 	<div class="form-group row">
-		<label for="{{ $input['id'] }}" class="form-label col-12 col-sm-4">
-			{{ $input['label'] }}
-			{!! in_array('required', $input['opts']) ? '<small class="text-primary"><b>*</b></small>' : '' !!}
-		</label>
+		@if($input['variant'] === 'nolabel')
+		@else
+			<label for="{{ $input['id'] }}" class="form-label text-sm col-12 col-sm-4">
+				{{ $input['label'] }}
+				{!! in_array('required', $input['opts']) ? '<small class="text-primary"><b>*</b></small>' : '' !!}
+			</label>
+		@endif
 		
-		<div class="col-12 col-sm-8">
+		@if($input['variant'] === 'nolabel')
+			<div class="col-12">
+		@else
+			<div class="col-12 col-sm-8">
+		@endif
+
 			@if(in_array($input['type'], ['radio', 'checkbox']))
 
 				@foreach ($input['values'] as $values)
@@ -91,12 +99,25 @@ $error = isset($errors) && $errors->has($input['name']);
 					@endforeach
 				</div>
 			
+			@elseif($input['type'] === 'file')
+				<div class="custom-file">
+					<input type="file"
+							name="{{ $input['name'] }}"
+							id="{{ $input['id'] }}"
+							value="{{ $input['value'] }}"
+							class="custom-file-input"
+							{!! $input['attr'] !!}
+						/>
+					<label class="custom-file-label" for="{{ $input['id'] }}">
+						{{ $input['label'] }}
+					</label>
+				</div>
 			@elseif($input['type'] === 'select' || $input['type'] === 'select2')
 
 				<select type="{{ $input['type'] }}"
 					name="{{ $input['name'] }}"
 					id="{{ $input['id'] }}"
-					class="form-control {{ $input['type'] === 'select2' ? 'select2' : '' }} {{ $error?'is-invalid':'' }}"
+					class="form-control form-control-sm {{ $input['type'] === 'select2' ? 'select2' : '' }} {{ $error?'is-invalid':'' }}"
 					style="width: 100%"
 					{!! $input['attr'] !!}
 				>
@@ -121,7 +142,7 @@ $error = isset($errors) && $errors->has($input['name']);
 					id="{{ $input['id'] }}"
 					placeholder="{{ $input['placeholder'] }}"
 					value="{{ old($input['name']) ?? $input['value'] ?? '' }}"
-					class="form-control {{ $error?'is-invalid':'' }}"
+					class="form-control form-control-sm {{ $error?'is-invalid':'' }}"
 					{!! $input['attr'] !!}
 				/>
 

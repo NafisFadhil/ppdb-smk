@@ -1,12 +1,18 @@
 <?php
-$adm = str_replace('admin-', '', auth()->user()->level->name ?? '');
-$isadm = auth()->user()->level->name === 'super-admin';
+$user = auth()->user();
+$adm = str_replace('admin-', '', $user->level->name ?? '');
+$issupadm = $user->level->name === 'super-admin';
+
 $menu = array_merge([
 	['href' => '/admin', 'label' => 'Beranda', 'icon' => 'fa fa-tachometer-alt'],
 	['href' => '/admin/peserta', 'label' => 'Semua Peserta', 'icon' => 'fa fa-users'],
-	['href' => '/admin/tambah-peserta', 'label' => 'Tambah Peserta', 'icon' => 'fa fa-user-plus'],
 ],
-$isadm ? [[
+
+$user->level->name === 'admin-pendaftaran' || $issupadm ? [
+	['href' => '/admin/tambah-peserta', 'label' => 'Tambah Peserta', 'icon' => 'fa fa-user-plus'],
+] : [],
+
+$issupadm ? [[
 	'variant' => 'dropdown', 'href' => '/admin/verifikasi', 'label' => 'Verifikasi', 'icon' => 'fa fa-check', 'dropdown' => [
 		['href' => '/admin/verifikasi-pendaftaran', 'label' => 'Pendaftaran'],
 		['href' => '/admin/verifikasi-duseragam', 'label' => 'DU & Seragam'],
@@ -14,18 +20,25 @@ $isadm ? [[
 ]] : [
 	['href' => '/admin/verifikasi-'.$adm, 'label' => 'Verifikasi '.StringHelper::toTitle($adm), 'icon' => 'fa fa-check']
 ],
-$isadm ? [[
+
+$issupadm ? [[
 	'variant' => 'dropdown', 'href' => '/admin/laporan', 'label' => 'Laporan', 'icon' => 'fa fa-solid fa-print', 'dropdown' => [
 		['href' => '/admin/laporan-pendaftaran', 'label' => 'Pendaftaran'],
 		['href' => '/admin/laporan-daftar-ulang', 'label' => 'Daftar Ulang'],
 		['href' => '/admin/laporan-seragam', 'label' => 'Seragam'],
 	]
+]] : ($user->level->name === 'admin-duseragam' ? [[
+	'variant' => 'dropdown', 'href' => '/admin/laporan', 'label' => 'Laporan', 'icon' => 'fa fa-solid fa-print', 'dropdown' => [
+		['href' => '/admin/laporan-daftar-ulang', 'label' => 'Daftar Ulang'],
+		['href' => '/admin/laporan-seragam', 'label' => 'Seragam'],
+	]
 ]] : [
 	['href' => '/admin/laporan-'.$adm, 'label' => 'Laporan '.StringHelper::toTitle($adm), 'icon' => 'fa fa-solid fa-print']
-],
+]),
+
 [
-	['href' => '/admin/sponsorship', 'label' => 'Sponsorship', 'icon' => 'fa fa-user'],
-	['href' => '/admin/pembayaran', 'label' => 'Pembayaran', 'icon' => 'fa fa-dollar-sign'],
+	['href' => '/admin/sponsorship', 'label' => 'Sponsorship', 'icon' => 'fa fa-user-plus'],
+	['href' => '/admin/profil', 'label' => 'Profil', 'icon' => 'fa fa-user-cog'],
 	['href' => '/logout', 'label' => 'Logout', 'icon' => 'fa fa-power-off'],
 ],
 );?>
@@ -44,10 +57,10 @@ $isadm ? [[
 		<!-- Sidebar user (optional) -->
 		<div class="user-panel mt-3 pb-3 mb-3 d-flex">
 			<div class="image">
-				<img src="/adminlte/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+				<img src="{{ $user->avatar }}" class="img-circle elevation-2" alt="User Avatar Image">
 			</div>
 			<div class="info">
-				<a href="#" class="d-block">
+				<a href="/admin/profil" class="d-block">
 					{{ auth()->user()->name ?? auth()->user()->username ?? '...' }}
 				</a>
 			</div>

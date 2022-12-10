@@ -1,0 +1,59 @@
+@extends('layouts.admin')
+
+@section('content')
+	<div class="row">
+		@foreach ($forms as $form)
+			<div class="col-12 col-md-6" style="height: max-content">
+
+				{{-- @foreach($form as $subform) --}}
+					{{-- <div class="col-12"> --}}
+						<div class="card">
+							<div class="card-header pb-0">
+								<h5> {{ $form['title'] ?? '' }} </h5>
+							</div>
+
+							<div class="card-body">
+								
+								@foreach ($form['inputs'] as $input)
+									@include('admin.components.input', ['input' => $input])
+								@endforeach
+
+							</div>
+						</div>
+					{{-- </div> --}}
+				{{-- @endforeach --}}
+				
+			</div>
+		@endforeach
+
+		{{-- <div class="col-12 text-center mt-4">
+			<a href="{{ str_replace('tagihan', 'pembayaran', request()->fullUrl()) }}" class="btn btn-primary">
+				Detail Pembayaran
+			</a>
+		</div> --}}
+	</div>
+{{-- <div class="row">
+	<div class="col-12">
+		<div class="card">
+			<div class="card-body">
+				<form action="{{ $form['action'] ?? '' }}" method="{{ $form['method'] ?? 'post' }}">
+					@csrf @isset($form['submethod']) @method($form['submethod']) @endisset
+
+					@foreach ($form['inputs'] as $input)
+						@include('admin.components.input', ['input' => $input])
+					@endforeach
+
+					<div class="form-group text-center">
+						@isset($form['button'])
+							<button type="submit" class="btn {{ $form['button']['variant'] }} btn-block mx-auto"
+								style="max-width: max-content">
+								{!! $form['button']['content'] !!}
+							</button>
+						@endisset
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div> --}}
+@endsection

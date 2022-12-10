@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->nullable();
             $table->string('username')->unique();
             $table->string('password');
-            
-            $table->string('name')->nullable();
+            $table->string('avatar')->default('/dist/img/avatar5.png');
             
             $table->foreignId('identitas_id')->default(0);
             $table->foreignId('level_id')->default(1);

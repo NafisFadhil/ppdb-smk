@@ -21,7 +21,6 @@ class VerifikasiController extends Controller
     // Pendaftaran
     public function pendaftaranIndex()
     {
-        
         return view('admin.pages.verifikasi.pendaftaran', [
             'page' => ['title' => 'Verifikasi Pendaftaran'],
             'peserta' => Identitas::whereRelation('status', 'level', 'Pendaftar')
@@ -34,6 +33,7 @@ class VerifikasiController extends Controller
         $creden = $req->validate([
             'biaya_pendaftaran' => 'required',
             'admin_pendaftaran' => 'required',
+            'keterangan' => 'nullable',
         ]);
         try {
 

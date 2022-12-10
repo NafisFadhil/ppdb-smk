@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Identitas;
-use App\Models\Pembayaran;
+use App\Models\Tagihan;
 use Illuminate\Http\Request;
 
-class PembayaranController extends Controller
+class TagihanController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,17 +14,7 @@ class PembayaranController extends Controller
      */
     public function index()
     {
-        $identitas = collect([]);
-        
-        if (request('kode_jurusan')) {
-            $identitas = Identitas::whereRelation('jurusan', 'kode', request('kode_jurusan'))
-                ->with(['tagihan'])->first()->get();
-        }
-
-        return view('admin.pages.pembayaran', [
-            'page' => ['title' => 'Pembayaran'],
-            'identitas' => $identitas
-        ]);
+        //
     }
 
     /**
@@ -52,10 +41,10 @@ class PembayaranController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Pembayaran  $pembayaran
+     * @param  \App\Models\Tagihan  $tagihan
      * @return \Illuminate\Http\Response
      */
-    public function show(Pembayaran $pembayaran)
+    public function show(Tagihan $tagihan)
     {
         //
     }
@@ -63,10 +52,10 @@ class PembayaranController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Pembayaran  $pembayaran
+     * @param  \App\Models\Tagihan  $tagihan
      * @return \Illuminate\Http\Response
      */
-    public function edit(Pembayaran $pembayaran)
+    public function edit(Tagihan $tagihan)
     {
         //
     }
@@ -75,10 +64,10 @@ class PembayaranController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Pembayaran  $pembayaran
+     * @param  \App\Models\Tagihan  $tagihan
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Pembayaran $pembayaran)
+    public function update(Request $request, Tagihan $tagihan)
     {
         //
     }
@@ -86,10 +75,10 @@ class PembayaranController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Pembayaran  $pembayaran
+     * @param  \App\Models\Tagihan  $tagihan
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Pembayaran $pembayaran)
+    public function destroy(Tagihan $tagihan)
     {
         //
     }

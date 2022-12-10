@@ -16,6 +16,7 @@ $inputs = [
 			],
 			[
 				'name' => 'admin_duseragam',
+				'label' => 'Nama Admin',
 				'value' => auth()->user()->name ?? auth()->user()->username,
 				'attr' => 'readonly'
 			],
@@ -208,9 +209,10 @@ $inputs = [
 										</button>
 
 
+										{{-- Pembayaran DU --}}
 										<button type="button" title="Input Pembayaran Daftar Ulang" data-toggle="modal"
 										data-target="#modalPembayaranDaftarUlang{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 6 || $row->tagihan->lunas_daftar_ulang == true ? 'disabled' : '' }} >
-											DU<i class="fa fa-check"></i>
+											<i class="fa fa-check">DU</i>
 											@if($row->status_id === 6)
 												@include('admin.modals.daftar_ulang.input_pembayaran', [
 													'row' => $row,
@@ -219,10 +221,11 @@ $inputs = [
 											@endif
 										</button>
 
-										{{-- Seragam --}}
+
+										{{-- Pembayaran Seragam --}}
 										<button type="button" title="Input Pembayaran Seragam" data-toggle="modal"
 										data-target="#modalPembayaranSeragam{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 6 || $row->tagihan->lunas_seragam == true ? 'disabled' : '' }} >
-											S<i class="fa fa-check"></i>
+											<i class="fa fa-check">S</i>
 											@if($row->status_id === 6)
 												@include('admin.modals.seragam.input_pembayaran', [
 													'row' => $row,
@@ -259,16 +262,16 @@ $inputs = [
 													['Asal Sekolah', $row->asal_sekolah],
 													['Jurusan', StringHelper::toCapital($row->nama_jurusan)],
 													['Biaya Daftar Ulang', NumberHelper::toRupiah($row->tagihan->biaya_daftar_ulang)],
-													['Biaya Seragam', NumberHelper::toRupiah($row->tagihan->biaya_seragam)],
 													['Tagihan Daftar Ulang', ($row->tagihan->tagihan_daftar_ulang ? 'Lunas' : 'Kurang ' . NumberHelper::toRupiah($row->tagihan->tagihan_daftar_ulang))],
+													['Biaya Seragam', NumberHelper::toRupiah($row->tagihan->biaya_seragam)],
 													['Tagihan Seragam', ($row->tagihan->tagihan_seragam ? 'Lunas' : 'Kurang ' . NumberHelper::toRupiah($row->tagihan->tagihan_seragam))],
 													['No Wa Siswa', $row->no_wa_siswa],
-													['Keterangan', $row->duseragam->keterangan],
+													['Keterangan', $row->tagihan->keterangan],
 												]
 											])
 										</button>
 
-										<button type="button" title="Detail Tagihan" data-toggle="modal" data-target="#modalDetailTagihan{{ $row->id }}" class="btn btn-secondary" >
+										{{-- <button type="button" title="Detail Tagihan" data-toggle="modal" data-target="#modalDetailTagihan{{ $row->id }}" class="btn btn-secondary" >
 											<i class="fa fa-search-dollar"></i> 
 											@include('admin.modals.general.detail', [
 												'row' => $row,
@@ -296,8 +299,23 @@ $inputs = [
 														['Admin Biaya Seragam', $row->tagihan->admin_seragam],
 													]
 											])
+										</button> --}}
+
+										{{-- Tagihan --}}
+										<button type="button" title="Detail Tagihan" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/tagihan/{{ $row->id }}'">
+											<i class="fa">T</i>
 										</button>
 
+										{{-- Data Pembayaran DU --}}
+										<button type="button" title="Data Pembayaran Daftar Ulang" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=daftar_ulang'">
+											<i class="fa fa-dollar-sign">DU</i>
+										</button>
+
+										{{-- Data Pembayaran Seragam --}}
+										<button type="button" title="Data Pembayaran Seragam" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=seragam'">
+											<i class="fa fa-dollar-sign">S</i>
+										</button>
+										
 										{{-- Edit --}}
 										<button type="button" title="Edit Data DU & Seragam" class="btn btn-secondary" onclick="window.location = '/admin/edit/{{ $row->id }}'">
 											<i class="fa fa-pen"></i> 

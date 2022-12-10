@@ -35,7 +35,5 @@ Route::get('/run-production', function() {
     Artisan::call('config:cache');
     Artisan::call('view:clear');
     Artisan::call('view:cache');
-    Artisan::call('optimize:clear');
-    Artisan::call('optimize');
     return 'OK';
 });

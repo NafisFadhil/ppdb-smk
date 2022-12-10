@@ -31,6 +31,8 @@ return new class extends Migration
             $table->string('admin_seragam')->nullable();
             $table->boolean('lunas_seragam')->default(false);
 
+            $table->string('keterangan')->default('-');
+
             $table->foreignId('identitas_id');
             $table->timestamps();
         });
