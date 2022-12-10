@@ -31,42 +31,11 @@
 @endsection
 
 @push('scripts')
-	<script src="https://www.google.com/recaptcha/api.js?render={{ ConfigHelper::get('recaptcha_site_key') }}"></script>
-	{{-- <script src="https://www.google.com/recaptcha/api.js"></script> --}}
+	{{-- <script src="https://www.google.com/recaptcha/api.js?render={{ ConfigHelper::get('recaptcha_site_key') }}"></script> --}}
+	<script src="https://www.google.com/recaptcha/api.js"></script>
 	<script>
 		function onSubmit(token) {
 			document.getElementById("myform").submit();
 		}
-		// $('form button[type=submit]').click(function (e) {
-		// 	e.preventDefault();
-		// 	grecaptcha.ready(function() {
-		// 		grecaptcha.execute('{{ ConfigHelper::get('recaptcha_site_key') }}', {
-		// 			action: 'submit'
-		// 		}).then(function(token) {
-		// 				// Add your logic to submit to your backend server here.
-		// 				// console.log(token);
-		// 				$.ajax({
-		// 					url: 'https://www.google.com/recaptcha/api/siteverify',
-		// 					type: 'post',
-		// 					dataType: 'json',
-		// 					data: {
-		// 						secret: '{{ ConfigHelper::get('recaptcha_secret_key') }}',
-		// 						response: token
-		// 					},
-		// 					cache: false,
-		// 					success: function (res) {
-		// 						console.log(res);
-		// 					}
-		// 				})
-		// 		});
-		// 	});
-		// })
-		// grecaptcha.enterprise.ready(function() {
-		// 		grecaptcha.enterprise.execute('{{ ConfigHelper::get('recaptcha_site_key') }}', {
-		// 			action: 'login',
-		// 		}).then(function(token) {
-					
-		// 		});
-		// });
 	</script>
 @endpush

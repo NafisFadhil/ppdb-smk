@@ -134,9 +134,18 @@ class FormulirController extends Controller
         $clientip = $req->ip();
         
         $url = sprintf($rawurl, $secretkey, $token, $clientip);
-        $result = file_get_contents($url);
-        $response = json_decode($result, true);
-        if (!isset($response['success']) && !$response['success']) {
+        // $result = file_get_contents($url);
+        // $response = json_decode($result, true);
+
+        $c = curl_init();
+        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($c, CURLOPT_URL, $url);
+        $contents = curl_exec($c);
+        curl_close($c);
+
+        $response = json_decode($contents, true);
+
+        if (!$contents && !isset($response['success']) && !$response['success']) {
             return back(498)->withErrors([
                 'alerts' => ['danger' => 'Invalid reCAPTCHA token, silahkan coba lagi!']
             ])->withInput($req->toArray());
