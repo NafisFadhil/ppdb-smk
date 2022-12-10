@@ -3,7 +3,7 @@
 ])
 
 @section('subcontent')
-	<form id="myform" action="javascript:void()" method="post">
+	<form id="myform" action="/formulir" method="post">
 		@csrf
 		<div class="p-4 md:p-8 grid grid-cols-1 grid-rows-auto max-w-screen-lg mx-auto my-3">
 
@@ -37,29 +37,30 @@
 		function onSubmit(token) {
 			document.getElementById("myform").submit();
 		}
-		$('form button[type=submit]').click(function (e) {
-			e.preventDefault();
-			grecaptcha.ready(function() {
-				grecaptcha.execute('{{ ConfigHelper::get('recaptcha_site_key') }}', {
-					action: 'submit'
-				}).then(function(token) {
-						// Add your logic to submit to your backend server here.
-						// console.log(token);
-						$.ajax({
-							url: 'https://www.google.com/recaptcha/api/siteverify',
-							type: 'POST',
-							data: {
-								secret: '{{ ConfigHelper::get('recaptcha_secret_key') }}',
-								response: token
-							},
-							cache: false,
-							success: function (res) {
-								console.log(res);
-							}
-						})
-				});
-			});
-		})
+		// $('form button[type=submit]').click(function (e) {
+		// 	e.preventDefault();
+		// 	grecaptcha.ready(function() {
+		// 		grecaptcha.execute('{{ ConfigHelper::get('recaptcha_site_key') }}', {
+		// 			action: 'submit'
+		// 		}).then(function(token) {
+		// 				// Add your logic to submit to your backend server here.
+		// 				// console.log(token);
+		// 				$.ajax({
+		// 					url: 'https://www.google.com/recaptcha/api/siteverify',
+		// 					type: 'post',
+		// 					dataType: 'json',
+		// 					data: {
+		// 						secret: '{{ ConfigHelper::get('recaptcha_secret_key') }}',
+		// 						response: token
+		// 					},
+		// 					cache: false,
+		// 					success: function (res) {
+		// 						console.log(res);
+		// 					}
+		// 				})
+		// 		});
+		// 	});
+		// })
 		// grecaptcha.enterprise.ready(function() {
 		// 		grecaptcha.enterprise.execute('{{ ConfigHelper::get('recaptcha_site_key') }}', {
 		// 			action: 'login',

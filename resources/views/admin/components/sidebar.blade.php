@@ -39,8 +39,19 @@ $issupadm ? [[
 [
 	['href' => '/admin/sponsorship', 'label' => 'Sponsorship', 'icon' => 'fa fa-user-plus'],
 	['href' => '/admin/profil', 'label' => 'Profil', 'icon' => 'fa fa-user-cog'],
+],
+
+$issupadm ? [[
+	'variant' => 'dropdown', 'href' => '/admin/users', 'label' => 'Kelola User', 'icon' => 'fa fa-users-cog', 'dropdown' => [
+		['href' => '/admin/users/admin', 'label' => 'Admin'],
+		['href' => '/admin/users/siswa', 'label' => 'Siswa'],
+	]]
+] : [],
+
+[	
 	['href' => '/logout', 'label' => 'Logout', 'icon' => 'fa fa-power-off'],
 ],
+
 );?>
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">

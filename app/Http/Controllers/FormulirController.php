@@ -126,6 +126,23 @@ class FormulirController extends Controller
         ];
     }
 
+    protected function validateRecaptcha (Request $req)
+    {
+        $rawurl = 'https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s&remoteip=%s';
+        $token = $req->get('g-recaptcha-response');
+        $secretkey = env('RECAPTCHA_SECRET_KEY');
+        $clientip = $req->ip();
+        
+        $url = sprintf($rawurl, $secretkey, $token, $clientip);
+        $result = file_get_contents($url);
+        $response = json_decode($result, true);
+        if (!isset($response['success']) && !$response['success']) {
+            return back(498)->withErrors([
+                'alerts' => ['danger' => 'Invalid reCAPTCHA token, silahkan coba lagi!']
+            ])->withInput($req->toArray());
+        }
+    }
+
     public function index ()
     {
         return view('pages.formulir', [
@@ -151,13 +168,12 @@ class FormulirController extends Controller
 
     public function store(Request $req)
     {
-        dd($req);
-        $isadmin = $req->user()->level_id !== 1;
+        $this->validateRecaptcha($req);
+        
+        $isadmin = $req->user()->level_id ?? 1 !== 1;
         $creden = $req->validate(Identitas::getValidations(
             $isadmin ? $this->myAdvancedValidations : $this->myValidations
         ));
-        // $creden['nama_lengkap'] = strtoupper($creden['nama_lengkap']);
-        // $creden['asal_sekolah'] = strtoupper($creden['asal_sekolah']);
         
         try {
 

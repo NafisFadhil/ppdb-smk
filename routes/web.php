@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\DaftarUlangController;
+// use App\Http\Controllers\DaftarUlangController;
 use App\Http\Controllers\DUSeragamController;
 use App\Http\Controllers\FormulirController;
 use App\Http\Controllers\LoginController;
@@ -10,8 +10,9 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\SponsorshipController;
 use App\Http\Controllers\VerifikasiController;
 use App\Http\Controllers\LaporanController;
-use App\Http\Controllers\PembayaranController;
-use App\Http\Controllers\TagihanController;
+// use App\Http\Controllers\PembayaranController;
+// use App\Http\Controllers\TagihanController;
+// use App\Http\Controllers\UserAdminController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -79,10 +80,16 @@ Route::prefix('/admin')->group(function () {
         Route::get('/tagihan/{identitas:id}', 'tagihan');
         Route::get('/pembayaran/{identitas:id}', 'pembayaran');
     });
+    
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/users/admin', 'admin');
+        Route::get('/users/siswa', 'siswa');
+    });
+    Route::resource('/users', UserController::class);
 
     Route::controller(UserController::class)->group(function () {
-        Route::get('/profil', 'admprofil');
-        Route::post('/profil', 'postAdmprofil');
+        Route::get('/profil', 'profil');
+        Route::post('/profil', 'xprofil');
     });
 
     Route::controller(FormulirController::class)->group(function () {
