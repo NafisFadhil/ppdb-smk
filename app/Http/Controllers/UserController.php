@@ -10,7 +10,7 @@ class UserController extends Controller
 
     protected $admvalidations = [
         // 'avatar' => 'nullable|file',
-        'password' => 'nullable|string|digits_between:8,250'
+        'password' => 'nullable|string|min:8'
     ];
 
     public function admprofil()

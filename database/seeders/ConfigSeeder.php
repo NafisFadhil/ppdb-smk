@@ -28,6 +28,14 @@ class ConfigSeeder extends Seeder
                 'key' => 'tahun_ppdb',
                 'value' => '2023'
             ],
+            [
+                'key' => 'recaptcha_site_key',
+                'value' => env('RECAPTCHA_SITE_KEY')
+            ],
+            [
+                'key' => 'recaptcha_secret_key',
+                'value' => env('RECAPTCHA_SECRET_KEY')
+            ],
         ]);
     }
 }

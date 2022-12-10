@@ -151,6 +151,7 @@ class FormulirController extends Controller
 
     public function store(Request $req)
     {
+        dd($req);
         $isadmin = $req->user()->level_id !== 1;
         $creden = $req->validate(Identitas::getValidations(
             $isadmin ? $this->myAdvancedValidations : $this->myValidations
