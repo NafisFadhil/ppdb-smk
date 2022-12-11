@@ -197,7 +197,12 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        Clockwork\Support\Laravel\ClockworkServiceProvider::class
+
+        /**
+         * Additional Service Providers...
+         */
+        Clockwork\Support\Laravel\ClockworkServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
 
     ],
 
@@ -218,6 +223,7 @@ return [
         'StringHelper' => App\Helpers\StringHelper::class,
         'NumberHelper' => App\Helpers\NumberHelper::class,
         'ModelHelper' => App\Helpers\ModelHelper::class,
+        'Image' => Intervention\Image\Facades\Image::class
     ])->toArray(),
 
 ];

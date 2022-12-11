@@ -17,7 +17,7 @@ $inputs = [
 				<div class="card-body">
 					<div class="mx-auto text-center mb-3" style="max-width: max-content">
 						<img src="{{ $user->avatar }}" alt="User Avatar Image" width="160" class="img-circle elevation-1">
-						<br>
+						{{-- <br> --}}
 					</div>
 
 					<form action="/admin/profil" method="post" enctype="multipart/form-data">

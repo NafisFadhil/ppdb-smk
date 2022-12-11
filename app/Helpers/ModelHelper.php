@@ -35,4 +35,13 @@ class ModelHelper
 		} return $str;
 	}
 
+	public static function getValidations(array $names, array $validations)
+	{
+		$result = [];
+		foreach ($names as $key) {
+			$result[$key] = $validations[$key] ?? '';
+		}
+		return $result;
+	}
+	
 }

@@ -14,6 +14,31 @@ $error = isset($errors) && $errors->has($input['name']);
 		{!! $input['attr'] !!}
 	/>
 
+@elseif($input['type'] === 'avatar')
+
+	<div class="mx-auto text-center mb-4" style="max-width: max-content">
+		<img src="{{ $input['value'] }}"
+			id="{{ $input['id'] }}"
+			alt="User Avatar Image"
+			width="160"
+			class="elevation-1"
+			style="object-fit: cover; object-position: center; border-radius: 50%; overflow: hidden; aspect-ratio: 1/1">
+	</div>
+	@push('scripts')
+		<script>
+			$('input[type=file][name=avatar]').change(e => {
+				e.preventDefault();
+				const elem = e.currentTarget;
+				const target = document.getElementById('{{ $input['id'] }}');
+				const FR = new FileReader();
+				FR.readAsDataURL(elem.files[0]);
+				FR.onload = (FE) => {
+					target.setAttribute('src', FE.target.result);
+				}
+			})
+		</script>
+	@endpush
+
 @else
 
 	<div class="form-group row">
@@ -100,7 +125,15 @@ $error = isset($errors) && $errors->has($input['name']);
 				</div>
 			
 			@elseif($input['type'] === 'file')
-				<div class="custom-file">
+				<input type="{{ $input['type'] }}"
+					name="{{ $input['name'] }}"
+					id="{{ $input['id'] }}"
+					placeholder="{{ $input['placeholder'] }}"
+					value="{{ old($input['name']) ?? $input['value'] ?? '' }}"
+					class="form-control form-control-sm p-0 {{ $error?'is-invalid':'' }}"
+					{!! $input['attr'] !!}
+				/>
+				{{-- <div class="custom-file">
 					<input type="file"
 							name="{{ $input['name'] }}"
 							id="{{ $input['id'] }}"
@@ -109,9 +142,9 @@ $error = isset($errors) && $errors->has($input['name']);
 							{!! $input['attr'] !!}
 						/>
 					<label class="custom-file-label" for="{{ $input['id'] }}">
-						{{ $input['label'] }}
+						{{ $input['placeholder'] }}
 					</label>
-				</div>
+				</div> --}}
 			@elseif($input['type'] === 'select' || $input['type'] === 'select2')
 
 				<select type="{{ $input['type'] }}"

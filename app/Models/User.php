@@ -11,11 +11,19 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-    protected $fillable = [
-        'name',
-        'username',
-        'password',
-        'identitas_id'
+    // protected $fillable = [
+    //     'name',
+    //     'username',
+    //     'password',
+    //     'identitas_id'
+    // ];
+
+    public static $validations = [
+        'name' => 'nullable|string',
+        'username' => 'required|string|unique:users,username',
+        'password' => 'required|string|min:8',
+        'avatar' => 'nullable|image',
+        'level_id' => 'required|numeric'
     ];
 
     public function identitas () {

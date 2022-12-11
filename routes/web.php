@@ -14,6 +14,7 @@ use App\Http\Controllers\LaporanController;
 // use App\Http\Controllers\TagihanController;
 // use App\Http\Controllers\UserAdminController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserProfilController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -81,16 +82,21 @@ Route::prefix('/admin')->group(function () {
         Route::get('/pembayaran/{identitas:id}', 'pembayaran');
     });
     
+    Route::controller(UserProfilController::class)->group(function () {
+        Route::get('/profil', 'profil');
+        Route::put('/profil', 'update');
+    });
+
     Route::controller(UserController::class)->group(function () {
         Route::get('/users/admin', 'admin');
         Route::get('/users/siswa', 'siswa');
+        Route::get('/users/{user:id}/hapus', 'xdestroy');
     });
+
     Route::resource('/users', UserController::class);
 
-    Route::controller(UserController::class)->group(function () {
-        Route::get('/profil', 'profil');
-        Route::post('/profil', 'xprofil');
-    });
+    // Route::controller(UserController::class)->group(function () {
+    // });
 
     Route::controller(FormulirController::class)->group(function () {
         Route::get('/tambah-peserta', 'tambah');

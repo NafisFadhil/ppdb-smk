@@ -2,12 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ImageHelper;
+use App\Helpers\ModelHelper;
 use App\Models\User;
+use App\Models\UserLevel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+
+    protected $myvalidations = [
+        'name',
+        'username',
+        'password',
+        'avatar',
+        'level_id',
+    ];
+    
+    protected function getSearch ($model)
+    {
+        $search = request('search');
+        return $model->where('username', 'like', "%$search%")
+            ->orWhere('name', 'like', "%$search%");
+    }
     
     /**
      * Display a listing of the resource.
@@ -28,10 +47,14 @@ class UserController extends Controller
      */
     public function admin()
     {
+        $model = User::whereNot('id', auth()->user()->id)
+            ->whereNot('level_id', 1);
+        if (request('search')) $model = $this->getSearch($model);
+        $model = $model->with(['level'])->paginate();
+
         return view('admin.pages.users.index', [
             'page' => ['title' => 'Kelola User Admin'],
-            'users' => User::whereNot('id', auth()->user()->id)
-                ->whereNot('level_id', 1)->with(['level'])->paginate()
+            'users' => $model
         ]);
     }
 
@@ -42,9 +65,13 @@ class UserController extends Controller
      */
     public function siswa()
     {
+        $model = User::where('level_id', 1);
+        if (request('search')) $model = $this->getSearch($model);
+        $model = $model->paginate();
+
         return view('admin.pages.users.index', [
             'page' => ['title' => 'Kelola User Siswa'],
-            'users' => User::where('level_id', 1)->paginate()
+            'users' => $model
         ]);
     }
 
@@ -55,18 +82,54 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.pages.forms', [
+            'page' => ['title' => 'Tambah User'],
+            'form' => [
+                'action' => '/admin/users',
+                'enctype' => 'multipart/form-data',
+                'button' => [
+                    'variant' => 'primary',
+                    'content' => '<i class="fa fa-plus"></i> Tambahkan'
+                ],
+                'inputs' => [
+                    ['type' => 'avatar', 'name' => 'avatar', 'value' => '/dist/img/avatar5.png'],
+                    ['type' => 'file', 'name' => 'avatar', 'placeholder' => 'Upload Avatar', 'value' => old('avatar')],
+                    ['type' => 'text', 'name' => 'name', 'label' => 'Nama Admin'],
+                    ['type' => 'text', 'name' => 'username'],
+                    ['type' => 'password', 'name' => 'password'],
+                    ['type' => 'select', 'name' => 'level_id', 'label' => 'User Level', 'options' => UserLevel::getOptions()],
+                ]
+            ],
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request  $req
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $req)
     {
-        //
+        $creden = $req->validate(ModelHelper::getValidations($this->myvalidations, User::$validations));
+        try {
+            
+            if ($req->hasFile('avatar')) $creden['avatar'] = ImageHelper::uploadAvatar($req->file('avatar'));
+            
+            $creden['password'] = Hash::make($creden['password']);
+            $redir = '/admin/users/' . ($creden['level_id'] === 1 ? 'siswa' : 'admin');
+            
+            $user = User::create($creden);
+            return redirect($redir)->withErrors([
+                'alerts' => ['success' => 'Berhasil menambahkan user!']
+            ]);
+            
+        } catch (\Throwable $th) {
+            throw $th;
+            return back()->withErrors([
+                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat menambahkan user!']
+            ])->withInput($creden);
+        }
     }
 
     /**
@@ -93,23 +156,73 @@ class UserController extends Controller
             'form' => [
                 'action' => '/admin/users/'.$user->id,
                 'submethod' => 'PUT',
+                'enctype' => 'multipart/form-data',
                 'button' => [
-                    'variant' => ''
+                    'variant' => 'warning',
+                    'content' => '<i class="fa fa-pen"></i> Edit'
+                ],
+                'inputs' => [
+                    ['type' => 'avatar', 'name' => 'avatar', 'value' => $user->avatar],
+                    ['type' => 'file', 'name' => 'avatar', 'placeholder' => 'Upload Avatar'],
+                    ['type' => 'text', 'name' => 'name', 'label' => 'Nama Admin', 'value' => $user->name],
+                    ['type' => 'text', 'name' => 'username', 'value' => $user->username],
+                    ['type' => 'password', 'name' => 'password', 'label' => 'Password Baru', 'placeholder' => '(Opsional)'],
+                    ['type' => 'select', 'name' => 'level_id', 'label' => 'User Level', 'value' => $user->level_id, 'options' => UserLevel::getOptions()],
                 ]
-            ]
+            ],
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request  $req
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $req, User $user, $profil = false)
     {
-        //
+
+        $validations = ModelHelper::getValidations(
+            $this->myvalidations,
+            User::$validations
+        );
+        
+        if (!$profil && $req->has('username') && $req->get('username') === $user->username) {
+            $validations['username'] .= ',' . $user->id;
+        }
+
+        $creden = $req->validate($validations);
+
+        try {
+            
+            if ($req->hasFile('avatar')) {
+                if (!is_null($user->avatar) && !empty($user->avatar)) {
+                    $paths = explode('/', $user->avatar);
+                    $storagepath = implode('/', array_splice($paths, 2));
+                    if ($paths[0] === 'storage') Storage::delete($storagepath);
+                }
+
+                $creden['avatar'] = ImageHelper::uploadAvatar($req->file('avatar'));
+            }
+
+            if (is_null($creden['password'])) unset($creden['password']);
+            else $creden['password'] = Hash::make($creden['password']);
+
+            $redir = '/admin/users/' . ($creden['level_id'] ?? $user->level_id === 1 ? 'siswa' : 'admin');
+            $redir = $profil ? '/admin/profil' : $redir;
+            
+            $user = $user->update($creden);
+            return redirect($redir)->withErrors([
+                'alerts' => ['success' => 'Berhasil mengedit profil!']
+            ]);
+            
+        } catch (\Throwable $th) {
+            throw $th;
+            return back()->withErrors([
+                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat mengedit profil!']
+            ])->withInput($creden);
+        }
     }
 
     /**
@@ -123,42 +236,18 @@ class UserController extends Controller
         //
     }
 
-    protected $admvalidations = [
-        // 'avatar' => 'nullable|file',
-        'password' => 'nullable|string|min:8'
-    ];
-
-    public function admprofil()
+    public function xdestroy(User $user)
     {
-        return view('admin.pages.profil', [
-            'page' => ['title' => 'User Profil']
-        ]);
-    }
-
-    public function xprofil(Request $req)
-    {
-        $creden = $req->validate($this->admvalidations);
-
         try {
-
-            // if ($creden['avatar']) {
-            //     dd($req->file('avatar'));
-            // }
-            
-            if ($creden['password']) $creden['password'] = Hash::make($creden['password']);
-            else unset($creden['password']);
-            
-            $user = $req->user()->update($creden);
-
-            return redirect('/admin')->withErrors([
-                'alerts' => ['success' => 'Profil berhasil diubah.']
+            $user->delete();
+            return back()->withErrors([
+                'alerts' => ['success' => 'Berhasil menghapus user!']
             ]);
-
         } catch (\Throwable $th) {
-            throw $th;
-            return redirect('/admin/profil')->withErrors([
-                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat mengubah profil.']
+            return back()->withErrors([
+                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat menghapus user!']
             ]);
         }
     }
+    
 }
