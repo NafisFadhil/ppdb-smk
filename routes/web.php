@@ -90,7 +90,7 @@ Route::prefix('/admin')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('/users/admin', 'admin');
         Route::get('/users/siswa', 'siswa');
-        Route::get('/users/{user:id}/hapus', 'xdestroy');
+        Route::get('/users/{user:id}/hapus', 'destroy');
     });
 
     Route::resource('/users', UserController::class);

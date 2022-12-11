@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ImageHelper;
-use App\Helpers\ModelHelper;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -52,7 +51,7 @@ class UserProfilController extends Controller
         if ($user->level->name === 'super-admin') return [
             'name' => 'nullable|string',
             'username' => 'required|string|unique:users,username,'.$user->id,
-            'password' => 'required|string|min:8',
+            'password' => 'nullable|string|min:8',
             'avatar' => 'nullable|image',
         ]; else return [
             'password' => 'nullable|string|min:8',
@@ -74,7 +73,6 @@ class UserProfilController extends Controller
     {
 
         $user = $req->user();        
-        $superadmin = $user->level->name === 'super-admin';
         $validations = $this->getValidation($user);        
         $creden = $req->validate($validations);
 

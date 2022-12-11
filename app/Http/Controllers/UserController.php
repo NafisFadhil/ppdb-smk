@@ -13,19 +13,28 @@ use Illuminate\Support\Facades\Storage;
 class UserController extends Controller
 {
 
-    protected $myvalidations = [
-        'name',
-        'username',
-        'password',
-        'avatar',
-        'level_id',
-    ];
-    
     protected function getSearch ($model)
     {
         $search = request('search');
         return $model->where('username', 'like', "%$search%")
             ->orWhere('name', 'like', "%$search%");
+    }
+
+    protected function getValidations (string $type, Request $req, User $user = null)
+    {
+        if ($type === 'store') return [
+            'name' => 'required|string',
+            'username' => 'required|string|unique:users,username',
+            'password' => 'required|string|min:8',
+            'avatar' => 'nullable|image',
+            'level_id' => 'required|numeric'
+        ]; elseif ($type === 'update') return [
+            'name' => 'required|string',
+            'username' => 'required|string|unique:users,username,'.$user->id,
+            'password' => 'nullable|string|min:8',
+            'avatar' => 'nullable|image',
+            'level_id' => 'required|numeric'
+        ];
     }
     
     /**
@@ -111,23 +120,25 @@ class UserController extends Controller
      */
     public function store(Request $req)
     {
-        $creden = $req->validate(ModelHelper::getValidations($this->myvalidations, User::$validations));
+        $creden = $req->validate($this->getValidations('store', $req));
+
         try {
             
-            if ($req->hasFile('avatar')) $creden['avatar'] = ImageHelper::uploadAvatar($req->file('avatar'));
-            
+            if ($req->hasFile('avatar')) {
+                $creden['avatar'] = ImageHelper::uploadAvatar($req->file('avatar'));
+            }
+
             $creden['password'] = Hash::make($creden['password']);
             $redir = '/admin/users/' . ($creden['level_id'] === 1 ? 'siswa' : 'admin');
-            
             $user = User::create($creden);
+
             return redirect($redir)->withErrors([
-                'alerts' => ['success' => 'Berhasil menambahkan user!']
+                'alerts' => ['success' => 'Berhasil mengedit profil!']
             ]);
             
         } catch (\Throwable $th) {
-            throw $th;
             return back()->withErrors([
-                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat menambahkan user!']
+                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat mengedit profil!']
             ])->withInput($creden);
         }
     }
@@ -180,27 +191,18 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, User $user, $profil = false)
+    public function update(Request $req, User $user)
     {
 
-        $validations = ModelHelper::getValidations(
-            $this->myvalidations,
-            User::$validations
-        );
-        
-        if (!$profil && $req->has('username') && $req->get('username') === $user->username) {
-            $validations['username'] .= ',' . $user->id;
-        }
-
-        $creden = $req->validate($validations);
+        $creden = $req->validate($this->getValidations('update', $req, $user));
 
         try {
             
             if ($req->hasFile('avatar')) {
                 if (!is_null($user->avatar) && !empty($user->avatar)) {
                     $paths = explode('/', $user->avatar);
-                    $storagepath = implode('/', array_splice($paths, 2));
-                    if ($paths[0] === 'storage') Storage::delete($storagepath);
+                    $storagepath = implode('/', array_slice($paths, 2));
+                    if ($paths[1] === 'storage') Storage::delete($storagepath);
                 }
 
                 $creden['avatar'] = ImageHelper::uploadAvatar($req->file('avatar'));
@@ -209,8 +211,7 @@ class UserController extends Controller
             if (is_null($creden['password'])) unset($creden['password']);
             else $creden['password'] = Hash::make($creden['password']);
 
-            $redir = '/admin/users/' . ($creden['level_id'] ?? $user->level_id === 1 ? 'siswa' : 'admin');
-            $redir = $profil ? '/admin/profil' : $redir;
+            $redir = '/admin/users/' . ($creden['level_id'] === 1 ? 'siswa' : 'admin');
             
             $user = $user->update($creden);
             return redirect($redir)->withErrors([
@@ -218,7 +219,6 @@ class UserController extends Controller
             ]);
             
         } catch (\Throwable $th) {
-            throw $th;
             return back()->withErrors([
                 'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat mengedit profil!']
             ])->withInput($creden);
@@ -233,12 +233,13 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
-    }
-
-    public function xdestroy(User $user)
-    {
         try {
+            if (!is_null($user->avatar) && !empty($user->avatar)) {
+                $paths = explode('/', $user->avatar);
+                $storagepath = implode('/', array_slice($paths, 2));
+                if ($paths[1] === 'storage') Storage::delete($storagepath);
+            }
+            
             $user->delete();
             return back()->withErrors([
                 'alerts' => ['success' => 'Berhasil menghapus user!']

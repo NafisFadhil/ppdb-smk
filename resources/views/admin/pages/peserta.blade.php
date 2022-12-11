@@ -73,21 +73,33 @@
 											])
 										</button>
 
-										{{-- Tagihan --}}
-										<button type="button" title="Detail Tagihan" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/tagihan/{{ $row->id }}'">
-											<i class="fa">T</i>
-										</button>
-
-										{{-- Pembayaran --}}
-										<button type="button" title="Detail Pembayaran" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}'">
-											<i class="fa">P</i>
-										</button>
-
 										{{-- Edit --}}
 										<button type="button" title="Edit Data Pendaftaran" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/edit/{{ $row->id }}'">
 											<i class="fa fa-pen"></i>
 										</button>
 
+									</div>
+
+									<div class="btn-group btn-group-sm">
+										{{-- Tagihan --}}
+										<button type="button" title="Detail Tagihan" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/tagihan/{{ $row->id }}'">
+											<i class="fa">T</i>
+										</button>
+										
+										{{-- Data Pembayaran Pendaftaran --}}
+										<button type="button" title="Data Pembayaran Pendaftaran" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=pendaftaran'">
+											<i class="fa fa-dollar-sign">P</i>
+										</button>
+
+										{{-- Data Pembayaran Daftar Ulang --}}
+										<button type="button" title="Data Pembayaran Daftar Ulang" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=daftar_ulang'">
+											<i class="fa fa-dollar-sign">DU</i>
+										</button>
+
+										{{-- Data Pembayaran Seragam --}}
+										<button type="button" title="Data Pembayaran Seragam" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=seragam'">
+											<i class="fa fa-dollar-sign">S</i>
+										</button>
 									</div>
 								</td>
 							</tr>
