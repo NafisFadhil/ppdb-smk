@@ -13,13 +13,6 @@ use Illuminate\Support\Facades\Storage;
 class UserController extends Controller
 {
 
-    protected function getSearch ($model)
-    {
-        $search = request('search');
-        return $model->where('username', 'like', "%$search%")
-            ->orWhere('name', 'like', "%$search%");
-    }
-
     protected function getValidations (string $type, Request $req, User $user = null)
     {
         if ($type === 'store') return [
@@ -56,11 +49,14 @@ class UserController extends Controller
      */
     public function admin()
     {
-        $model = User::whereNot('id', auth()->user()->id)
-            ->whereNot('level_id', 1);
-        if (request('search')) $model = $this->getSearch($model);
-        $model = $model->with(['level'])->paginate();
-
+        $search = request('search');
+        $model = User::where([
+            ['username', 'like', "%$search%",],
+            ['name', 'like', "%$search%"],
+            ['id', '!=', auth()->user()->id],
+            ['level_id', '!=', 1]
+        ])->with(['level'])->paginate();
+        
         return view('admin.pages.users.index', [
             'page' => ['title' => 'Kelola User Admin'],
             'users' => $model
@@ -74,9 +70,12 @@ class UserController extends Controller
      */
     public function siswa()
     {
-        $model = User::where('level_id', 1);
-        if (request('search')) $model = $this->getSearch($model);
-        $model = $model->paginate();
+        $search = request('search');
+        $model = User::where([
+            ['username', 'like', "%$search%",],
+            ['name', 'like', "%$search%"],
+            ['level_id', 1]
+        ])->with(['level'])->paginate();
 
         return view('admin.pages.users.index', [
             'page' => ['title' => 'Kelola User Siswa'],

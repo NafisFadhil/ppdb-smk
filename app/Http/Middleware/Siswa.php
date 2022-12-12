@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+
+class Siswa
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     */
+    public function handle(Request $request, Closure $next)
+    {
+        if ($request->user()->level->name === 'siswa') {
+            return $next($request);
+        }
+        
+        return redirect('/')->withErrors([
+            'alerts' => ['warning' => 'Halaman ini hanya bisa diakses oleh siswa.']
+        ]);
+    }
+}
