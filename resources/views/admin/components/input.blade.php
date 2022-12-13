@@ -176,7 +176,8 @@ $error = isset($errors) && $errors->has($input['name']);
 					id="{{ $input['id'] }}"
 					placeholder="{{ $input['placeholder'] }}"
 					value="{{ old($input['name']) ?? $input['value'] ?? '' }}"
-					class="form-control form-control-sm {{ $error?'is-invalid':'' }}"
+					class="form-control form-control-sm {{ $error?'is-invalid':'' }} 
+					{{ in_array('uppercase', $input['opts']) ? 'input-uppercase' : '' }}"
 					{!! $input['attr'] !!}
 				/>
 

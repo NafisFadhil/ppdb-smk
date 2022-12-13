@@ -45,9 +45,10 @@ class AdminController extends Controller
                     [
                         'title' => 'Data Siswa',
                         'inputs' => [
-                            ['attr' => 'disabled', 'name' => 'nama_lengkap', 'value' => NumberHelper::toRupiah($tagihan->biaya_pendaftaran)],
+                            ['attr' => 'disabled', 'name' => 'nama_lengkap', 'value' => $identitas->nama_lengkap],
+                            ['attr' => 'disabled', 'name' => 'kode_jurusan', 'value' => $identitas->pendaftaran->kode],
                             ['attr' => 'disabled', 'name' => 'jalur_pendaftaran', 'value' => \App\Helpers\ModelHelper::getJalur($identitas->jalur_pendaftaran)],
-                            ['attr' => 'disabled', 'name' => 'status', 'value' => $identitas->status->level],
+                            ['attr' => 'disabled', 'name' => 'status', 'value' => strtoupper($identitas->status->level)],
                         ]
                     ],
                     [
@@ -55,7 +56,7 @@ class AdminController extends Controller
                         'inputs' => [
                             ['attr' => 'disabled', 'name' => 'biaya_pendaftaran', 'value' => NumberHelper::toRupiah($tagihan->biaya_pendaftaran)],
                             ['attr' => 'disabled', 'name' => 'tagihan_pendaftaran', 'value' => NumberHelper::toRupiah($tagihan->tagihan_pendaftaran)],
-                            ['attr' => 'disabled', 'name' => 'admin_pendaftaran', 'value' => $tagihan->admin_pendaftaran],
+                            ['attr' => 'disabled', 'name' => 'admin_pendaftaran', 'value' => $tagihan->admin_pendaftaran ?? '(Belum Ada)'],
                             ['attr' => 'disabled', 'name' => 'lunas_pendaftaran', 'value' => $tagihan->lunas_pendaftaran ? 'Lunas' : 'Belum Lunas'],
                         ]
                     ],
@@ -66,7 +67,7 @@ class AdminController extends Controller
                         'inputs' => [
                             ['attr' => 'disabled', 'name' => 'biaya_daftar_ulang', 'value' => NumberHelper::toRupiah($tagihan->biaya_daftar_ulang)],
                             ['attr' => 'disabled', 'name' => 'tagihan_daftar_ulang', 'value' => NumberHelper::toRupiah($tagihan->tagihan_daftar_ulang)],
-                            ['attr' => 'disabled', 'name' => 'admin_daftar_ulang', 'value' => $tagihan->admin_daftar_ulang],
+                            ['attr' => 'disabled', 'name' => 'admin_daftar_ulang', 'value' => $tagihan->admin_daftar_ulang ?? '(Belum Ada)'],
                             ['attr' => 'disabled', 'name' => 'lunas_daftar_ulang', 'value' => $tagihan->lunas_daftar_ulang ? 'Lunas' : 'Belum Lunas'],
                         ]
                     ],
@@ -75,7 +76,7 @@ class AdminController extends Controller
                         'inputs' => [
                             ['attr' => 'disabled', 'name' => 'biaya_seragam', 'value' => NumberHelper::toRupiah($tagihan->biaya_seragam)],
                             ['attr' => 'disabled', 'name' => 'tagihan_seragam', 'value' => NumberHelper::toRupiah($tagihan->tagihan_seragam)],
-                            ['attr' => 'disabled', 'name' => 'admin_seragam', 'value' => $tagihan->admin_seragam],
+                            ['attr' => 'disabled', 'name' => 'admin_seragam', 'value' => $tagihan->admin_seragam ?? '(Belum Ada)'],
                             ['attr' => 'disabled', 'name' => 'lunas_seragam', 'value' => $tagihan->lunas_seragam ? 'Lunas' : 'Belum Lunas'],
                         ]
                     ],

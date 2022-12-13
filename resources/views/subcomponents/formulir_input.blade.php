@@ -114,7 +114,7 @@ $no ??= '00';
 					id="{{ $input['id'] }}"
 					placeholder="{{ $input['placeholder'] }}"
 					value="{{ old($input['name']) ?? $input['value'] ?? '' }}"
-					class="w-full px-3 py-2 bg-white backdrop-brightness-95 rounded border input-uppercase {{ $error?'border-red-800':'' }}"
+					class="w-full px-3 py-2 bg-white backdrop-brightness-95 rounded border {{ $input['opts']['uppercase']??true ? 'input-uppercase' : '' }} {{ $error?'border-red-800':'' }}"
 					{!! $input['attr'] !!}
 				/>
 

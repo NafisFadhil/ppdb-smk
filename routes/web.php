@@ -94,10 +94,10 @@ Route::middleware('auth')->group(function () {
     
         Route::resource('/users', UserController::class);
     
-        Route::controller(FormulirController::class)->middleware([''])->group(function () {
-            Route::get('/tambah-peserta', 'tambah');
-            Route::post('/tambah-peserta', 'admstore');
-        });
+        // Route::controller(FormulirController::class)->middleware()->group(function () {
+        //     Route::get('/tambah-peserta', 'tambah');
+        //     Route::post('/tambah-peserta', 'admstore');
+        // });
     
         Route::prefix('/verifikasi-pendaftaran')->controller(VerifikasiController::class)->group(function () {
             Route::get('/', 'pendaftaranIndex');
@@ -119,6 +119,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/print/{identitas:id}', [PrintController::class, 'pendaftaran']);
     
         Route::controller(FormulirController::class)->group(function () {
+            Route::get('/tambah-peserta', 'tambah');
+            Route::post('/tambah-peserta', 'store');
             Route::get('/edit/{identitas:id}', 'edit');
             Route::post('/edit/{identitas:id}', 'update');
         });
@@ -138,6 +140,8 @@ Route::middleware('auth')->group(function () {
         Route::controller(LaporanController::class)->group(function () {
             Route::get('/laporan-pendaftaran', 'indexPendaftaran')->name('laporan.pendaftaran');
             Route::post('/filter-pendaftaran', 'filterPendaftaran');
+            Route::get('/cetak-pendaftaran/{identitas:id}', 'cetakPendaftaran');
+            Route::get('/cetak-formulir/{identitas:id}', 'cetakFormulir');
         });
         
     });

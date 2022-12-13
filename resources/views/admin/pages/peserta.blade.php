@@ -24,7 +24,7 @@
 	<div class="col-12">
 		<div class="card">
 			<div class="card-body">
-				<table class="table table-sm table-bordered table-hover table-responsive">
+				<table id="xtable" class="table table-sm table-bordered table-hover table-responsive">
 					<thead>
 						<tr>
 							<th>No</th>

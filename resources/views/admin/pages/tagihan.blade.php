@@ -26,7 +26,7 @@
 			</div>
 		@endforeach
 
-		<div class="col-12 text-center mt-4">
+		<div class="col-12 text-center my-4">
 			<a href="{{ str_replace('tagihan', 'pembayaran', request()->fullUrl()) }}" class="btn btn-primary">
 				Detail Pembayaran
 			</a>

@@ -1,10 +1,5 @@
 @extends('layouts.admin')
 
-@dd(get_defined_vars())
-
-<?php 
-    $laporan ??= [];
-?>
 
 @section('content')
 <div class="row gap-2">
@@ -36,10 +31,10 @@
                     <button class="btn btn-primary" type="submit"><i class="fa fa-solid fa-filter"></i> Filter</button>
                 </form>
                 <hr>
-                @if($laporan)
+                @if(session()->get('laporan'))
                 @php($jml = 0)
                 <div id="print-element">
-                    @if($type == 'pembayaran')
+                    @if(session()->get('type') == 'pembayaran')
                     <div class="d-flex justify-content-end mt-5 mb-3">
                         <div>
                             <button class="btn btn-primary" id="cetak-pdf-button">
@@ -48,14 +43,14 @@
                         </div>
                     </div>
                     @endif
-                    <table id="{{ $type == 'pendaftar' ? 'xtable' : '' }}"  class="table table-striped table-bordered table-responsive">
+                    <table id="{{ session()->get('type') == 'pendaftar' ? 'xtable' : '' }}"  class="table table-striped table-bordered table-responsive">
                         <thead>
                             <tr>
                                 <th scope="col">Kode</th>
                                 <th scope="col">Nama Lengkap</th>
                                 <th scope="col">Jurusan</th>
                                 <th scope="col">No WhatsApp</th>
-                                @if($type == 'pembayaran')
+                                @if(session()->get('type') == 'pembayaran')
                                 <th scope="col">Jumlah Pembayaran</th>
                                 <th scope="col">Tanggal Pembayaran</th>
                                 <th scope="col">Admin Penerima</th>
@@ -69,8 +64,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if($type == 'pembayaran')
-                            @foreach($laporan as $lp)
+                            @if(session()->get('type') == 'pembayaran')
+                            @foreach(session()->get('laporan') as $lp)
                             <tr>
                                 <td>{{ $lp->kode }}</td>
                                 <td>{{ $lp->nama_lengkap }}</td>
@@ -83,7 +78,7 @@
                             @php($jml += $lp->biaya_pendaftaran)
                             @endforeach
                             @else
-                            @foreach($laporan as $lp)
+                            @foreach(session()->get('laporan') as $lp)
                             <tr>
                                 <td>{{ $lp->jurusan->kode }}</td>
                                 <td>{{ $lp->nama_lengkap }}</td>
@@ -108,7 +103,7 @@
                             @endforeach
                             @endif
                         </tbody>
-                        @if($type == 'pembayaran')
+                        @if(session()->get('type') == 'pembayaran')
                         <tfoot>
                             <tr>
                                 <td colspan="4">Total Pembayaran</td>

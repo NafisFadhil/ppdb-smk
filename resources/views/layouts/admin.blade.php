@@ -73,6 +73,12 @@
 	<script src="/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
 	<script>
 		$(function () {
+			let inputs = document.getElementsByClassName('input-uppercase');
+			for (let input of inputs) {
+				input.onkeyup = function () {
+					input.value = input.value.toUpperCase();
+				}
+			}
 			$('#xtable, table.datatable').DataTable({
 				"paging": false,
 				"lengthChange": false,
