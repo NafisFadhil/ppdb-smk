@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\DUSeragam;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -39,6 +41,10 @@ class DatabaseSeeder extends Seeder
             'asal_sekolah' => 'MTS Hindu Bogor',
             'nama_jurusan' => 'tbsm',
             'jalur_pendaftaran_id' => 2,
+        ]);
+        $duseragam = DUSeragam::create([
+            'kode' => DUSeragam::getKode(),
+            'identitas_id' => $identitas->id,
         ]);
         $tagihan = \App\Models\Tagihan::create([
             'biaya_pendaftaran' => $identitas->jalur_pendaftaran->biaya_pendaftaran,

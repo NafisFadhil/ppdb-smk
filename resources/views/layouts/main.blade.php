@@ -28,6 +28,14 @@
 	@include('components.alert')
 	
 	<script src="/dist/js/script.js"></script>
+	<script>
+		let inputs = document.getElementsByClassName('input-uppercase');
+		for (let input of inputs) {
+			input.onkeyup = function () {
+				input.value = input.value.toUpperCase();
+			}
+		}
+	</script>
 	@stack('scripts')
 
 </body>

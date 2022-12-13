@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('jalur');
             $table->string('subjalur1')->nullable();
             $table->string('subjalur2')->nullable();
-            $table->string('subjalur3')->nullable();
 
             $table->unsignedMediumInteger('biaya_pendaftaran')->default(0);
             $table->unsignedMediumInteger('biaya_daftar_ulang')->default(0);

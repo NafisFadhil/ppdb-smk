@@ -61,6 +61,7 @@ class Jurusan extends Model
 	{
 		if ($key === 'id') return self::$jurusan[$value];
 		else {
+			$value = strtolower($value);
 			foreach (self::$jurusan as $item) {
 				if ($item[$key] === $value) return $item;
 			}
@@ -69,6 +70,7 @@ class Jurusan extends Model
 
 	public static function getKode(string $singkatan, int $nomor = null)
 	{
+		$singkatan = strtolower($singkatan);
 		$jurusan = self::getJurusan($singkatan, 'singkatan');
 
 		if (!array_key_exists($jurusan['singkatan'], self::$kode)) return false;
@@ -95,7 +97,8 @@ class Jurusan extends Model
 		$new_jurusan = [['value' => '', 'label' => '--Pilih Jurusan--']];
 		for ($i = 0; $i < count($jurusan); $i++) {
 			$new_jurusan[] = [
-				'label' => $jurusan[$i]['nama'], 'value' => $jurusan[$i]['singkatan']
+				'label' => strtoupper($jurusan[$i]['nama']),
+				'value' => strtoupper($jurusan[$i]['singkatan'])
 			];
 		}
 		return $new_jurusan;

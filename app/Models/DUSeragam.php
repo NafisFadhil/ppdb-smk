@@ -16,19 +16,7 @@ class DUSeragam extends Model
     }
 
     public static $validations = [
-        'tempat_lahir',
-        'alamat_desa',
-        'alamat_kec',
-        'alamat_kota_kab',
-        'alamat_rt',
-        'alamat_rw',
-        'nama_ayah',
-        'nama_ibu',
-        'jumlah_saudara_kandung',
-        'nik',
-        'nisn',
-        'no_ujian_nasional',
-        'no_ijazah',
+        'ukuran_seragam' => 'nullable|string'
     ];
 
     public static function getKode()
@@ -41,5 +29,14 @@ class DUSeragam extends Model
 		$xnomor = str_pad($nomor, 3, '0', STR_PAD_LEFT);
 		return $kode.'-'.$xnomor;
 	}
+
+    public static function getValidations(array $names)
+    {
+        $result = [];
+        foreach ($names as $key) {
+            $result[$key] = self::$validations[$key] ?? '';
+        }
+        return $result;
+    }
 
 }

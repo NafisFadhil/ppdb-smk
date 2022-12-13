@@ -196,6 +196,11 @@ $inputs = [
 								</td>
 								<td>
 									<div class="btn-group btn-group-sm mb-1">
+										{{-- Manual Form --}}
+										<button type="button" title="Formulir DU & Seragam" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/formulir-duseragam/{{ $row->id }}'" {{ $row->status_id !== 4 ? 'disabled' : '' }}>
+											<i class="fa">F</i>
+										</button>
+
 										{{-- DUSeragam --}}
 										<button type="button" title="Konfirmasi Biaya Daftar Ulang & Seragam" data-toggle="modal"
 										data-target="#modalBiaya{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 5 ? 'disabled' : '' }} >
@@ -270,36 +275,6 @@ $inputs = [
 												]
 											])
 										</button>
-
-										{{-- <button type="button" title="Detail Tagihan" data-toggle="modal" data-target="#modalDetailTagihan{{ $row->id }}" class="btn btn-secondary" >
-											<i class="fa fa-search-dollar"></i> 
-											@include('admin.modals.general.detail', [
-												'row' => $row,
-												'card' => [
-													'id' => 'modalDetailTagihan'.$row->id,
-													'title' => 'Detail Biaya dan Tagihan'
-												],
-												'inputs' => [
-													['Pendaftaran'],
-														['Biaya Pendaftaran', NumberHelper::toRupiah($row->tagihan->biaya_pendaftaran)],
-														['Tagihan Pendaftaran', NumberHelper::toRupiah($row->tagihan->tagihan_pendaftaran)],
-														['Status Pendaftaran', $row->tagihan->lunas_pendaftaran ? 'Lunas' : 'Belum Lunas'],
-														['Admin Biaya Pendaftaran', $row->tagihan->admin_pendaftaran],
-														[],
-														['Daftar Ulang'],
-														['Biaya Daftar Ulang', NumberHelper::toRupiah($row->tagihan->biaya_daftar_ulang)],
-														['Tagihan Daftar Ulang', NumberHelper::toRupiah($row->tagihan->tagihan_daftar_ulang)],
-														['Status Daftar Ulang', $row->tagihan->lunas_daftar_ulang ? 'Lunas' : 'Belum Lunas'],
-														['Admin Biaya Daftar Ulang', $row->tagihan->admin_daftar_ulang],
-														[],
-														['Seragam'],
-														['Biaya Seragam', NumberHelper::toRupiah($row->tagihan->biaya_seragam)],
-														['Tagihan Seragam', NumberHelper::toRupiah($row->tagihan->tagihan_seragam)],
-														['Status Seragam', $row->tagihan->lunas_seragam ? 'Lunas' : 'Belum Lunas'],
-														['Admin Biaya Seragam', $row->tagihan->admin_seragam],
-													]
-											])
-										</button> --}}
 
 										{{-- Tagihan --}}
 										<button type="button" title="Detail Tagihan" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/tagihan/{{ $row->id }}'">

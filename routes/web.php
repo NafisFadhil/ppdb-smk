@@ -40,7 +40,7 @@ Route::get('/', function () {
 
 Route::get('/test', function () {
     // dd(auth()->user()->count());
-    dd(get_defined_vars());
+    // dd(get_defined_vars());
 });
 
 
@@ -96,7 +96,7 @@ Route::middleware('auth')->group(function () {
     
         Route::controller(FormulirController::class)->middleware([''])->group(function () {
             Route::get('/tambah-peserta', 'tambah');
-            Route::post('/tambah-peserta', 'store');
+            Route::post('/tambah-peserta', 'admstore');
         });
     
         Route::prefix('/verifikasi-pendaftaran')->controller(VerifikasiController::class)->group(function () {
@@ -123,6 +123,11 @@ Route::middleware('auth')->group(function () {
             Route::post('/edit/{identitas:id}', 'update');
         });
     
+        Route::controller(DUSeragamController::class)->group(function () {
+            Route::get('/formulir-duseragam/{identitas:id}', 'admcreate');
+            Route::post('/formulir-duseragam/{identitas:id}', 'admstore');
+        });
+        
         Route::controller(SponsorshipController::class)->group(function () {
             Route::get('/sponsorship', 'index');
             Route::post('/sponsorship', 'store');

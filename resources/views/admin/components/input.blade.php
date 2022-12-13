@@ -160,9 +160,10 @@ $error = isset($errors) && $errors->has($input['name']);
 							$value = $option['value'];
 							$label = $option['label'];
 						} else $value = $label = $option;
-						$selected = $input['value'] === $value || old($input['name']) === $value
+						
+						$selected = !$loop->first && $input['value'] === $value;
 						?>
-						<option value="{{ $value }}" {{ $selected ? 'selected="selected"' : '' }} >
+						<option value="{{ $value }}" {{ $selected ? 'selected' : null }}>
 							{{ $label }}
 						</option>
 					@endforeach	

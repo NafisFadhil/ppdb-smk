@@ -26,6 +26,8 @@ class AdminController extends Controller
                 ->latest()->paginate(25);
         } else $peserta = Identitas::latest()->with(['pendaftaran', 'user', 'status'])->paginate();
 
+        // dd($peserta->first()->jalur_pendaftaran);
+
         return view('admin.pages.peserta', [
             'page' => ['title' => 'Daftar Peserta'],
             'peserta' => $peserta

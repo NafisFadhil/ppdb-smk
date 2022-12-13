@@ -2,33 +2,54 @@
 
 namespace App\Models;
 
-// use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Identitas extends Model
 {
-    // use HasFactory;
-    // protected $fillable = [
-    //     'jalur_pendaftaran',
-    //     'nama_lengkap',
-    //     'tanggal_lahir',
-    //     'jenis_kelamin',
-    //     'asal_sekolah',
-    //     'no_wa_ortu',
-    //     'no_wa_siswa',
-    //     'nama_jurusan',
-    //     'status_id'
-    // ];
+
+    // Accessor and Mutators
+    private function uppercaseAttribute() :Attribute {
+        return Attribute::make(
+            get: fn ($value) => strtoupper($value),
+            set: fn ($value) => strtoupper($value),
+        );
+    }
+    protected function namaLengkap() :Attribute {
+        return $this->uppercaseAttribute();
+    } 
+    protected function jenisKelamin() :Attribute {
+        return $this->uppercaseAttribute();
+    } 
+    protected function asalSekolah() :Attribute {
+        return $this->uppercaseAttribute();
+    } 
+    protected function namaJurusan() :Attribute {
+        return $this->uppercaseAttribute();
+    } 
+    protected function tempatLahir() :Attribute {
+        return $this->uppercaseAttribute();
+    } 
+    protected function alamatDesa() :Attribute {
+        return $this->uppercaseAttribute();
+    } 
+    protected function alamatKec() :Attribute {
+        return $this->uppercaseAttribute();
+    } 
+    protected function alamatKotaKab() :Attribute {
+        return $this->uppercaseAttribute();
+    } 
+    protected function namaAyah() :Attribute {
+        return $this->uppercaseAttribute();
+    } 
+    protected function namaIbu() :Attribute {
+        return $this->uppercaseAttribute();
+    } 
     
+    // Eloquent Relationship
     public function pendaftaran () {
         return $this->hasOne(Pendaftaran::class);
     }
-    // public function daftar_ulang () {
-    //     return $this->hasOne(DaftarUlang::class);
-    // }
-    // public function seragam () {
-    //     return $this->hasOne(Seragam::class);
-    // }
     public function duseragam () {
         return $this->hasOne(DUSeragam::class);
     }

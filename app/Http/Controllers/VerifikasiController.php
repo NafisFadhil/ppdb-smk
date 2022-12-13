@@ -121,10 +121,6 @@ class VerifikasiController extends Controller
                 'verifikasi' => true,
                 ...$creden
             ]);
-            $duseragam = DUSeragam::create([
-                'kode' => DUSeragam::getKode(),
-                'identitas_id' => $identitas->id,
-            ]);
             $identitas->update([
                 'status_id' => $identitas->status_id+1
             ]);
@@ -134,6 +130,7 @@ class VerifikasiController extends Controller
             ]);
             
         } catch (\Throwable $th) {
+            throw $th;
             return back()->withErrors([
                 'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat memverifikasi data.']
             ]);

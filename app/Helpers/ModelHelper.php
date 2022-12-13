@@ -28,11 +28,9 @@ class ModelHelper
 	public static function getJalur($jalur)
 	{
 		$str = $jalur->jalur;
-		if (isset($jalur->subjalur1)) {
-				$str .= ' ' . $jalur->subjalur1;
-		} if (isset($jalur->subjalur2) && isset($jalur->subjalur3)) {
-				$str .= ' (' . $jalur->subjalur2 . ' Tingkat ' . $jalur->subjalur3 .')';
-		} return $str;
+		if (isset($jalur->subjalur1)) $str .= ' ' . $jalur->subjalur1;
+		if (isset($jalur->subjalur2)) $str .= ' ' . $jalur->subjalur2;
+		return strtoupper($str);
 	}
 
 	public static function getValidations(array $names, array $validations)
