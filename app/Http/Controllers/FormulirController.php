@@ -196,7 +196,7 @@ class FormulirController extends Controller
         ));
         $duscreden = $req->validate(DUSeragam::getValidations($this->duseragamValidations));
         
-        try {
+        // try {
 
             $identitas = Identitas::create($creden);
             $tagihan = Tagihan::create([
@@ -224,12 +224,12 @@ class FormulirController extends Controller
                 'alerts' => ['success' => 'Pendaftaran berhasil.'],
             ]);
             
-        } catch (\Exception $th) {
-            return back()->withErrors([
-                'alerts' => ['error' => 'Maaf, terjadi kesalahan saat memproses data.']
-            ])->withInput($creden);
+        // } catch (\Exception $th) {
+        //     return back()->withErrors([
+        //         'alerts' => ['error' => 'Maaf, terjadi kesalahan saat memproses data.']
+        //     ])->withInput($creden);
 
-        }
+        // }
             
     }
 
