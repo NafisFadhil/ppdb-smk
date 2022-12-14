@@ -23,17 +23,17 @@ $issupadm ? [[
 
 $issupadm ? [[
 	'variant' => 'dropdown', 'href' => '/admin/laporan', 'label' => 'Laporan', 'icon' => 'fa fa-solid fa-print', 'dropdown' => [
-		['href' => '/admin/laporan-pendaftaran', 'label' => 'Pendaftaran'],
-		['href' => '/admin/laporan-daftar-ulang', 'label' => 'Daftar Ulang'],
-		['href' => '/admin/laporan-seragam', 'label' => 'Seragam'],
+		['href' => '/admin/laporan/pendaftaran', 'label' => 'Pendaftaran'],
+		['href' => '/admin/laporan/daftar-ulang', 'label' => 'Daftar Ulang'],
+		['href' => '/admin/laporan/seragam', 'label' => 'Seragam'],
 	]
 ]] : ($user->level->name === 'admin-duseragam' ? [[
 	'variant' => 'dropdown', 'href' => '/admin/laporan', 'label' => 'Laporan', 'icon' => 'fa fa-solid fa-print', 'dropdown' => [
-		['href' => '/admin/laporan-daftar-ulang', 'label' => 'Daftar Ulang'],
-		['href' => '/admin/laporan-seragam', 'label' => 'Seragam'],
+		['href' => '/admin/laporan/daftar-ulang', 'label' => 'Daftar Ulang'],
+		['href' => '/admin/laporan/seragam', 'label' => 'Seragam'],
 	]
 ]] : [
-	['href' => '/admin/laporan-'.$adm, 'label' => 'Laporan '.StringHelper::toTitle($adm), 'icon' => 'fa fa-solid fa-print']
+	['href' => '/admin/laporan/'.$adm, 'label' => 'Laporan '.StringHelper::toTitle($adm), 'icon' => 'fa fa-solid fa-print']
 ]),
 
 [
