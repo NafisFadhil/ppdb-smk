@@ -51,7 +51,7 @@ $filterInputs = [
 		</div>
 	</div>
 
-	@if(isset($laporan) && !is_null($laporan))
+	@if(isset($laporan) && !is_null($laporan) && !empty($laporan) && count($laporan) > 0)
 		@php($jml = 0)
 		<div class="col-12">
 			<div class="card" id="print-element">

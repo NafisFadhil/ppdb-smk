@@ -8,14 +8,14 @@
 	<title>Cetak Pendaftaran</title>
 	<link rel="stylesheet" href="/adminlte/css/adminlte.min.css">
 	<link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
-	<link rel="stylesheet" href="/dist/css/pdf-formulir.css">
+	<link rel="stylesheet" href="/pdft/css/pdf-formulir.css">
 </head>
 
 <body>
 	<div class="container-fluid small">
 		<div class="row text-uppercase" id="print-element">
 			<div class="col-12 d-flex justify-content-center">
-				<img src="/dist/img/kop.png" alt="kop surat" width="90%">
+				<img src="/pdf/img/kop.png" alt="kop surat" width="90%">
 			</div>
 			<div class="col-12 d-flex justify-content-center">
 				<table class="table-bordered w-90">

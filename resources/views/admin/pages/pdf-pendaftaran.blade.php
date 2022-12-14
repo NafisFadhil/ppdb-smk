@@ -7,14 +7,14 @@
 	<title>Cetak Pendaftaran</title>
 	<link rel="stylesheet" href="/adminlte/css/adminlte.min.css">
     <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" href="/dist/css/pdf-pendaftaran.css">
+    <link rel="stylesheet" href="/pdft/css/pdf-pendaftaran.css">
 </head>
 <body>
 <div class="container-fluid">
     
     <div class="row" id="print-element">
         <div class="col-12 d-flex justify-content-center">
-            <img src="/dist/img/kop.png" alt="kop surat" width="90%">
+            <img src="/pdf/img/kop.png" alt="kop surat" width="90%">
         </div>
         <div class="col-12 d-flex justify-content-center font-weight-bold h5 mt-3 mb-3 underline big">
             KEPUTUSAN PANITIA PPDB
@@ -128,10 +128,10 @@
                 </div>
                         
                 <div class="w-100 d-flex justify-content-end">
-                    <img src="/dist/img/kepsek.png" alt="tanda tangan" width="25%">
+                    <img src="/pdf/img/kepsek.png" alt="tanda tangan" width="25%">
                 </div>
                 <div class="w-100 d-flex justify-content-center">
-                    <img src="/dist/img/footer.png" alt="footer surat" width="100%">
+                    <img src="/pdf/img/footer.png" alt="footer surat" width="100%">
                 </div>
             </div>
         </div>
