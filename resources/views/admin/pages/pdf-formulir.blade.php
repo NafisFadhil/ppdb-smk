@@ -80,7 +80,7 @@
 												<span class="font-weight-bold">: </span>
 											</div>
 											<div class="ml-2 w-val">
-												<input type="text" class="w-100" value="{{ $data->jurusan->kode }}">
+												<input type="text" class="w-100" value="{{ $data->jurusan->kode ?? '-' }}">
 											</div>
 										</div>
 									</div>
