@@ -1,0 +1,89 @@
+body{
+    font-family: "Times New Roman", Times, serif;
+    text-align:justify;
+}
+.border-bottom-dotted{
+    border-bottom:2px dotted #000;
+}
+.border-top-dotted{
+    border-top:1px dotted #000;
+}
+.line-through{
+    text-decoration:line-through;
+}
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #print-element, #print-element * {
+        visibility: visible;
+    }
+    #cetak-pdf-button, #cetak-pdf-button *{
+        visibility: hidden;
+    }
+    #print-element {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+}
+.small{
+    font-size:15px;
+}
+
+.big{
+    font-size:16px;
+}
+.underline{
+    text-decoration:underline;
+}
+.cw{
+    width:90%;
+}
+ol{
+    padding:0;
+    margin-left:25px;
+}
+.list-top{
+    margin-left:15px;
+    padding:0;
+}
+.list-bottom{
+    margin-left:15px;
+    padding:0;
+}
+.pl-left{
+    padding-left:5px;
+}
+.w-left{
+    width:25%;
+}
+.w-colon{
+    width:1%;
+}
+.w-right{
+    width:74%;
+}
+.w-center{
+    width:95%;
+}
+.text-ket{
+    text-align:center;
+}
+@media only screen and (max-width: 600px) {
+    .text-ket{
+        text-align:left;
+    }
+    .small{
+        font-size:10px;
+    }
+    .big{
+        font-size:12px;
+    }
+    .w-left{
+        width:44%;
+    }
+    .w-right{
+        width:55%;
+    }
+}

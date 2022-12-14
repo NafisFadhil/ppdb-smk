@@ -1,0 +1,165 @@
+body{
+    font-family: "Times New Roman", Times, serif;
+}
+.w-90{
+    width: 90%;
+}
+th,td{
+    vertical-align: center !important;
+    text-align:center !important;
+}
+.photo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3cm;
+    height: 4cm;
+    border:3px solid #000;
+    text-align: center;
+}
+ol{
+    padding-left:10px;
+    margin: 0;
+}
+ol > li::marker {
+    font-weight: bold;
+  }
+ul{
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+input[type="checkbox"] {
+    appearance: none;
+    background-color: #fff;
+    margin: 0;
+    font: inherit;
+    color: currentColor;
+    width: 1.4em;
+    height: 1.4em;
+    border: 1px solid currentColor;
+    border-radius: 0;
+    transform: translateY(-0.075em);
+    display: grid;
+    place-content: center;
+}
+.form-control + .form-control {
+    margin-top: 1em;
+}
+input[type="checkbox"]::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--form-control-color);
+  background-color: CanvasText;
+  transform-origin: bottom left;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+input[type="checkbox"]:checked::before {
+    transform: scale(1);
+}
+input[type="text"]{
+    border-radius: 0;
+    border: 1px solid #000;
+    text-transform: uppercase;
+}
+
+.w-label{
+    width: 12%;
+}
+.w-input{
+    width: 78%;
+}
+.w-input input{
+    width: 90%;
+    margin-left: 10px;
+}
+.w-input-between{
+    width: 60%;
+}
+.w-input-label{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    width: 40%;
+}
+.w-input-label div{
+    text-align: right;
+    width: 40%;
+    font-weight: 700;
+}
+.w-input-label input{
+    width: 60%;
+}
+
+
+.w-input-between-label{
+    width: 50%;
+}
+.w-val{
+    width: 100%;
+}
+.w-l{
+    text-transform:capitalize;
+}
+.w-between{
+    width: 87%;
+}
+
+.small{
+    font-size: 14px;
+}
+
+.w-3{
+    width: auto;
+}
+.w-input-with-label{
+    width: 40%;
+}
+@media only screen and (max-width: 600px) {
+    .small{
+        font-size: 10px;
+    }
+    .w-label{
+        width: 30%;
+    }
+    .w-input{
+        width: 70%;
+    }
+    .w-input input{
+        width: 100%;
+        margin-left: 10px;
+    }
+    .w-3{
+        width: 100%;
+    }
+    .w-input-between{
+        width: 100%;
+    }
+    .w-input-label{
+        margin-top: 1px;
+        width: 100%;
+    }
+    .w-input-label div{
+        text-align: left;
+    }
+    .w-input-label-diff{
+        justify-content: start !important;
+    }
+}
+input:disabled {
+    background: #fff;
+}
+input[type="checkbox"]:disabled {
+    background: #fff;
+}
+
+.ttd{
+    height: 120px;
+    border-bottom: 2px solid #000;
+    width: 40%;
+}
+    

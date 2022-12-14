@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CetakController;
 // use App\Http\Controllers\DaftarUlangController;
 use App\Http\Controllers\DUSeragamController;
 use App\Http\Controllers\FormulirController;
@@ -51,7 +52,7 @@ Route::middleware('guest')->group(function () {
     });
     
     Route::controller(LoginController::class)->group(function () {
-        Route::get('/login', 'index');
+        Route::get('/login', 'index')->name('login');
         Route::post('/login', 'login');
         Route::get('/login/admin', 'admindex');
         Route::post('/login/admin', 'admlogin');
@@ -72,16 +73,16 @@ Route::middleware('auth')->group(function () {
         
     });
 
-    Route::prefix('/admin')->middleware('auth')->group(function () {
+    Route::prefix('/admin')->middleware('admin')->group(function () {
 
-        Route::controller(AdminController::class)->middleware('admin')->group(function () {
+        Route::controller(AdminController::class)->group(function () {
             Route::get('/', 'index');
             Route::get('/peserta', 'peserta');
             Route::get('/tagihan/{identitas:id}', 'tagihan');
             Route::get('/pembayaran/{identitas:id}', 'pembayaran');
         });
         
-        Route::controller(UserProfilController::class)->middleware('admin')->group(function () {
+        Route::controller(UserProfilController::class)->group(function () {
             Route::get('/profil', 'profil');
             Route::put('/profil', 'update');
         });
@@ -138,10 +139,12 @@ Route::middleware('auth')->group(function () {
         });
     
         Route::controller(LaporanController::class)->group(function () {
-            Route::get('/laporan-pendaftaran', 'indexPendaftaran')->name('laporan.pendaftaran');
-            Route::post('/filter-pendaftaran', 'filterPendaftaran');
-            Route::get('/cetak-pendaftaran/{identitas:id}', 'cetakPendaftaran');
-            Route::get('/cetak-formulir/{identitas:id}', 'cetakFormulir');
+            Route::get('/laporan/pendaftaran', 'indexPendaftaran')->name('laporan.pendaftaran');
+            // Route::post('/laporan/pendaftaran', 'filterPendaftaran');
+        });
+        Route::controller(CetakController::class)->group(function () {
+            Route::get('/cetak/pendaftaran/{identitas:id}', 'cetakPendaftaran');
+            Route::get('/cetak/formulir/{identitas:id}', 'cetakFormulir');
         });
         
     });
