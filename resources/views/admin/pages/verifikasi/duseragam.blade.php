@@ -164,10 +164,14 @@ $inputs = [
 
 @section('content')
 <div class="row gap-2">
+	@include('admin.components.bigsearch', ['input' => [
+		'type' => 'search', 'name' => 'search', 'placeholder' => 'Cari peserta...'
+	]])
+	
 	<div class="col-12">
 		<div class="card">
-			<div class="card-body">    
-				<table id="xtable" class="w-100 table table-sm table-bordered table-hover table-responsive">
+			<div class="card-body">
+				<table id="xtable" class="w-100 table table-sm table-bordered table-hover">
 					<thead>
 						<tr>
 							<th>No</th>

@@ -9,6 +9,8 @@ class DUSeragam extends Model
 {
     // use HasFactory;
 
+    protected static $unguarded = true;
+
     protected $table = 'duseragams';
 
     public function identitas () {

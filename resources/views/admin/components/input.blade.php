@@ -161,7 +161,7 @@ $error = isset($errors) && $errors->has($input['name']);
 							$label = $option['label'];
 						} else $value = $label = $option;
 						
-						$selected = !$loop->first && $input['value'] === $value;
+						$selected = !$loop->first && $input['value'] == $value || old($input['name']) == $value;
 						?>
 						<option value="{{ $value }}" {{ $selected ? 'selected' : null }}>
 							{{ $label }}

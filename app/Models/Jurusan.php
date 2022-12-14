@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+// use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Jurusan extends Model
 {
-	use HasFactory;
-	protected $fillable = ['kode','jurusan','slug','singkatan','nomor','identitas_id'];
+	// use HasFactory;
+	// protected $fillable = ['kode','jurusan','slug','singkatan','nomor','identitas_id'];
+
+	protected static $unguarded = true;
 
 	public function identitas () {
 		return $this->belongsTo(Identitas::class);

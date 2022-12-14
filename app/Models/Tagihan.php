@@ -9,6 +9,8 @@ class Tagihan extends Model
 {
     // use HasFactory;
 
+    protected static $unguarded = true;
+
     public function identitas () {
         return $this->belongsTo(Identitas::class);
     }

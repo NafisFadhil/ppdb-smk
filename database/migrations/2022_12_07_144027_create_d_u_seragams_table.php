@@ -19,8 +19,8 @@ return new class extends Migration
 
             $table->string('ukuran_seragam', 5)->nullable();
             
-            $table->boolean('verifikasi_duseragam')->default(false);
-            $table->string('admin_duseragam')->nullable();
+            $table->boolean('verifikasi')->default(false);
+            $table->string('admin_verifikasi')->nullable();
 
             $table->foreignId('identitas_id');
             $table->timestamps();

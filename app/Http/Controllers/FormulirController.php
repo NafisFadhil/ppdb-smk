@@ -195,9 +195,10 @@ class FormulirController extends Controller
             $isadmin ? $this->admValidations : $this->myValidations
         ));
         $duscreden = $req->validate(DUSeragam::getValidations($this->duseragamValidations));
-        
-        // try {
 
+        
+        try {
+            
             $identitas = Identitas::create($creden);
             $tagihan = Tagihan::create([
                 'biaya_pendaftaran' => $identitas->jalur_pendaftaran->biaya_pendaftaran,
@@ -224,12 +225,13 @@ class FormulirController extends Controller
                 'alerts' => ['success' => 'Pendaftaran berhasil.'],
             ]);
             
-        // } catch (\Exception $th) {
-        //     return back()->withErrors([
-        //         'alerts' => ['error' => 'Maaf, terjadi kesalahan saat memproses data.']
-        //     ])->withInput($creden);
+        } catch (\Exception $th) {
+            throw $th;
+            return back()->withErrors([
+                'alerts' => ['error' => 'Maaf, terjadi kesalahan saat memproses data.']
+            ])->withInput($creden);
 
-        // }
+        }
             
     }
 

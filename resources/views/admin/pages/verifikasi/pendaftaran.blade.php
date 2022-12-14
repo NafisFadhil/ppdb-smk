@@ -125,10 +125,14 @@ $inputs = [
 
 @section('content')
 <div class="row gap-2">
+	@include('admin.components.bigsearch', ['input' => [
+		'type' => 'search', 'name' => 'search', 'placeholder' => 'Cari siswa...'
+	]])
+	
 	<div class="col-12">
 		<div class="card">
-			<div class="card-body">    
-				<table id="xtable" class="w-100 table table-sm table-bordered table-hover table-responsive">
+			<div class="card-body" style="overflow-x: auto">
+				<table id="xtable" class="w-100 table table-sm table-bordered table-hover">
 					<thead>
 						<tr>
 							<th>No</th>
@@ -279,8 +283,9 @@ $inputs = [
 										</button>
 										
 										{{-- Print --}}
-										<button type="button" title="Cetak Lembar Pendaftaran" class="btn btn-secondary" {{ $xverifikasi ? '' : 'disabled' }} onclick="window.location = '/admin/print/{{ $row->id }}'" >
+										<button type="button" title="Print" data-toggle="modal" data-target="#modalPrint{{ $row->id }}" class="btn btn-secondary" {{ $xverifikasi ? '' : 'disabled' }}>
 											<i class="fa fa-print"></i>
+											@include('admin.modals.print.verifikasi-pendaftaran', ['row' => $row])
 										</button>
 										
 									</div>

@@ -4,7 +4,7 @@
 	<div class="card">
 		<div class="card-body text-center">
 			<form action="">
-				<div class="input-group">
+				<div class="input-group d-flex flex-nowrap">
 					<div class="input-group-prepend">
 						<div class="input-group-text">
 							<i class="fa fa-search"></i>

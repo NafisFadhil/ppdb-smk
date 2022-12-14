@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\DUSeragam;
 use App\Models\Pembayaran;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 // use Illuminate\Support\Facades\DB;
 
@@ -158,7 +159,7 @@ class VerifikasiController extends Controller
         try {
 
             $identitas->tagihan->update([
-                ...$creden,
+                ...Arr::except($creden, 'admin_duseragam'),
                 'tagihan_daftar_ulang' => $creden['biaya_daftar_ulang'],
                 'tagihan_seragam' => $creden['biaya_seragam'],
                 'admin_daftar_ulang' => $creden['admin_duseragam'],
@@ -172,7 +173,7 @@ class VerifikasiController extends Controller
             ]);
             
         } catch (\Throwable $th) {
-
+            throw $th;
             return back()->withErrors([
                 'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat memverifikasi biaya daftar ulang dan seragam.']
             ]);

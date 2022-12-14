@@ -9,6 +9,8 @@ class Pembayaran extends Model
 {
     // use HasFactory;
 
+    protected static $unguarded = true;
+
     public function tagihan () {
         return $this->belongsTo(Tagihan::class);
     }

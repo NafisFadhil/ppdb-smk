@@ -2,25 +2,10 @@
 
 @section('content')
 <div class="row gap-2">
-	<div class="w-100 mx-auto" style="max-width: max-content">
-		<div class="card">
-			<div class="card-body text-center">
-				<form action="/admin/peserta">
-					<div class="input-group">
-						<div class="input-group-prepend">
-							<div class="input-group-text">
-								<i class="fa fa-search"></i>
-							</div>
-						</div>
-						<input type="search" name="search" id="search" class="form-control vw-100" value="{{ old('search') ?? request('search') ?? '' }}" placeholder="Cari nama siswa..." style="max-width: 400px" autofocus>
-						<div class="input-group-append">
-							<button class="btn btn-primary btn-sm">Temukan</button>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+	@include('admin.components.bigsearch', ['input' => [
+		'type' => 'search', 'name' => 'search', 'placeholder' => 'Cari siswa...'
+	]])
+	
 	<div class="col-12">
 		<div class="card">
 			<div class="card-body">
@@ -76,6 +61,12 @@
 										{{-- Edit --}}
 										<button type="button" title="Edit Data Pendaftaran" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/edit/{{ $row->id }}'">
 											<i class="fa fa-pen"></i>
+										</button>
+
+										{{-- Print --}}
+										<button type="button" title="Print" data-toggle="modal" data-target="#modalPrint{{ $row->id }}" class="btn btn-secondary">
+											<i class="fa fa-print"></i>
+											@include('admin.modals.print.peserta', ['row' => $row])
 										</button>
 
 									</div>

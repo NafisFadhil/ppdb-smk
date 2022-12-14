@@ -14,12 +14,17 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    // protected static $unguarded = true;
+    
     // protected $fillable = [
     //     'name',
     //     'username',
     //     'password',
     //     'identitas_id'
     // ];
+
+    protected static $unguarded = true;
 
     public static $validations = [
         'name' => 'nullable|string',

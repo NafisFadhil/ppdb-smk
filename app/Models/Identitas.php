@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Identitas extends Model
 {
-
+    protected static $unguarded = true;
+    
     // Accessor and Mutators
     private function uppercaseAttribute() :Attribute {
         return Attribute::make(
