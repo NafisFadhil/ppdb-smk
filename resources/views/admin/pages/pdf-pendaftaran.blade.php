@@ -7,7 +7,7 @@
 	<title>Cetak Pendaftaran</title>
 	<link rel="stylesheet" href="/adminlte/css/adminlte.min.css">
     <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" href="/pdft/css/pdf-pendaftaran.css">
+    <link rel="stylesheet" href="/pdf/css/pdf-pendaftaran.css">
 </head>
 <body>
 <div class="container-fluid">
