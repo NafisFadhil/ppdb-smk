@@ -110,7 +110,7 @@ $filterInputs = [
 							@else
 							@foreach($laporan as $lp)
 							<tr>
-								<td>{{ $lp->jurusan->kode }}</td>
+								<td>{{ $lp->jurusan->kode ?? '-' }}</td>
 								<td>{{ $lp->nama_lengkap }}</td>
 								<td>{{ Str::upper($lp->nama_jurusan) }}</td>
 								<td>{{ $lp->no_wa_siswa }}</td>
