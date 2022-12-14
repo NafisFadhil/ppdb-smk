@@ -19,21 +19,27 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/reset/{type}', function($type) {
-    Artisan::call($type.':clear');
-    Artisan::call($type.':cache');
-    return 'OK';
-});
+// Route::get('/reset/{type}', function($type) {
+//     Artisan::call($type.':clear');
+//     Artisan::call($type.':cache');
+//     return 'OK';
+// });
 
-Route::get('/migrate', function() {
+Route::get('/remigrate', function() {
     Artisan::call('migrate:fresh --seed');
     return 'OK';
 });
 
-Route::get('/run-production', function() {
-    Artisan::call('config:clear');
-    Artisan::call('config:cache');
-    Artisan::call('view:clear');
-    Artisan::call('view:cache');
-    return 'OK';
+Route::get('/reoptimize', function() {
+    Artisan::call('optimize:clear');
+    Artisan::call('optimize');
+    return 'OPTIMIZED';
 });
+
+// Route::get('/run-production', function() {
+//     Artisan::call('config:clear');
+//     Artisan::call('config:cache');
+//     Artisan::call('view:clear');
+//     Artisan::call('view:cache');
+//     return 'OK';
+// });
