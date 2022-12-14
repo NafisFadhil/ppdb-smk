@@ -139,6 +139,12 @@ class FormulirController extends Controller
 
     protected function validateRecaptcha (Request $req)
     {
+        if (!$req->has('g-recaptcha-response') || !$req->get('g-recaptcha-response')) {
+            return redirect('/formulir')->withErrors([
+                'alerts' => ['danger' => 'Invalid reCAPTCHA!']
+            ])->withInput($req->toArray());
+        }
+
         $rawurl = 'https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s&remoteip=%s';
         $token = $req->get('g-recaptcha-response');
         $secretkey = env('RECAPTCHA_SECRET_KEY');
@@ -157,8 +163,8 @@ class FormulirController extends Controller
         $response = json_decode($contents, true);
 
         if (!$contents && !isset($response['success']) && !$response['success']) {
-            return back(498)->withErrors([
-                'alerts' => ['danger' => 'Invalid reCAPTCHA token, silahkan coba lagi!']
+            return redirect('/formulir')->withErrors([
+                'alerts' => ['danger' => 'Invalid reCAPTCHA!']
             ])->withInput($req->toArray());
         }
     }
@@ -190,7 +196,37 @@ class FormulirController extends Controller
     {
         $isadmin = $req->user()->level_id ?? 1 !== 1;
         
-        if (!$isadmin) $this->validateRecaptcha($req);
+        if (!$isadmin) {
+            if (!$req->has('g-recaptcha-response') || !$req->get('g-recaptcha-response')) {
+                return back()->withErrors([
+                    'alerts' => ['error' => 'Invalid reCAPTCHA!']
+                ])->withInput($req->toArray());
+            }
+    
+            $rawurl = 'https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s&remoteip=%s';
+            $token = $req->get('g-recaptcha-response');
+            $secretkey = env('RECAPTCHA_SECRET_KEY');
+            $clientip = $req->ip();
+            
+            $url = sprintf($rawurl, $secretkey, $token, $clientip);
+            // $result = file_get_contents($url);
+            // $response = json_decode($result, true);
+    
+            $c = curl_init();
+            curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($c, CURLOPT_URL, $url);
+            $contents = curl_exec($c);
+            curl_close($c);
+    
+            $response = json_decode($contents, true);
+    
+            if (!$contents && !isset($response['success']) && !$response['success']) {
+                return back()->withErrors([
+                    'alerts' => ['error' => 'Invalid reCAPTCHA!']
+                ])->withInput($req->toArray());
+            }
+        }
+
         $creden = $req->validate(Identitas::getValidations(
             $isadmin ? $this->admValidations : $this->myValidations
         ));
@@ -223,6 +259,9 @@ class FormulirController extends Controller
             
             return redirect($redir)->withErrors([
                 'alerts' => ['success' => 'Pendaftaran berhasil.'],
+                'pascaDaftar' => '',
+                'pendaftaran' => $pendaftaran->toArray(),
+                'tagihan' => $tagihan->toArray()
             ]);
             
         } catch (\Exception $th) {
