@@ -33,7 +33,7 @@
 				<div class="row w-90">
 					<div class="col-12 col-md-4">
 						<h4 class="w-90 font-weight-bold mt-2">
-							{{$data->jurusan->jurusan}}
+							{{$data->jurusan->jurusan ?? $data->nama_jurusan}}
 						</h4>
 					</div>
 					<div class="col-6 col-md-2">

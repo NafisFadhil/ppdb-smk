@@ -82,7 +82,7 @@
                         Sebagai Peserta Didik Baru Kelas X SMK Muhammadiyah Bligo Tahun Pelajaran 2022/2023
                     </div>
                     <div class="pl-left text-left">
-                        Di Kompetensi Keahlian : <span class="font-weight-bold">{{$data->jurusan->jurusan}}</span> 
+                        Di Kompetensi Keahlian : <span class="font-weight-bold">{{$data->jurusan->jurusan ?? $data->nama_jurusan}}</span> 
                     </div>
                 </div>
 
