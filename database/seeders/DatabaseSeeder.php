@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
             'no_wa_ortu' => '085123456789',
             'no_wa_siswa' => '085123456789',
             'asal_sekolah' => 'MTS Hindu Bogor',
-            'nama_jurusan' => 'tbsm',
+            'nama_jurusan' => 'tsm',
             'jalur_pendaftaran_id' => 2,
         ]);
         $duseragam = DUSeragam::create([

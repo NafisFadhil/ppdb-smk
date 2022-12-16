@@ -27,7 +27,7 @@ $inputs = [
 			[
 				'name' => 'keterangan',
 				'placeholder' => '(Opsional)',
-				'value' => $row->tagihan->keterangan
+				'value' => $row->pendaftaran->keterangan
 			],
 		];
 	},
@@ -192,6 +192,15 @@ $inputs = [
 											@endif
 										</button>
 
+										{{-- Input Siswa Sponsorship --}}
+										<button type="button" title="Input Siswa Sponsorship" data-toggle="modal"
+										data-target="#modalSponsorship{{ $row->id }}" class="btn btn-secondary" {{ $row->sponsorship ? 'disabled' : '' }} >
+											<i class="fa">S+</i>
+											@if(!$row->sponsorship)
+												@include('admin.modals.general.sponsorship', [ 'row' => $row ])
+											@endif
+										</button>
+
 										{{-- Verifikasi Pendaftaran --}}
 										<button type="button" title="Verifikasi Pendaftaran" data-toggle="modal"
 										data-target="#modalVerifikasi{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 3 ? 'disabled' : '' }} >
@@ -227,36 +236,6 @@ $inputs = [
 											])
 										</button>
 
-										{{-- <button type="button" title="Detail Tagihan" data-toggle="modal" data-target="#modalDetailTagihan{{ $row->id }}" class="btn btn-secondary" >
-											<i class="fa fa-search-dollar"></i> 
-											@include('admin.modals.general.detail', [
-												'row' => $row,
-												'card' => [
-													'id' => 'modalDetailTagihan'.$row->id,
-													'title' => 'Detail Biaya dan Tagihan'
-												],
-												'inputs' => [
-													['Pendaftaran'],
-														['Biaya Pendaftaran', NumberHelper::toRupiah($row->tagihan->biaya_pendaftaran)],
-														['Tagihan Pendaftaran', NumberHelper::toRupiah($row->tagihan->tagihan_pendaftaran)],
-														['Status Pendaftaran', $row->tagihan->lunas_pendaftaran ? 'Lunas' : 'Belum Lunas'],
-														['Admin Biaya Pendaftaran', $row->tagihan->admin_pendaftaran],
-														[],
-														['Daftar Ulang'],
-														['Biaya Daftar Ulang', NumberHelper::toRupiah($row->tagihan->biaya_daftar_ulang)],
-														['Tagihan Daftar Ulang', NumberHelper::toRupiah($row->tagihan->tagihan_daftar_ulang)],
-														['Status Daftar Ulang', $row->tagihan->lunas_daftar_ulang ? 'Lunas' : 'Belum Lunas'],
-														['Admin Biaya Daftar Ulang', $row->tagihan->admin_daftar_ulang],
-														[],
-														['Seragam'],
-														['Biaya Seragam', NumberHelper::toRupiah($row->tagihan->biaya_seragam)],
-														['Tagihan Seragam', NumberHelper::toRupiah($row->tagihan->tagihan_seragam)],
-														['Status Seragam', $row->tagihan->lunas_seragam ? 'Lunas' : 'Belum Lunas'],
-														['Admin Biaya Seragam', $row->tagihan->admin_seragam],
-													]
-											])
-										</button> --}}
-
 										{{-- Tagihan --}}
 										<button type="button" title="Detail Tagihan" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/tagihan/{{ $row->id }}'">
 											<i class="fa">T</i>
@@ -267,25 +246,9 @@ $inputs = [
 											<i class="fa fa-dollar-sign">P</i>
 										</button>
 
-										{{-- Data Pembayaran Seragam --}}
-										{{-- <button type="button" title="Data Pembayaran Seragam" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=seragam'">
-											<i class="fa fa-dollar-sign">S</i>
-										</button> --}}
-										
-										{{-- Pembayaran --}}
-										{{-- <button type="button" title="Detail Pembayaran" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}'">
-											<i class="fa">P</i>
-										</button> --}}
-
 										{{-- Edit --}}
 										<button type="button" title="Edit Data Pendaftaran" class="btn btn-secondary" onclick="window.location = '/admin/edit/{{ $row->id }}'">
 											<i class="fa fa-pen"></i> 
-										</button>
-										
-										{{-- Print --}}
-										<button type="button" title="Print" data-toggle="modal" data-target="#modalPrint{{ $row->id }}" class="btn btn-secondary" {{ $xverifikasi ? '' : 'disabled' }}>
-											<i class="fa fa-print"></i>
-											@include('admin.modals.print.verifikasi-pendaftaran', ['row' => $row])
 										</button>
 										
 									</div>

@@ -4,11 +4,14 @@ namespace App\Models;
 
 // use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Jurusan extends Model
 {
 	// use HasFactory;
 	// protected $fillable = ['kode','jurusan','slug','singkatan','nomor','identitas_id'];
+
+	use SoftDeletes;
 
 	protected static $unguarded = true;
 
@@ -61,7 +64,8 @@ class Jurusan extends Model
 		if (!array_key_exists($jurusan['singkatan'], self::$kode)) return false;
 		
 		if (!$nomor) {
-			$model = Jurusan::where('singkatan', $jurusan['singkatan'])
+			$model = Jurusan::withTrashed()
+				->where('singkatan', $jurusan['singkatan'])
 				->latest()->limit(1)->get()->first();
 
 			if (!$model) {
@@ -80,10 +84,10 @@ class Jurusan extends Model
 	{
 		self::initJurusan();
 		$counters = [
-			'tbsm' => 0,
-			'tkro' => 0,
+			'tsm' => 0,
+			'tkr' => 0,
 			'tkj' => 0,
-			'akl' => 0,
+			'akuntansi' => 0,
 			'fkk' => 0,
 		];
 		foreach (self::$jurusan as $jurusan) {
@@ -100,7 +104,7 @@ class Jurusan extends Model
 		$new_jurusan = [['value' => '', 'label' => '--Pilih Jurusan--']];
 		for ($i = 0; $i < count($jurusan); $i++) {
 			$new_jurusan[] = [
-				'label' => strtoupper($jurusan[$i]['nama']),
+				'label' => strtoupper($jurusan[$i]['nama'] . ' ('. $jurusan[$i]['singkatan'] .')'),
 				'value' => strtoupper($jurusan[$i]['singkatan'])
 			];
 		}

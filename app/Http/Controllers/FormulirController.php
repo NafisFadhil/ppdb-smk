@@ -229,18 +229,19 @@ class FormulirController extends Controller
         $creden = $req->validate(Identitas::getValidations(
             $isadmin ? $this->admValidations : $this->myValidations
         ));
-        $creden = Identitas::getSubPrestasi($creden);
-        $duscreden = $req->validate(DUSeragam::getValidations($this->duseragamValidations));
-
-        $onage = Identitas::validateAge($creden['tanggal_lahir']);
-        if (!$onage) {
-            return back()->withErrors([
-                'alerts' => ['error' => 'Maaf, umur tidak memenuhi kriteria pendaftaran.']
-            ])->withInput($creden);
-        }
-
+        
         try {
-            
+
+            $creden = Identitas::getSubPrestasi($creden);
+            $duscreden = $req->validate(DUSeragam::getValidations($this->duseragamValidations));
+    
+            $onage = Identitas::validateAge($creden['tanggal_lahir']);
+            if (!$onage) {
+                return back()->withErrors([
+                    'alerts' => [$isadmin?'danger':'error' => 'Maaf, umur tidak memenuhi kriteria pendaftaran.']
+                ])->withInput($creden);
+            }
+        
             $identitas = Identitas::create($creden);
             $tagihan = Tagihan::create([
                 'biaya_pendaftaran' => $identitas->jalur_pendaftaran->biaya_pendaftaran,
@@ -301,40 +302,91 @@ class FormulirController extends Controller
         ]);
     }
 
+    private function resetTagihan (Identitas $identitas, $type) :int
+    {
+        $jalur = $identitas->jalur_pendaftaran;
+        $tagihan = $identitas->tagihan;
+        $newbiaya = $jalur["biaya_$type"];
+        $oldbiaya = $tagihan["biaya_$type"];
+        $oldtagihan = $tagihan["tagihan_$type"];
+
+        $bayar = $oldbiaya - $oldtagihan;
+        return $newbiaya - $bayar <= 0 ? 0 : $newbiaya - $bayar;
+    }
+
     public function update(Request $req, Identitas $identitas)
     {
 
         $creden = $req->validate(Identitas::getValidations($this->admValidations));
         $duscreden = $req->validate(DUSeragam::getValidations($this->duseragamValidations));
+        $creden = Identitas::getSubPrestasi($creden);
+        $alerts = [];
 
         try {
+    
+            if (strtolower($creden['nama_jurusan']) !== strtolower($identitas->nama_jurusan) && $identitas->jurusan) {
+                $identitas->jurusan->delete();
+                $newjurusan = Jurusan::new($creden['nama_jurusan']);
+                // dd($newjurusan);
+                Jurusan::create([
+                    ...$newjurusan,
+                    'identitas_id' => $identitas->id
+                ]);
+                $alerts['warning'] = 'Kode jurusan peserta berubah dan yang lama tidak bisa dipakai lagi.';
+            }
 
             $jpid = $identitas->jalur_pendaftaran_id;
             $identitas->update($creden);
             $identitas->duseragam->update($duscreden);
+            
+            $newbayar = [
+                'pendaftaran' => Pembayaran::getBayar($identitas->tagihan->pembayarans, 'pendaftaran'),
+                'daftar_ulang' => Pembayaran::getBayar($identitas->tagihan->pembayarans, 'daftar_ulang'),
+                'seragam' => Pembayaran::getBayar($identitas->tagihan->pembayarans, 'seragam'),
+            ];
+
+            $newtagihan = [
+                'pendaftaran' => $this->resetTagihan($identitas, 'pendaftaran') - $newbayar['pendaftaran'],
+                'daftar_ulang' => $this->resetTagihan($identitas, 'daftar_ulang') - $newbayar['daftar_ulang'],
+                'seragam' => $this->resetTagihan($identitas, 'seragam') - $newbayar['seragam'],
+            ];
+            
+            foreach ($newtagihan as $type => $item) $newtagihan[$type] = $item <= 0 ? 0 : $item;
 
             if ($creden['jalur_pendaftaran_id'] != $jpid) {
-                Pembayaran::where('tagihan_id', $identitas->tagihan_id)->delete();
-                Tagihan::where('identitas_id', $identitas->id)->delete();
-                Tagihan::create([
+                $identitas->tagihan->update([
                     'biaya_pendaftaran' => $identitas->jalur_pendaftaran->biaya_pendaftaran,
-                    'tagihan_pendaftaran' => $identitas->jalur_pendaftaran->biaya_pendaftaran,
+                    'tagihan_pendaftaran' => $newtagihan['pendaftaran'],
+                    'admin_pendaftaran' => null,
+                    'lunas_pendaftaran' => $newtagihan['pendaftaran'] <= 0 ? true : false,
+
                     'biaya_daftar_ulang' => $identitas->jalur_pendaftaran->biaya_daftar_ulang,
-                    'tagihan_daftar_ulang' => $identitas->jalur_pendaftaran->biaya_daftar_ulang,
+                    'tagihan_daftar_ulang' => $newtagihan['daftar_ulang'],
+                    'admin_daftar_ulang' => null,
+                    'lunas_daftar_ulang' => $newtagihan['daftar_ulang'] <= 0 ? true : false,
+
                     'biaya_seragam' => $identitas->jalur_pendaftaran->biaya_seragam,
-                    'tagihan_seragam' => $identitas->jalur_pendaftaran->biaya_seragam,
-                    'identitas_id' => $identitas->id,
+                    'tagihan_seragam' => $newtagihan['seragam'],
+                    'admin_seragam' => null,
+                    'lunas_seragam' => $newtagihan['seragam'] <= 0 ? true : false,
                 ]);
-                $identitas->update(['status_id' => 1]);
+                $identitas->update([
+                    'reset' => true,
+                    'old_status_id' => $identitas->status_id,
+                    'status_id' => 1,
+                ]);
+                $alerts['warning'] = 'Data peserta kembali semula pasca pendaftaran karena perubahan jalur pendaftaran.';
             }
+
             return redirect('/admin/peserta')->withErrors([
                 'alerts' => [
                     'success' => 'Data peserta berhasil diubah.',
-                    'warning' => 'Data peserta kembali semula pasca pendaftaran karena perubahan jalur pendaftaran.',
+                    ...$alerts
                 ]
             ]);
             
         } catch (\Throwable $th) {
+            throw $th;
             return back()->withErrors([
                 'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat memperbarui data. Mohon hubungi penyedia layanan untuk pengembangan.']
             ])->withInput($creden);

@@ -4,7 +4,7 @@
 		'title' => 'Input Pembayaran Seragam',
 	])
 
-	<form action="/admin/verifikasi-duseragam/pembayaran-seragam/{{ $row->id }}" method="post">
+	<form action="/admin/verifikasi/duseragam/pembayaran/seragam/{{ $row->id }}" method="post">
 		@csrf
 
 		{{-- <div class="row"> --}}

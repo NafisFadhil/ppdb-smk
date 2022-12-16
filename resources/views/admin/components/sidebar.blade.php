@@ -13,13 +13,20 @@ $user->level->name === 'admin-pendaftaran' || $issupadm ? [
 ] : [],
 
 $issupadm ? [[
-	'variant' => 'dropdown', 'href' => '/admin/verifikasi', 'label' => 'Verifikasi', 'icon' => 'fa fa-check', 'dropdown' => [
-		['href' => '/admin/verifikasi-pendaftaran', 'label' => 'Pendaftaran'],
-		['href' => '/admin/verifikasi-duseragam', 'label' => 'DU & Seragam'],
+	'variant' => 'dropdown', 'href' => '/admin/verifikasi', 'label' => 'Verifikasi', 'icon' => 'fa fa-user-check', 'dropdown' => [
+		['href' => '/admin/verifikasi/pendaftaran', 'label' => 'Pendaftaran'],
+		['href' => '/admin/verifikasi/duseragam', 'label' => 'DU & Seragam'],
+		['href' => '/admin/verifikasi/pendataan', 'label' => 'Pendataan'],
+		['href' => '/admin/verifikasi/sponsorship', 'label' => 'Sponsorship'],
+	]
+]] : ($user->level->name === 'admin-pendataan' ? [[
+	'variant' => 'dropdown', 'href' => '/admin/verifikasi', 'label' => 'Verifikasi', 'icon' => 'fa fa-user-check', 'dropdown' => [
+		['href' => '/admin/verifikasi/pendataan', 'label' => 'Pendataan'],
+		['href' => '/admin/verifikasi/sponsorship', 'label' => 'Sponsorship'],
 	]
 ]] : [
-	['href' => '/admin/verifikasi-'.$adm, 'label' => 'Verifikasi '.StringHelper::toTitle($adm), 'icon' => 'fa fa-check']
-],
+	['href' => '/admin/verifikasi/'.$adm, 'label' => 'Verifikasi '.StringHelper::toTitle($adm), 'icon' => 'fa fa-user-check']
+]),
 
 $issupadm ? [[
 	'variant' => 'dropdown', 'href' => '/admin/laporan', 'label' => 'Laporan', 'icon' => 'fa fa-solid fa-print', 'dropdown' => [
@@ -37,7 +44,6 @@ $issupadm ? [[
 ]),
 
 [
-	['href' => '/admin/sponsorship', 'label' => 'Sponsorship', 'icon' => 'fa fa-user-plus'],
 	['href' => '/admin/profil', 'label' => 'Profil', 'icon' => 'fa fa-user-cog'],
 ],
 

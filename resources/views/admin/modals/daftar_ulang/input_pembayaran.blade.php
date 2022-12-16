@@ -4,7 +4,7 @@
 		'title' => 'Input Pembayaran Daftar Ulang',
 	])
 
-	<form action="/admin/verifikasi-duseragam/pembayaran-daftar-ulang/{{ $row->id }}" method="post">
+	<form action="/admin/verifikasi/duseragam/pembayaran/daftar-ulang/{{ $row->id }}" method="post">
 		@csrf
 
 		{{-- <div class="row"> --}}

@@ -17,15 +17,15 @@ class DataJurusanSeeder extends Seeder
     {
         DB::table('data_jurusans')->insert([
             [
-                "nama" => "Teknik Kendaraan Ringan Otomotif",
-                "slug" => "teknik-kendaraan-ringan-otomotif",
-                "singkatan" => 'tkro',
+                "nama" => "Teknik Kendaraan Ringan",
+                "slug" => "teknik-kendaraan-ringan",
+                "singkatan" => 'tkr',
                 'kode' => 'R'
             ],
             [
-                "nama" => "Teknik Bisnis dan Sepeda Motor",
-                "slug" => "teknik-bisnis-dan-sepeda motor",
-                "singkatan" => 'tbsm',
+                "nama" => "Teknik Sepeda Motor",
+                "slug" => "teknik-sepeda motor",
+                "singkatan" => 'tsm',
                 'kode' => 'T'
             ],
             [
@@ -35,14 +35,14 @@ class DataJurusanSeeder extends Seeder
                 'kode' => 'J'
             ],
             [
-                "nama" => "Akuntansi dan Keuangan Lembaga",
-                "slug" => "akuntansi-dan-keuangan-lembaga",
-                "singkatan" => 'akl',
+                "nama" => "Akuntansi",
+                "slug" => "akuntansi",
+                "singkatan" => 'akuntansi',
                 'kode' => 'A'
             ],
             [
-                "nama" => "Farmasi Klinis dan Kesehatan",
-                "slug" => "farmasi-klinis-dan-kesehatan",
+                "nama" => "Farmasi Klinis dan Komunitas",
+                "slug" => "farmasi-klinis-dan-Komunitas",
                 "singkatan" => 'fkk',
                 'kode' => 'F'
             ],

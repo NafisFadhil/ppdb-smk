@@ -165,7 +165,7 @@ class DUSeragamController extends Controller
             ]);
             $identitas->duseragam->update($duscreden);
 
-            return redirect('/admin/verifikasi-duseragam')->withErrors([
+            return redirect('/admin/verifikasi/duseragam')->withErrors([
                 'alerts' => ['success' => 'Daftar ulang berhasil.']
             ]);
 

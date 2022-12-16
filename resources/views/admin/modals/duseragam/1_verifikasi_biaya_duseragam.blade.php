@@ -4,7 +4,7 @@
 		'title' => 'Input Biaya Daftar Ulang & Seragam'
 	])
 
-	<form action="/admin/verifikasi-duseragam/biaya-duseragam/{{ $row->id }}" method="post">
+	<form action="/admin/verifikasi/duseragam/biaya-duseragam/{{ $row->id }}" method="post">
 		@csrf
 
 		@foreach ($subinputs as $input)

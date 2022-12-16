@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('jenis_kelamin');
             $table->string('asal_sekolah');
             $table->string('no_wa_siswa', 15);
-            $table->string('nama_jurusan', 5);
+            $table->string('nama_jurusan');
             $table->string('no_wa_ortu', 15)->nullable();
             $table->string('tempat_lahir')->nullable();
             $table->string('alamat_desa')->nullable();
@@ -36,6 +36,9 @@ return new class extends Migration
             $table->char('nisn', 10)->nullable();
             $table->char('no_ujian_nasional', 20)->nullable();
             $table->string('no_ijazah', 30)->nullable();
+
+            $table->boolean('reset')->default(false);
+            $table->unsignedTinyInteger('old_status_id')->default(0);
 
             $table->foreignId('jalur_pendaftaran_id');
             $table->foreignId('status_id')->default(1);

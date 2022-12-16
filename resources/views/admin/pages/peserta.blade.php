@@ -63,6 +63,15 @@
 											<i class="fa fa-pen"></i>
 										</button>
 
+										{{-- Input Siswa Sponsorship --}}
+										<button type="button" title="Input Siswa Sponsorship" data-toggle="modal"
+										data-target="#modalSponsorship{{ $row->id }}" class="btn btn-secondary" {{ $row->sponsorship ? 'disabled' : '' }} >
+											<i class="fa">S+</i>
+											@if(!$row->sponsorship)
+												@include('admin.modals.general.sponsorship', [ 'row' => $row ])
+											@endif
+										</button>
+
 										{{-- Print --}}
 										<button type="button" title="Print" data-toggle="modal" data-target="#modalPrint{{ $row->id }}" class="btn btn-secondary">
 											<i class="fa fa-print"></i>

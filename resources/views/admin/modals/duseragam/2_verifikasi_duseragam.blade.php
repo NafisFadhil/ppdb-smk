@@ -4,7 +4,7 @@
 		'title' => 'Verifikasi Daftar Ulang & Seragam',
 	])
 
-	<form action="/admin/verifikasi-duseragam/verifikasi/{{ $row->id }}" method="post">
+	<form action="/admin/verifikasi/duseragam/verifikasi/{{ $row->id }}" method="post">
 		@csrf
 
 		{{-- <div class="row"> --}}

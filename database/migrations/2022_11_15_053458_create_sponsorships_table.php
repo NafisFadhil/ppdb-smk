@@ -16,8 +16,12 @@ return new class extends Migration
         Schema::create('sponsorships', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string('kelas', 10);
-            $table->string('no_wa', 15);
+            $table->string('kelas');
+            $table->string('no_wa');
+
+            $table->boolean('verifikasi')->default(false);
+            $table->string('admin_verifikasi')->nullable();
+            $table->timestamp('tanggal_verifikasi')->nullable();
 
             $table->foreignId('identitas_id');
             $table->timestamps();

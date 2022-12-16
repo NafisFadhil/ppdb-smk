@@ -30,6 +30,11 @@ $inputs = [
 				'name' => 'biaya_seragam',
 				'value' => $row->tagihan->biaya_seragam
 			],
+			[
+				'name' => 'keterangan',
+				'placeholder' => '(Opsional)',
+				'value' => $row->duseragam->keterangan
+			],
 		];
 	},
 
@@ -189,7 +194,7 @@ $inputs = [
 						@foreach($peserta as $row)
 							<tr>
 								<td>{{ $loop->iteration }}</td>
-								<td>{{ $row->jurusan->kode }}</td>
+								<td>{{ $row->jurusan->kode ?? '-' }}</td>
 								<td>{{ $row->nama_lengkap }}</td>
 								<td>{{ ModelHelper::getJalur($row->jalur_pendaftaran) }}</td>
 								<td>{{ $row->jenis_kelamin }}</td>
@@ -220,7 +225,7 @@ $inputs = [
 
 										{{-- Pembayaran DU --}}
 										<button type="button" title="Input Pembayaran Daftar Ulang" data-toggle="modal"
-										data-target="#modalPembayaranDaftarUlang{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 6 || $row->tagihan->lunas_daftar_ulang == true ? 'disabled' : '' }} >
+										data-target="#modalPembayaranDaftarUlang{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 6 || $row->tagihan->lunas_daftar_ulang ? 'disabled' : '' }} >
 											<i class="fa fa-check">DU</i>
 											@if($row->status_id === 6)
 												@include('admin.modals.daftar_ulang.input_pembayaran', [
@@ -233,7 +238,7 @@ $inputs = [
 
 										{{-- Pembayaran Seragam --}}
 										<button type="button" title="Input Pembayaran Seragam" data-toggle="modal"
-										data-target="#modalPembayaranSeragam{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 6 || $row->tagihan->lunas_seragam == true ? 'disabled' : '' }} >
+										data-target="#modalPembayaranSeragam{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 6 || $row->tagihan->lunas_seragam ? 'disabled' : '' }} >
 											<i class="fa fa-check">S</i>
 											@if($row->status_id === 6)
 												@include('admin.modals.seragam.input_pembayaran', [
@@ -245,7 +250,7 @@ $inputs = [
 
 										{{-- Verifikasi DU & Seragam --}}
 										<button type="button" title="Verifikasi DU & Seragam" data-toggle="modal"
-										data-target="#modalVerifikasi{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 7 ? 'disabled' : '' }} >
+										data-target="#modalVerifikasi{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 7 || !$row->tagihan->lunas_daftar_ulang || !$row->tagihan->lunas_seragam ? 'disabled' : '' }} >
 											<i class="fa fa-user-check"></i>
 											@if($row->status_id === 7)
 												@include('admin.modals.duseragam.2_verifikasi_duseragam', [
@@ -298,11 +303,6 @@ $inputs = [
 										{{-- Edit --}}
 										<button type="button" title="Edit Data DU & Seragam" class="btn btn-secondary" onclick="window.location = '/admin/edit/{{ $row->id }}'">
 											<i class="fa fa-pen"></i> 
-										</button>
-										
-										{{-- Print --}}
-										<button type="button" title="Cetak Lembar DU & Seragam" class="btn btn-secondary" {{ $row->duseragam->verifikasi ? '' : 'disabled' }} onclick="window.location = '/admin/print/{{ $row->id }}'" >
-											<i class="fa fa-print"></i>
 										</button>
 										
 									</div>

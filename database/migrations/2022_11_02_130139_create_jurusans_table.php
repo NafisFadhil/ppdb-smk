@@ -22,6 +22,7 @@ return new class extends Migration
             $table->smallInteger('nomor');
 
             $table->foreignId('identitas_id');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

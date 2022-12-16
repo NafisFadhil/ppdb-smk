@@ -8,14 +8,16 @@ use App\Http\Controllers\FormulirController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PrintController;
 use App\Http\Controllers\SiswaController;
-use App\Http\Controllers\SponsorshipController;
-use App\Http\Controllers\VerifikasiController;
+// use App\Http\Controllers\VerifikasiController;
 use App\Http\Controllers\LaporanController;
 // use App\Http\Controllers\PembayaranController;
 // use App\Http\Controllers\TagihanController;
 // use App\Http\Controllers\UserAdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserProfilController;
+use App\Http\Controllers\Verifikasi\DuseragamController as VerifikasiDuseragamController;
+use App\Http\Controllers\Verifikasi\PendaftaranController as VerifikasiPendaftaranController;
+use App\Http\Controllers\Verifikasi\SponsorshipController as VerifikasiSponsorshipController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -99,23 +101,33 @@ Route::middleware('auth')->group(function () {
         //     Route::get('/tambah-peserta', 'tambah');
         //     Route::post('/tambah-peserta', 'admstore');
         // });
-    
-        Route::prefix('/verifikasi-pendaftaran')->controller(VerifikasiController::class)->group(function () {
-            Route::get('/', 'pendaftaranIndex');
-            Route::post('/biaya/{identitas:id}', 'pendaftaranBiaya');
-            Route::post('/pembayaran/{identitas:id}', 'pendaftaranPembayaran');
-            Route::post('/verifikasi/{identitas:id}', 'pendaftaranVerifikasi');
+
+        Route::prefix('/verifikasi')->group(function () {
+            Route::prefix('/pendaftaran')->controller(VerifikasiPendaftaranController::class)
+            ->group(function () {
+                Route::get('/', 'index');
+                Route::post('/biaya/{identitas:id}', 'biaya');
+                Route::post('/pembayaran/{identitas:id}', 'pembayaran');
+                Route::post('/verifikasi/{identitas:id}', 'verifikasi');
+            });
+        
+            Route::prefix('/duseragam')->controller(VerifikasiDuseragamController::class)
+            ->group(function () {
+                Route::get('/', 'index');
+                Route::post('/biaya-duseragam/{identitas:id}', 'biaya');
+                Route::post('/pembayaran/{type}/{identitas:id}', 'pembayaran');
+                Route::post('/verifikasi/{identitas:id}', 'verifikasi');
+            });
+
+            Route::prefix('/sponsorship')->controller(VerifikasiSponsorshipController::class)
+            ->group(function () {
+                Route::get('/', 'index');
+                Route::post('/', 'store');
+                Route::post('/{sponsorship:id}', 'verifikasi');
+                Route::post('/edit/{sponsorship:id}', 'update');
+            });
         });
     
-        Route::prefix('/verifikasi-duseragam')->controller(VerifikasiController::class)->group(function () {
-            Route::get('/', 'duSeragamIndex');
-            Route::post('/biaya-duseragam/{identitas:id}', 'duSeragamBiaya');
-    
-            Route::post('/pembayaran-daftar-ulang/{identitas:id}', 'daftarUlangPembayaran');
-            Route::post('/pembayaran-seragam/{identitas:id}', 'seragamPembayaran');
-            
-            Route::post('/verifikasi/{identitas:id}', 'duSeragamVerifikasi');
-        });
     
         Route::get('/print/{identitas:id}', [PrintController::class, 'pendaftaran']);
     
@@ -129,13 +141,6 @@ Route::middleware('auth')->group(function () {
         Route::controller(DUSeragamController::class)->group(function () {
             Route::get('/formulir-duseragam/{identitas:id}', 'admcreate');
             Route::post('/formulir-duseragam/{identitas:id}', 'admstore');
-        });
-        
-        Route::controller(SponsorshipController::class)->group(function () {
-            Route::get('/sponsorship', 'index');
-            Route::post('/sponsorship', 'store');
-            Route::get('/sponsorship/edit/{sponsorship:id}', 'edit');
-            Route::post('/sponsorship/edit/{sponsorship:id}', 'update');
         });
     
         Route::controller(LaporanController::class)->group(function () {

@@ -4,7 +4,7 @@
 		'title' => 'Input Biaya Pendaftaran'
 	])
 
-	<form action="/admin/verifikasi-pendaftaran/biaya/{{ $row->id }}" method="post">
+	<form action="/admin/verifikasi/pendaftaran/biaya/{{ $row->id }}" method="post">
 		@csrf
 
 		@foreach ($subinputs as $input)

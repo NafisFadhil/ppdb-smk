@@ -5,59 +5,6 @@
 	<div class="col-12">
 		<div class="card">
 			<div class="card-body">
-				<button class="btn btn-block btn-primary mx-auto" data-toggle="modal" data-target="#modalTambahSponsorship" style="max-width: max-content">
-					<i class="fa fa-plus"></i> Tambah Sponsorship
-				</button>
-				@push('modals')
-					@component('admin.components.modal', [
-						'id' => 'modalTambahSponsorship',
-						'title' => 'Tambah Sponsorship'
-					])
-						<form action="/admin/sponsorship" method="post">
-							@csrf <?php $inputs = [
-								['name' => 'nama'],
-								['name' => 'kelas'],
-								['name' => 'no_wa'],
-							] ?>
-
-								@foreach ($inputs as $input)
-								<?php $input = FormHelper::initInput($input) ?>
-								<div class="form-group form-group-sm">
-									<label for="{{ $input['id'] }}" class="form-label">{{ $input['label'] }}</label>
-									<input type="{{ $input['type'] }}"
-										name="{{ $input['name'] }}"
-										placeholder="{{ $input['placeholder'] }}"
-										value="{{ $input['value'] }}"
-										class="form-control form-control-sm"
-										{!! $input['attr'] !!}
-									/>
-								</div>
-								@endforeach
-
-								<div class="form-group form-group-sm">
-									<label class="form-label"> Siswa Pendaftaran </label>
-									<select name="identitas_id" class="form-control form-control-sm select2" style="width: 100%">
-										<option value> Pilih Siswa </option>
-										@foreach ($peserta as $row)
-											<option value="{{ $row->id }}"> {{ $row->nama_lengkap }} ({{ $row->asal_sekolah }}) </option>
-										@endforeach
-									</select>
-								</div>
-
-								<button class="btn btn-primary mx-auto" style="max-width: max-content">
-									Tambah
-								</button>
-							
-						</form>
-					@endcomponent
-				@endpush
-			</div>
-		</div>
-	</div>
-
-	<div class="col-12">
-		<div class="card">
-			<div class="card-body">
 					<table id="xtable" class="table table-sm table-bordered table-hover table-responsive">
 						<thead>
 							<tr>
@@ -82,14 +29,60 @@
 									<td>{{ $row->identitas->nama_lengkap }}</td>
 									<td>{{ $row->identitas->asal_sekolah }}</td>
 									<td>{{ strtoupper($row->identitas->nama_jurusan) }}</td>
-									<td title="{{ $row->identitas->status->desc }}">
+									<td class="text-success" title="{{ $row->identitas->status->desc }}">
 										{{ $row->identitas->status->level }} ({{ $row->identitas->status->sublevel }})
 									</td>
 									<td>
 										<div class="btn-group btn-group-sm">
 
-											<button type="button" title="Edit Data Pendaftaran" class="btn btn-secondary" onclick="window.location = '/admin/sponsorship/edit/{{ $row->id }}'">
+											{{-- Edit Siswa Sponsorship --}}
+											<button type="button" title="Edit Siswa Sponsorship" data-toggle="modal"
+											data-target="#modalSponsorship{{ $row->id }}" class="btn btn-warning text-white">
 												<i class="fa fa-pen"></i>
+												@include('admin.modals.general.sponsorship', [
+													'row' => $row->identitas,
+													'edit' => true
+												])
+											</button>
+
+											<button type="button" title="Verifikasi Data Sponsorship" class="btn btn-success" data-toggle="modal"
+											data-target="#modalVerifikasi{{ $row->id }}" {{ $row->verifikasi ? 'disabled' : '' }}>
+												<i class="fa fa-check"></i>
+												@if(!$row->verifikasi)
+													<?php
+													$user = auth()->user();
+													$inputs = [
+														['name' => 'nama', 'value' => $row->nama??null, 'attr' => 'disabled'],
+														['name' => 'kelas', 'value' => $row->kelas??null, 'attr' => 'disabled'],
+														['type' => 'number', 'name' => 'no_wa', 'value' => $row->no_wa??null, 'attr' => 'disabled'],
+														['type' => 'hidden', 'name' => 'identitas_id', 'value' => $row->identitas->id??null],
+														['name' => 'admin_verifikasi', 'label' => 'Admin', 'value' => $user->name ?? $user->username, 'attr' => 'readonly'],
+													] ?>
+
+													@push('modals')
+														@component('admin.components.modal', [
+															'id' => 'modalVerifikasi'.$row->id,
+															'title' => 'Verifikasi Siswa Sponsorship'
+														])
+
+															<form action="/admin/verifikasi/sponsorship/{{ $row->id }}" method="post">
+																@csrf
+
+																@foreach ($inputs as $input)
+																	@include('admin.components.input', [ 'input' => $input ])
+																@endforeach
+
+																<div class="form-group text-center">
+																	<button type="submit" class="btn btn-success">
+																		<i class="fa fa-check"></i> Verifikasi Sponsorship
+																	</button>
+																</div>
+																
+															</form>
+														
+														@endcomponent
+													@endpush
+												@endif
 											</button>
 
 										</div>

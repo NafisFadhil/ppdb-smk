@@ -24,7 +24,7 @@ $adm === 'super-admin' ? [[
 	['href' => '/admin/laporan-'.$adm, 'label' => 'Laporan '.StringHelper::toTitle($adm), 'icon' => 'fa fa-solid fa-print']
 ],
 [
-	['href' => '/admin/sponsorship', 'label' => 'Sponsorship', 'icon' => 'fa fa-user'],
+	['href' => '/admin/verifikasi/sponsorship', 'label' => 'Sponsorship', 'icon' => 'fa fa-user'],
 	['href' => '/logout', 'label' => 'Logout', 'icon' => 'fa fa-power-off'],
 ],
 );?>

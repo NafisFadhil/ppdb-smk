@@ -13,7 +13,7 @@
 						'id' => 'modalTambahSponsorship',
 						'title' => 'Tambah Sponsorship'
 					])
-						<form action="/admin/sponsorship" method="post">
+						<form action="/admin/verifikasi/sponsorship" method="post">
 							@csrf <?php $inputs = [
 								['name' => 'nama'],
 								['name' => 'kelas'],
@@ -88,7 +88,7 @@
 									<td>
 										<div class="btn-group btn-group-sm">
 
-											<button type="button" title="Edit Data Pendaftaran" class="btn btn-secondary" onclick="window.location = '/admin/sponsorship/edit/{{ $row->id }}'">
+											<button type="button" title="Edit Data Pendaftaran" class="btn btn-secondary" onclick="window.location = '/admin/verifikasi/sponsorship/edit/{{ $row->id }}'">
 												<i class="fa fa-pen"></i>
 											</button>
 
