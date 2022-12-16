@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             UserLevelSeeder::class,
             UserSeeder::class,
             StatusSeeder::class,
+            DataJurusanSeeder::class,
             JalurPendaftaranSeeder::class,
         ]);
         

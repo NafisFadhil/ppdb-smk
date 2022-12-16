@@ -18,49 +18,31 @@ class Jurusan extends Model
 	
 	public static $nomor;
 
-	public static $jurusan = [
-		[
-			"nama" => "Teknik Kendaraan Ringan Otomotif",
-			"slug" => "teknik-kendaraan-ringan-otomotif",
-			"singkatan" => 'tkro',
-			'kode' => 'R'
-		],
-		[
-			"nama" => "Teknik Bisnis dan Sepeda Motor",
-			"slug" => "teknik-bisnis-dan-sepeda motor",
-			"singkatan" => 'tbsm',
-			'kode' => 'T'
-		],
-		[
-			"nama" => "Teknik Komputer dan Jaringan",
-			"slug" => "teknik-komputer-dan-jaringan",
-			"singkatan" => 'tkj',
-			'kode' => 'J'
-		],
-		[
-			"nama" => "Akuntansi dan Keuangan Lembaga",
-			"slug" => "akuntansi-dan-keuangan-lembaga",
-			"singkatan" => 'akl',
-			'kode' => 'A'
-		],
-		[
-			"nama" => "Farmasi Klinis dan Kesehatan",
-			"slug" => "farmasi-klinis-dan-kesehatan",
-			"singkatan" => 'fkk',
-			'kode' => 'F'
-		],
-	];
+	public static $jurusan = [];
 
-	public static $kode = [
-		'tkro' => 'R',
-		'tbsm' => 'T',
-		'tkj' => 'J',
-		'akl' => 'A',
-		'fkk' => 'F',
-	];
+	public static $kode = [];
 
+	public static function initJurusan() :void
+	{
+		if (empty(self::$jurusan)) {
+			self::$jurusan = DataJurusan::all()->toArray();
+		}
+	}
+
+	public static function initKode() :void
+	{
+		if (empty(self::$jurusan)) self::initJurusan();
+		if (empty(self::$kode)) {
+			$kode = [];
+			foreach (self::$jurusan as $jurusan) {
+				$kode[ $jurusan['singkatan'] ] = $jurusan['kode'];
+			} self::$kode = $kode;
+		}
+	}
+	
 	public static function getJurusan($value, $key = 'singkatan')
 	{
+		self::initJurusan();
 		if ($key === 'id') return self::$jurusan[$value];
 		else {
 			$value = strtolower($value);
@@ -75,6 +57,7 @@ class Jurusan extends Model
 		$singkatan = strtolower($singkatan);
 		$jurusan = self::getJurusan($singkatan, 'singkatan');
 
+		self::initKode();
 		if (!array_key_exists($jurusan['singkatan'], self::$kode)) return false;
 		
 		if (!$nomor) {
@@ -93,8 +76,26 @@ class Jurusan extends Model
 		return $kode . '-' . $xnomor;
 	}
 
+	public static function getWidget() :array
+	{
+		self::initJurusan();
+		$counters = [
+			'tbsm' => 0,
+			'tkro' => 0,
+			'tkj' => 0,
+			'akl' => 0,
+			'fkk' => 0,
+		];
+		foreach (self::$jurusan as $jurusan) {
+			$counters = array_replace($counters, [
+				$jurusan['singkatan'] => 0
+			]);
+		} return $counters;
+	}
+
 	public static function getOptions()
 	{
+		self::initJurusan();
 		$jurusan = self::$jurusan;
 		$new_jurusan = [['value' => '', 'label' => '--Pilih Jurusan--']];
 		for ($i = 0; $i < count($jurusan); $i++) {
@@ -108,6 +109,7 @@ class Jurusan extends Model
 	
 	public static function new(string $singkatan)
 	{
+		self::initJurusan();
 		$jurusan = self::getJurusan($singkatan, 'singkatan');
 		return [
 			'kode' => self::getKode($singkatan),

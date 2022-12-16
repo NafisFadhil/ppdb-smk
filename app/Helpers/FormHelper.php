@@ -11,7 +11,7 @@ class FormHelper
 		$type = $input['type'] ?? 'text';
 		$variant = $input['variant'] ?? 'default';
 		$name = $input['name'] ?? '';
-		$value = $input['value'] ?? '';
+		$value = $input['value'] ?? old($input['name']) ?? '';
 		$desc = $input['desc'] ?? '';
 		$label = $input['label'] ?? StringHelper::toTitle($name) ?? '';
 		$id = $input['id'] ?? $name;

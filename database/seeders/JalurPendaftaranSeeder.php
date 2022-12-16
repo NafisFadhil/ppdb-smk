@@ -20,64 +20,74 @@ class JalurPendaftaranSeeder extends Seeder
             [
                 'jalur' => 'Umum',
                 'subjalur1' => null,
-                'subjalur2' => null,
                 'biaya_pendaftaran' => 50000,
                 'biaya_daftar_ulang' => 500000,
-                'biaya_seragam' => 500000,
+                'biaya_seragam' => 450000,
+                'periode_akhir' => now()->setDay(7)->setMonth(4)->setYear(2023)->setTime(23,59,59,59),
             ],
-            // Bintang Kelas
+            // Afirmasi
             [
-                'jalur' => 'Bintang Kelas',
+                'jalur' => 'Afirmasi',
                 'subjalur1' => null,
-                'subjalur2' => null,
                 'biaya_pendaftaran' => 0,
-                'biaya_daftar_ulang' => 500000,
-                'biaya_seragam' => 500000,
+                'biaya_daftar_ulang' => 0,
+                'biaya_seragam' => 0,
+                'periode_akhir' => now()->setDay(19)->setMonth(4)->setYear(2023)->setTime(23,59,59,59),
             ],
-            // Bidik Misi
+
+
+
+            // Prestasi
             [
-                'jalur' => 'Bidik Misi',
+                'jalur' => 'Prestasi',
                 'subjalur1' => null,
-                'subjalur2' => null,
                 'biaya_pendaftaran' => 0,
                 'biaya_daftar_ulang' => 0,
-                'biaya_seragam' => 0,
+                'biaya_seragam' => 450000,
+                'periode_akhir' => now()->setDay(19)->setMonth(4)->setYear(2023)->setTime(23,59,59,59),
             ],
 
-            // Bidik Misi Lanjutan
+            // Prestasi Lanjutan
             [
-                'jalur' => 'Bidik Misi',
-                'subjalur1' => 'Prestasi',
-                'subjalur2' => 'Kedinasan',
+                'jalur' => 'Prestasi',
+                'subjalur1' => 'Kedinasan',
                 'biaya_pendaftaran' => 0,
                 'biaya_daftar_ulang' => 0,
-                'biaya_seragam' => 0,
-            ],
-
-            [
-                'jalur' => 'Bidik Misi',
-                'subjalur1' => 'Prestasi',
-                'subjalur2' => 'Non-Kedinasan',
-                'biaya_pendaftaran' => 0,
-                'biaya_daftar_ulang' => 0,
-                'biaya_seragam' => 0,
+                'biaya_seragam' => 450000,
+                'periode_akhir' => now()->setDay(19)->setMonth(4)->setYear(2023)->setTime(23,59,59,59),
             ],
 
             [
-                'jalur' => 'Bidik Misi',
-                'subjalur1' => 'Umsida Yatim Piatu',
-                'subjalur2' => null,
+                'jalur' => 'Prestasi',
+                'subjalur1' => 'Non-Kedinasan',
                 'biaya_pendaftaran' => 0,
                 'biaya_daftar_ulang' => 0,
-                'biaya_seragam' => 0,
+                'biaya_seragam' => 450000,
+                'periode_akhir' => now()->setDay(19)->setMonth(4)->setYear(2023)->setTime(23,59,59,59),
             ],
             [
-                'jalur' => 'Bidik Misi',
+                'jalur' => 'Prestasi',
+                'subjalur1' => 'Aktivis',
+                'biaya_pendaftaran' => 0,
+                'biaya_daftar_ulang' => 0,
+                'biaya_seragam' => 450000,
+                'periode_akhir' => now()->setDay(19)->setMonth(4)->setYear(2023)->setTime(23,59,59,59),
+            ],
+            [
+                'jalur' => 'Prestasi',
+                'subjalur1' => 'Bintang Kelas',
+                'biaya_pendaftaran' => 0,
+                'biaya_daftar_ulang' => 0,
+                'biaya_seragam' => 450000,
+                'periode_akhir' => now()->setDay(19)->setMonth(4)->setYear(2023)->setTime(23,59,59,59),
+            ],
+            [
+                'jalur' => 'Prestasi',
                 'subjalur1' => 'Tahfid Quran',
-                'subjalur2' => null,
                 'biaya_pendaftaran' => 0,
                 'biaya_daftar_ulang' => 0,
-                'biaya_seragam' => 0,
+                'biaya_seragam' => 450000,
+                'periode_akhir' => now()->setDay(19)->setMonth(4)->setYear(2023)->setTime(23,59,59,59),
             ],
         ]);
     }

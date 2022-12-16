@@ -36,6 +36,14 @@ Route::get('/reoptimize', function() {
     return 'OPTIMIZED';
 });
 
+Route::get('/repull', function() {
+    exec('git pull');
+});
+
+Route::get('/production', function() {
+    exec('git pull');
+});
+
 // Route::get('/run-production', function() {
 //     Artisan::call('config:clear');
 //     Artisan::call('config:cache');

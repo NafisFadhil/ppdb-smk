@@ -43,6 +43,9 @@ $error = isset($errors) && $errors->has($input['name']);
 
 	<div class="form-group row">
 		@if($input['variant'] === 'nolabel')
+		@elseif($input['variant'] === 'nolabelkeepcol')
+			<div class="form-label text-sm d-none d-sm-block col-12 col-sm-4 m-0">
+			</div>
 		@else
 			<label for="{{ $input['id'] }}" class="form-label text-sm col-12 col-sm-4">
 				{{ $input['label'] }}

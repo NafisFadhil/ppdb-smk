@@ -7,14 +7,26 @@ $counters = [
 	'duseragam' => 0,
 ];
 
-$jurusanCounters = [];
-foreach ($jurusan as $key => $item) $jurusanCounters[$key] = 0;
+// dd($jurusanCounters);
+
+// $jurusanCounters = [
+// 	'tbsm' => 0,
+// 	'tkro' => 0,
+// 	'tkj' => 0,
+// 	'akl' => 0,
+// 	'fkk' => 0,
+// ];
+// $jurusanCounters = array_replace([
+	
+// ], $jurusanCounters)
+// dd($jurusanCounters);
+// foreach ($jurusan as $key => $item) $jurusanCounters[$key] = 0;
 
 foreach ($peserta as $item) {
 	if ($item->status_id > 0 && $item->status_id < 4) $counters['pendaftar']++;
 	elseif ($item->status_id > 3 && $item->status_id < 8) $counters['duseragam']++;
 
-	$jurusanCounters[strtolower($item->nama_jurusan)]++;
+	if ($item->jurusan) $jurusanCounters[strtolower($item->nama_jurusan)]++;
 }
 
 $widgetStatus = [

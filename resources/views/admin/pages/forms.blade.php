@@ -28,3 +28,20 @@
 	</div>
 </div>
 @endsection
+
+@push('scripts')
+	<script>
+		let jalurs = document.querySelectorAll('input[name=jalur_pendaftaran_id]');
+		// if (jalurs.count())
+		let jalurPrestasi = document.querySelector('select[name=sub_jalur_pendaftaran_id]');
+		jalurPrestasi.style.display = 'none';
+		jalurs.forEach(elem => {
+			elem.onclick = () => {
+				let value = elem.value;
+				if (value == 3) {
+					jalurPrestasi.style.display = 'inline-block';
+				} else jalurPrestasi.style.display = 'none';
+			}
+		})
+	</script>
+@endpush

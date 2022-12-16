@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\NumberHelper;
 use App\Helpers\StringHelper;
+use App\Models\DataJurusan;
 use App\Models\Identitas;
 use App\Models\Jurusan;
 use Illuminate\Http\Request;
@@ -13,11 +14,11 @@ class AdminController extends Controller
     
     public function index()
     {
-        // array_keys()
+        // array_merge()
         return view('admin.pages.index', [
             'page' => ['title' => 'Dashboard Admin PPDB'],
             'peserta' => Identitas::select('status_id', 'nama_jurusan')->get(),
-            'jurusan' => Jurusan::$kode
+            'jurusanCounters' => Jurusan::getWidget()
         ]);
     }
 

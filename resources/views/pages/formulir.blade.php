@@ -10,7 +10,7 @@
 			<?php $input_iterator = 0 ?>
 
 			@foreach($inputs as $input)
-				<?php !in_array($input['type'], ['hidden']) ? $input_iterator += 1 : $input_iterator ?>
+				<?php !in_array($input['type'], ['hidden', 'nolabel', 'nolabelkeepcol']) ? $input_iterator += 1 : $input_iterator ?>
 				@include('subcomponents.formulir_input', ['input' => $input, 'no' => $input_iterator])
 			@endforeach
 
@@ -37,5 +37,19 @@
 		function onSubmit(token) {
 			document.getElementById("myform").submit();
 		}
+		let jalurs = document.querySelectorAll('input[name=jalur_pendaftaran_id]');
+		let jalurPrestasi = document.querySelector('select[name=sub_jalur_pendaftaran_id]');
+		// console.log(jalurPrestasi);
+		// document.addEventListener('DOMContentLoaded', () => {
+			jalurPrestasi.style.display = 'none';
+		// });
+		jalurs.forEach(elem => {
+			elem.onclick = () => {
+				let value = elem.value;
+				if (value == 3) {
+					jalurPrestasi.style.display = 'inline-block';
+				} else jalurPrestasi.style.display = 'none';
+			}
+		})
 	</script>
 @endpush

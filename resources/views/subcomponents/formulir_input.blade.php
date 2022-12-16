@@ -1,7 +1,7 @@
 <?php
 $input = FormHelper::initInput($input);
 $error = isset($errors) && $errors->has($input['name']);
-$no ??= '00';
+$no ??= 0;
 ?>
 
 @if($input['type'] ==='hidden')
@@ -18,9 +18,14 @@ $no ??= '00';
 @else
 
 	<div class="w-full grid grid-cols-3 grid-rows-auto place-items-start justify-items-stretch gap-1 mb-3">
-		<label for="{{ $input['id'] }}" class="col-span-3 sm:col-span-1 flex items-center relative after:content-[':'] after:block sm:after:absolute after:right-0">
-			{{ $no }}. {{ $input['label'] }}
-		</label>
+		@if($input['variant'] === 'nolabel')
+		@elseif($input['variant'] === 'nolabelkeepcol')
+			<div class="col-span-3 sm:col-span-1"></div>
+		@else
+			<label for="{{ $input['id'] }}" class="col-span-3 sm:col-span-1 flex items-center relative after:content-[':'] after:block sm:after:absolute after:right-0">
+				{{ $no }}. {{ $input['label'] }}
+			</label>
+		@endif
 		
 		<div class="col-span-3 sm:col-span-2">
 			@if(in_array($input['type'], ['radio', 'checkbox']))

@@ -9,6 +9,7 @@ use App\Models\Jurusan;
 use App\Models\Pembayaran;
 use App\Models\Pendaftaran;
 use App\Models\Tagihan;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -17,6 +18,7 @@ class FormulirController extends Controller
 
     protected $myValidations = [
         'jalur_pendaftaran_id', 
+        'sub_jalur_pendaftaran_id', 
         'nama_lengkap', 
         'tanggal_lahir', 
         'jenis_kelamin', 
@@ -28,6 +30,7 @@ class FormulirController extends Controller
 
     protected $admValidations = [
         'jalur_pendaftaran_id', 
+        'sub_jalur_pendaftaran_id', 
         'nama_lengkap', 
         'tanggal_lahir', 
         'jenis_kelamin', 
@@ -54,16 +57,14 @@ class FormulirController extends Controller
     protected $duseragamValidations = [
         'ukuran_seragam'
     ];
-
+    
     protected function getFormInputs (Identitas $data = null)
     {
         $jurusan = Jurusan::getOptions();
-        $jalurs = JalurPendaftaran::getOptions();
         $kelamins = ['LAKI-LAKI', 'PEREMPUAN'];
 
         return [
-            ['type' => 'radio', 'name' => 'jalur_pendaftaran_id', 'value' => $data->jalur_pendaftaran_id??null,
-                'label' => 'Jalur Pendaftaran', 'values' => $jalurs],
+            ...JalurPendaftaran::getFormInput(),
             ['type' => 'text', 'name' => 'nama_lengkap', 'value' => $data->nama_lengkap??null,
                 'label' => null, 'placeholder' => null, 'opts' => ['uppercase']], 
             ['type' => 'radio', 'name' => 'jenis_kelamin', 'value' => $data->jenis_kelamin??null,
@@ -84,12 +85,10 @@ class FormulirController extends Controller
     protected function getAdvancedFormInputs (Identitas $data = null)
     {
         $jurusan = Jurusan::getOptions();
-        $jalurs = JalurPendaftaran::getAdvancedOptions();
         $kelamins = ['LAKI-LAKI', 'PEREMPUAN'];
 
         return [
-            ['type' => 'select', 'name' => 'jalur_pendaftaran_id', 'value' => $data->jalur_pendaftaran_id??null,
-                'label' => 'Jalur Pendaftaran', 'options' => $jalurs, 'opts' => ['required']],
+            ...JalurPendaftaran::getFormInput($data),
             ['type' => 'text', 'name' => 'nama_lengkap', 'value' => $data->nama_lengkap??null,
                 'label' => null, 'placeholder' => null, 'opts' => ['required', 'uppercase']], 
             ['type' => 'text', 'name' => 'tempat_lahir', 'value' => $data->tempat_lahir??null,
@@ -196,43 +195,50 @@ class FormulirController extends Controller
     {
         $isadmin = $req->user()->level_id ?? 1 !== 1;
         
-        if (!$isadmin) {
-            if (!$req->has('g-recaptcha-response') || !$req->get('g-recaptcha-response')) {
-                return back()->withErrors([
-                    'alerts' => ['error' => 'Invalid reCAPTCHA!']
-                ])->withInput($req->toArray());
-            }
+        // if (!$isadmin) {
+        //     if (!$req->has('g-recaptcha-response') || !$req->get('g-recaptcha-response')) {
+        //         return back()->withErrors([
+        //             'alerts' => ['error' => 'Invalid reCAPTCHA!']
+        //         ])->withInput($req->toArray());
+        //     }
     
-            $rawurl = 'https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s&remoteip=%s';
-            $token = $req->get('g-recaptcha-response');
-            $secretkey = env('RECAPTCHA_SECRET_KEY');
-            $clientip = $req->ip();
+        //     $rawurl = 'https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s&remoteip=%s';
+        //     $token = $req->get('g-recaptcha-response');
+        //     $secretkey = env('RECAPTCHA_SECRET_KEY');
+        //     $clientip = $req->ip();
             
-            $url = sprintf($rawurl, $secretkey, $token, $clientip);
-            // $result = file_get_contents($url);
-            // $response = json_decode($result, true);
+        //     $url = sprintf($rawurl, $secretkey, $token, $clientip);
+        //     // $result = file_get_contents($url);
+        //     // $response = json_decode($result, true);
     
-            $c = curl_init();
-            curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($c, CURLOPT_URL, $url);
-            $contents = curl_exec($c);
-            curl_close($c);
+        //     $c = curl_init();
+        //     curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+        //     curl_setopt($c, CURLOPT_URL, $url);
+        //     $contents = curl_exec($c);
+        //     curl_close($c);
     
-            $response = json_decode($contents, true);
+        //     $response = json_decode($contents, true);
     
-            if (!$contents && !isset($response['success']) && !$response['success']) {
-                return back()->withErrors([
-                    'alerts' => ['error' => 'Invalid reCAPTCHA!']
-                ])->withInput($req->toArray());
-            }
-        }
-
+        //     if (!$contents && !isset($response['success']) && !$response['success']) {
+        //         return back()->withErrors([
+        //             'alerts' => ['error' => 'Invalid reCAPTCHA!']
+        //         ])->withInput($req->toArray());
+        //     }
+        // }
+        
         $creden = $req->validate(Identitas::getValidations(
             $isadmin ? $this->admValidations : $this->myValidations
         ));
+        $creden = Identitas::getSubPrestasi($creden);
         $duscreden = $req->validate(DUSeragam::getValidations($this->duseragamValidations));
 
-        
+        $onage = Identitas::validateAge($creden['tanggal_lahir']);
+        if (!$onage) {
+            return back()->withErrors([
+                'alerts' => ['error' => 'Maaf, umur tidak memenuhi kriteria pendaftaran.']
+            ])->withInput($creden);
+        }
+
         try {
             
             $identitas = Identitas::create($creden);
@@ -256,12 +262,17 @@ class FormulirController extends Controller
             ]);
 
             $redir = $isadmin ? '/admin/peserta' : '/';
+
+            if (!$isadmin) {
+                session([
+                    'pasca_pendaftaran' => true,
+                    'kode' => $pendaftaran->kode,
+                    'tagihan' => $tagihan->biaya_pendaftaran
+                ]);
+            }
             
             return redirect($redir)->withErrors([
                 'alerts' => ['success' => 'Pendaftaran berhasil.'],
-                'pascaDaftar' => '',
-                'pendaftaran' => $pendaftaran->toArray(),
-                'tagihan' => $tagihan->toArray()
             ]);
             
         } catch (\Exception $th) {

@@ -18,7 +18,8 @@ return new class extends Migration
             $table->char('kode', 7)->unique();
 
             $table->string('ukuran_seragam', 5)->nullable();
-            
+            $table->string('keterangan')->nullable();
+
             $table->boolean('verifikasi')->default(false);
             $table->string('admin_verifikasi')->nullable();
 

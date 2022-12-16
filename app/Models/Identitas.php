@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DateTime;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
@@ -75,6 +76,7 @@ class Identitas extends Model
 
     public static $validations = [
         'jalur_pendaftaran_id' => 'required|numeric',
+        'sub_jalur_pendaftaran_id' => 'nullable|required_if:jalur_pendaftaran_id,3|numeric',
         'nama_lengkap' => 'required|string',
         'tanggal_lahir' => 'required|date',
         'jenis_kelamin' => 'required|string',
@@ -105,5 +107,22 @@ class Identitas extends Model
             $result[$key] = self::$validations[$key] ?? '';
         }
         return $result;
+    }
+
+    public static function getSubPrestasi (array $creden)
+    {
+        if ($creden['sub_jalur_pendaftaran_id']) {
+            $creden['jalur_pendaftaran_id'] = $creden['sub_jalur_pendaftaran_id'];
+        }
+        unset($creden['sub_jalur_pendaftaran_id']);
+        return $creden;
+    }
+
+    public static function validateAge ($tanggal)
+    {
+        $datetime = new DateTime($tanggal);
+        $year = (int) $datetime->format('Y');
+        $age = 2023 - $year;
+        return $age <= 21 && $age >= 14 ? $tanggal : false;
     }
 }

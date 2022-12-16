@@ -18,13 +18,14 @@ return new class extends Migration
 
             $table->string('jalur');
             $table->string('subjalur1')->nullable();
-            $table->string('subjalur2')->nullable();
 
             $table->unsignedMediumInteger('biaya_pendaftaran')->default(0);
             $table->unsignedMediumInteger('biaya_daftar_ulang')->default(0);
             $table->unsignedMediumInteger('biaya_seragam')->default(0);
             $table->unsignedMediumInteger('biaya_bonus')->default(0);
 
+            $table->dateTime('periode_awal')->default(now()->setDay(3)->setMonth(1)->setYear(2023)->setTime(0,0,0,0));
+            $table->dateTime('periode_akhir')->default(now()->setDay(19)->setMonth(4)->setYear(2023)->setTime(23,59,59,59));
             // $table->timestamps();
         });
     }

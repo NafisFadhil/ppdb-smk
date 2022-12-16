@@ -30,20 +30,36 @@ class JalurPendaftaran extends Model
         return $this->uppercaseAttribute();
     } 
     
-
     public function identitases () {
         return $this->hasMany(Identitas::class);
     }
 
-    public static function getOptions()
+    protected static $jalurs = [];
+
+    protected static function initJalurs ()
     {
-        $jalurs = JalurPendaftaran::all();
+        if (empty(self::$jalurs)) {
+            self::$jalurs = JalurPendaftaran::all();
+        }
+    }
+
+    protected static function concateJalur($jalur)
+    {
+        $opt = $jalur->jalur;
+        if (isset($jalur->subjalur1)) $opt .= ' ' . $jalur->subjalur1;
+        if (isset($jalur->subjalur2)) $opt .= ' ' . $jalur->subjalur2;
+        return $opt;
+    }
+
+    public static function getOptions ()
+    {
+        self::initJalurs();
         $result = [];
         
-        foreach ($jalurs as $jalur) {
+        foreach (self::$jalurs as $jalur) {
             if ($jalur->subjalur1) continue;
         
-            $opt = $jalur->jalur;
+            $opt = self::concateJalur($jalur);
             $result[] = [
                 'label' => strtoupper($opt),
                 'value' => $jalur->id
@@ -51,20 +67,48 @@ class JalurPendaftaran extends Model
         } return $result;
     }
 
+    public static function getPrestasiOptions ()
+    {
+        self::initJalurs();
+        $opts = [['label' => '--Pilih Prestasi--', 'value' => '']];
+
+        foreach (self::$jalurs as $jalur) {
+            if (!$jalur->subjalur1) continue;
+
+            $opt = self::concateJalur($jalur);
+            $opts[] = [
+                'label' => strtoupper($opt),
+                'value' => $jalur->id
+            ];
+        } return $opts;
+    }
+
     public static function getAdvancedOptions()
     {
-        $jalurs = JalurPendaftaran::all();
+        self::initJalurs();
         $result = [['label' => '--Pilih Jalur Pendaftaran--', 'value' => '']];
-        foreach ($jalurs as $jalur) {
-            $opt = $jalur->jalur;
-            if (isset($jalur->subjalur1)) $opt .= ' ' . $jalur->subjalur1;
-            if (isset($jalur->subjalur2)) $opt .= ' ' . $jalur->subjalur2;
+        foreach (self::$jalurs as $jalur) {
+            $opt = self::concateJalur($jalur);
 
             $result[] = [
                 'label' => strtoupper($opt),
                 'value' => $jalur->id
             ];
         } return $result;
+    }
+
+    public static function getFormInput ($req = null) :array
+    {
+        $req ?? [];
+        $jalurs = JalurPendaftaran::getOptions();
+        $jalurprestasi = JalurPendaftaran::getPrestasiOptions();
+
+        return [
+            ['type' => 'radio', 'name' => 'jalur_pendaftaran_id', 'value' => $req['jalur_pendaftaran_id']??null,
+                'label' => 'Jalur Pendaftaran', 'values' => $jalurs, 'opts' => ['required']],
+            ['variant' => 'nolabelkeepcol', 'type' => 'select', 'name' => 'sub_jalur_pendaftaran_id', 'value' => $req['sub_jalur_pendaftaran_id']??null,
+                'label' => null, 'placeholder' => null, 'options' => $jalurprestasi],
+        ];
     }
 
 }
