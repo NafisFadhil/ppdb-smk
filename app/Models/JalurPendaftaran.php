@@ -97,16 +97,17 @@ class JalurPendaftaran extends Model
         } return $result;
     }
 
-    public static function getFormInput ($req = null) :array
+    public static function getFormInput (Identitas $data = null) :array
     {
-        $req ?? [];
+        // $req ?? [];
+        $data ??= collect([]);
         $jalurs = JalurPendaftaran::getOptions();
         $jalurprestasi = JalurPendaftaran::getPrestasiOptions();
 
         return [
-            ['type' => 'radio', 'name' => 'jalur_pendaftaran_id', 'value' => $req['jalur_pendaftaran_id']??null,
+            ['type' => 'radio', 'name' => 'jalur_pendaftaran_id', 'value' => $data['jalur_pendaftaran_id']??null,
                 'label' => 'Jalur Pendaftaran', 'values' => $jalurs, 'opts' => ['required']],
-            ['variant' => 'nolabelkeepcol', 'type' => 'select', 'name' => 'sub_jalur_pendaftaran_id', 'value' => $req['sub_jalur_pendaftaran_id']??null,
+            ['variant' => 'nolabelkeepcol', 'type' => 'select', 'name' => 'sub_jalur_pendaftaran_id', 'value' => $data['jalur_pendaftaran_id']??old('sub_jalur_pendaftaran_id')??old('jalur_pendaftaran_id')??null,
                 'label' => null, 'placeholder' => null, 'options' => $jalurprestasi],
         ];
     }

@@ -56,7 +56,7 @@ $forms = [
 		[
 			'title' => 'Data Seragam',
 			'inputs' => [
-				['type' => 'select', 'name' => 'ukuran_seragam', 'value' => $identitas->ukuran, 'options' => [
+				['type' => 'select', 'name' => 'ukuran_seragam', 'value' => $identitas->duseragam->ukuran_seragam, 'options' => [
 					['label' => '--Pilih Ukuran--', 'value' => ''],
 					'S', 'M', 'L', 'XL', 'XXL', 'XXXL'
 				]],

@@ -109,7 +109,7 @@ $inputs = [
 			[
 				'name' => 'keterangan',
 				'placeholder' => '(Opsional)',
-				'value' => $row->tagihan->keterangan,
+				'value' => $row->pendaftaran->keterangan,
 				'attr' => 'disabled'
 			],
 			[
@@ -168,6 +168,15 @@ $inputs = [
 										?>
 
 									<div class="btn-group btn-group-sm mb-1">
+										{{-- Input Siswa Sponsorship --}}
+										<button type="button" title="Input Siswa Sponsorship" data-toggle="modal"
+										data-target="#modalSponsorship{{ $row->id }}" class="btn btn-secondary" {{ $row->sponsorship ? 'disabled' : '' }} >
+											<i class="fa">S+</i>
+											@if(!$row->sponsorship)
+												@include('admin.modals.general.sponsorship', [ 'row' => $row ])
+											@endif
+										</button>
+										
 										{{-- Input Pembayaran --}}
 										<button type="button" title="Konfirmasi Biaya Pendaftaran" data-toggle="modal"
 										data-target="#modalBiaya{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 1 ? 'disabled' : '' }} >
@@ -184,20 +193,11 @@ $inputs = [
 										<button type="button" title="Verifikasi Pembayaran Siswa" data-toggle="modal"
 										data-target="#modalPembayaran{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 2 ? 'disabled' : '' }} >
 											<i class="fa fa-check"></i>
-											@if($row->status_id < 3)
+											@if($row->status_id === 2)
 												@include('admin.modals.pendaftaran.2_input_pembayaran', [
 													'row' => $row,
 													'subinputs' => $inputs['pembayaran']($row)
 												])
-											@endif
-										</button>
-
-										{{-- Input Siswa Sponsorship --}}
-										<button type="button" title="Input Siswa Sponsorship" data-toggle="modal"
-										data-target="#modalSponsorship{{ $row->id }}" class="btn btn-secondary" {{ $row->sponsorship ? 'disabled' : '' }} >
-											<i class="fa">S+</i>
-											@if(!$row->sponsorship)
-												@include('admin.modals.general.sponsorship', [ 'row' => $row ])
 											@endif
 										</button>
 
@@ -217,9 +217,9 @@ $inputs = [
 									<div class="btn-group btn-group-sm">
 										{{-- Details --}}
 										<button type="button" title="Detail Siswa" data-toggle="modal"
-										data-target="#modalDetail{{ $row->id }}" class="btn btn-secondary" >
+										data-target="#modalDetail{{ $row->id }}" class="btn btn-secondary" disabled>
 											<i class="fa fa-eye"></i> 
-											@include('admin.modals.general.detail', [
+											{{-- @include('admin.modals.general.detail', [
 												'row' => $row,
 												'inputs' => [
 													['Kode Pendaftaran', $row->pendaftaran->kode],
@@ -231,9 +231,9 @@ $inputs = [
 													['Jurusan', StringHelper::toCapital($row->nama_jurusan)],
 													['Biaya Pendaftaran', NumberHelper::toRupiah($row->tagihan->biaya_pendaftaran)],
 													['Lunas', ($row->pendaftaran->lunas ? 'Lunas' : 'Belum Lunas')],
-													['Keterangan', $row->tagihan->keterangan],
+													['Keterangan', $row->pendaftaran->keterangan],
 												]
-											])
+											]) --}}
 										</button>
 
 										{{-- Tagihan --}}

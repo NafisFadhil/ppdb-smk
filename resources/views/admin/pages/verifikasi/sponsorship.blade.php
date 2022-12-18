@@ -2,6 +2,10 @@
 
 @section('content')
 <div class="row gap-2">
+	@include('admin.components.bigsearch', ['input' => [
+		'type' => 'search', 'name' => 'search', 'placeholder' => 'Cari sponsorship...'
+	]])
+
 	<div class="col-12">
 		<div class="card">
 			<div class="card-body">

@@ -32,7 +32,7 @@ $error = isset($errors) && $errors->has($input['name']);
 						$label = $values['label'];
 					} else $value = $label = $values;
 					
-					$id = $input['id'] . mt_rand(1, 99);
+					$id = $input['id'] . rand(1, 99999);
 					$checked = $input['value'] == $value || old($input['name']) == $value;
 				?>
 					<div class="form-check d-inline-block mr-2">

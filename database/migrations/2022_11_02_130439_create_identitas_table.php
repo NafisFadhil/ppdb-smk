@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('identitas', function (Blueprint $table) {
             $table->id();
-            // $table->string('jalur_pendaftaran');
             $table->string('nama_lengkap');
             $table->date('tanggal_lahir');
             $table->string('jenis_kelamin');
@@ -39,6 +38,10 @@ return new class extends Migration
 
             $table->boolean('reset')->default(false);
             $table->unsignedTinyInteger('old_status_id')->default(0);
+
+            $table->boolean('verifikasi')->default(false);
+            $table->string('admin_verifikasi')->nullable();
+            $table->timestamp('tanggal_verifikasi')->nullable();
 
             $table->foreignId('jalur_pendaftaran_id');
             $table->foreignId('status_id')->default(1);

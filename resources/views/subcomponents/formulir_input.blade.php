@@ -37,11 +37,14 @@ $no ??= 0;
 							$value = $option['value'];
 							$label = $option['label'];
 						} else $value = $label = $option;
-						$id = $input['id'] . mt_rand(1, 99);
-						$checked = $input['value'] === $value || old($input['name']) === $value;
+						$id = $input['id'] . rand(1, 99999);
+						$checked = $input['value'] == $value || old($input['name']) == $value;
+						$checked = $checked || (
+							$input['name'] === 'jalur_pendaftaran_id' && old($input['name']) > 3 && $value == 3
+						);
 					?>
 						<div class="flex flex-nowrap gap-2 items-center">
-							<input type="radio" name="{{ $input['name'] }}" id="{{ $id }}" value="{{ $value }}" {{ $checked ? 'checked selected' : '' }}>
+							<input type="radio" name="{{ $input['name'] }}" id="{{ $id }}" value="{{ $value }}" @checked($checked) />
 							<label for="{{ $id }}" class="">{{ $label }}</label>
 						</div>
 					@endforeach
@@ -104,9 +107,10 @@ $no ??= 0;
 							$value = $option['value'];
 							$label = $option['label'];
 						} else $value = $label = $option;
-						$selected = $input['value'] === $value || old($input['name']) === $value
+						
+						$selected = !$loop->first && $input['value'] == $value || old($input['name']) == $value;
 						?>
-						<option value="{{ $value }}" {{ $selected ? 'selected' : '' }} >
+						<option value="{{ $value }}" {{ $selected ? 'selected' : null }}>
 							{{ $label }}
 						</option>
 					@endforeach	

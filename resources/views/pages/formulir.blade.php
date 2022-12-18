@@ -50,6 +50,7 @@
 					jalurPrestasi.style.display = 'inline-block';
 				} else jalurPrestasi.style.display = 'none';
 			}
+			if (elem.hasAttribute('checked')) elem.click();
 		})
 	</script>
 @endpush

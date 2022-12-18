@@ -41,9 +41,9 @@
 								<td>
 									<div class="btn-group btn-group-sm">
 
-										<button type="button" title="Detail Siswa" data-toggle="modal" data-target="#modalDetail{{ $row->id }}" class="btn btn-secondary" >
+										<button type="button" title="Detail Siswa" data-toggle="modal" data-target="#modalDetail{{ $row->id }}" class="btn btn-secondary" disabled>
 											<i class="fa fa-eye"></i> 
-											@include('admin.modals.general.detail', [
+											{{-- @include('admin.modals.general.detail', [
 												'row' => $row,
 												'inputs' => [
 														['Kode Pendaftaran', $row->pendaftaran->kode ?? ''],
@@ -55,7 +55,7 @@
 														['Jurusan', StringHelper::toCapital($row->nama_jurusan)],
 														['No Wa Siswa', $row->no_wa_siswa],
 													]
-											])
+											]) --}}
 										</button>
 
 										{{-- Edit --}}
@@ -70,12 +70,6 @@
 											@if(!$row->sponsorship)
 												@include('admin.modals.general.sponsorship', [ 'row' => $row ])
 											@endif
-										</button>
-
-										{{-- Print --}}
-										<button type="button" title="Print" data-toggle="modal" data-target="#modalPrint{{ $row->id }}" class="btn btn-secondary">
-											<i class="fa fa-print"></i>
-											@include('admin.modals.print.peserta', ['row' => $row])
 										</button>
 
 									</div>

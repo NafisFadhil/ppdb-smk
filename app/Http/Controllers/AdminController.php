@@ -24,6 +24,7 @@ class AdminController extends Controller
 
     public function peserta()
     {
+        session(['oldpath' => request()->path()]);
         $search = request('search') ?? false;
         if ($search) {
             $peserta = Identitas::where('nama_lengkap', 'like', "%$search%")
@@ -50,7 +51,7 @@ class AdminController extends Controller
                         'title' => 'Data Siswa',
                         'inputs' => [
                             ['attr' => 'disabled', 'name' => 'nama_lengkap', 'value' => $identitas->nama_lengkap],
-                            ['attr' => 'disabled', 'name' => 'kode_jurusan', 'value' => $identitas->pendaftaran->kode],
+                            ['attr' => 'disabled', 'name' => 'kode', 'value' => $identitas->jurusan->kode ?? $identitas->pendaftaran->kode],
                             ['attr' => 'disabled', 'name' => 'jalur_pendaftaran', 'value' => \App\Helpers\ModelHelper::getJalur($identitas->jalur_pendaftaran)],
                             ['attr' => 'disabled', 'name' => 'status', 'value' => strtoupper($identitas->status->level)],
                         ]

@@ -15,9 +15,16 @@ use App\Http\Controllers\LaporanController;
 // use App\Http\Controllers\UserAdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserProfilController;
+
+use App\Http\Controllers\Laporan\DuseragamController as LaporanDuseragamController;
+use App\Http\Controllers\Laporan\PendaftaranController as LaporanPendaftaranController;
+use App\Http\Controllers\Laporan\SponsorshipController as LaporanSponsorshipController;
+
 use App\Http\Controllers\Verifikasi\DuseragamController as VerifikasiDuseragamController;
 use App\Http\Controllers\Verifikasi\PendaftaranController as VerifikasiPendaftaranController;
 use App\Http\Controllers\Verifikasi\SponsorshipController as VerifikasiSponsorshipController;
+use App\Http\Controllers\Verifikasi\PendataanController as VerifikasiPendataanController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,6 +51,7 @@ Route::get('/', function () {
 Route::get('/test', function () {
     // dd(auth()->user()->count());
     // dd(get_defined_vars());
+    // new \App\Filters\TanggalFilter(['tanggal']);
 });
 
 
@@ -97,18 +105,13 @@ Route::middleware('auth')->group(function () {
     
         Route::resource('/users', UserController::class);
     
-        // Route::controller(FormulirController::class)->middleware()->group(function () {
-        //     Route::get('/tambah-peserta', 'tambah');
-        //     Route::post('/tambah-peserta', 'admstore');
-        // });
-
         Route::prefix('/verifikasi')->group(function () {
             Route::prefix('/pendaftaran')->controller(VerifikasiPendaftaranController::class)
             ->group(function () {
                 Route::get('/', 'index');
                 Route::post('/biaya/{identitas:id}', 'biaya');
                 Route::post('/pembayaran/{identitas:id}', 'pembayaran');
-                Route::post('/verifikasi/{identitas:id}', 'verifikasi');
+                Route::post('/{identitas:id}', 'verifikasi');
             });
         
             Route::prefix('/duseragam')->controller(VerifikasiDuseragamController::class)
@@ -116,8 +119,15 @@ Route::middleware('auth')->group(function () {
                 Route::get('/', 'index');
                 Route::post('/biaya-duseragam/{identitas:id}', 'biaya');
                 Route::post('/pembayaran/{type}/{identitas:id}', 'pembayaran');
-                Route::post('/verifikasi/{identitas:id}', 'verifikasi');
+                Route::post('/{identitas:id}', 'verifikasi');
             });
+
+            Route::prefix('/pendataan')->controller(VerifikasiPendataanController::class)
+            ->group(function () {
+                Route::get('/', 'index');
+                Route::post('/{identitas:id}', 'verifikasi');
+            });
+            Route::get('/pendataan/edit/{identitas:id}', [FormulirController::class, 'edit']);
 
             Route::prefix('/sponsorship')->controller(VerifikasiSponsorshipController::class)
             ->group(function () {
@@ -143,10 +153,13 @@ Route::middleware('auth')->group(function () {
             Route::post('/formulir-duseragam/{identitas:id}', 'admstore');
         });
     
-        Route::controller(LaporanController::class)->group(function () {
-            Route::get('/laporan/pendaftaran', 'indexPendaftaran')->name('laporan.pendaftaran');
-            // Route::post('/laporan/pendaftaran', 'filterPendaftaran');
+        Route::prefix('/laporan')->group(function () {
+            Route::controller(LaporanPendaftaranController::class)->group(function () {
+                Route::get('/pendaftaran', 'index');
+                Route::get('/pendaftaran/cetak', 'cetak');
+            });
         });
+
         Route::controller(CetakController::class)->group(function () {
             Route::get('/cetak/pendaftaran/{identitas:id}', 'cetakPendaftaran');
             Route::get('/cetak/formulir/{identitas:id}', 'cetakFormulir');

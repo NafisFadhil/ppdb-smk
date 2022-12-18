@@ -20,7 +20,8 @@ class SponsorshipController extends Controller
     
     public function index()
     {
-        return view('admin.pages.sponsorship', [
+        session(['oldpath' => request()->path()]);
+        return view('admin.pages.verifikasi.sponsorship', [
             'page' => ['title' => 'Data Sponsorship'],
             'sponsorship' => Sponsorship::latest()->with(['identitas'])->paginate(),
             'peserta' => Identitas::select(['id', 'nama_lengkap', 'asal_sekolah'])->get()

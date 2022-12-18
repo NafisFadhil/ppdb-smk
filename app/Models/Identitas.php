@@ -111,7 +111,7 @@ class Identitas extends Model
 
     public static function getSubPrestasi (array $creden)
     {
-        if ($creden['sub_jalur_pendaftaran_id']) {
+        if ($creden['sub_jalur_pendaftaran_id'] && $creden['jalur_pendaftaran_id'] > 3) {
             $creden['jalur_pendaftaran_id'] = $creden['sub_jalur_pendaftaran_id'];
         }
         unset($creden['sub_jalur_pendaftaran_id']);

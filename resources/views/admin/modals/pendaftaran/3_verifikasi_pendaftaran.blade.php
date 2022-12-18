@@ -4,7 +4,7 @@
 		'title' => 'Verifikasi Pendaftaran',
 	])
 
-	<form action="/admin/verifikasi/pendaftaran/verifikasi/{{ $row->id }}" method="post">
+	<form action="/admin/verifikasi/pendaftaran/{{ $row->id }}" method="post">
 		@csrf
 
 		{{-- <div class="row"> --}}

@@ -5,11 +5,13 @@ $counters = [
 	'peserta' => $peserta->count(),
 	'pendaftar' => 0,
 	'duseragam' => 0,
+	'lulus' => 0,
 ];
 
 foreach ($peserta as $item) {
 	if ($item->status_id > 0 && $item->status_id < 4) $counters['pendaftar']++;
-	elseif ($item->status_id > 3 && $item->status_id < 8) $counters['duseragam']++;
+	elseif ($item->status_id > 3 && $item->status_id < 7) $counters['duseragam']++;
+	else $counters['lulus']++;
 
 	if ($item->jurusan) $jurusanCounters[strtolower($item->nama_jurusan)]++;
 }

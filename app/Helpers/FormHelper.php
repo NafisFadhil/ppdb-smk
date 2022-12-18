@@ -5,7 +5,7 @@ namespace App\Helpers;
 class FormHelper
 {
 
-	public static function initInput(array $input)
+	public static function initInput(array $input) :array
 	{
 		$icon = $input['icon'] ?? '';
 		$type = $input['type'] ?? 'text';
@@ -33,6 +33,76 @@ class FormHelper
 			'attr' => $attr,
 			'opts' => $opts,
 		]);
+	}
+
+	public static function initForm(array $form) :array
+	{
+		$variant = $form['variant'] ??= 'single';
+		
+		if ($variant === 'multiform') {
+
+			$basicform = self::initBasicForm($form);
+			$basicform['inputs'] = self::initMultiForm($basicform['inputs']);
+			return [
+				'variant' => $variant,
+				...$basicform,
+			];
+			
+		} elseif ($variant === 'dimensionalform') {
+		} else return self::initBasicForm($form);
+	}
+
+	private static function initBasicForm(array $form) :array
+	{
+		$variant = $form['variant'] ?? 'single';
+		$cols = $form['cols'] ?? 'col-12 col-sm-6';
+		$title = $form['title'] ?? null;
+		$action = $form['action'] ?? null;
+		$method = $form['method'] ?? 'POST';
+		$submethod = $form['submethod'] ?? null;
+		$enctype = $form['enctype'] ?? 'application/x-www-form-urlencoded';
+		$button = $form['button'] ?? [];
+		$inputs = $form['inputs'] ?? [];
+
+		return [
+			'variant' => $variant,
+			'cols' => $cols,
+			'title' => $title,
+			'action' => $action,
+			'method' => $method,
+			'submethod' => $submethod,
+			'enctype' => $enctype,
+			'button' => $button,
+			'inputs' => $inputs,
+		];
+	}
+
+	private static function initMultiForm(array $inputs) :array
+	{
+		$newinputs = [];
+		foreach ($inputs as $form) {
+			$title = $form['title'] ?? null;
+			$inputs = $form['inputs'] ?? [];
+
+			$newinputs[] = [
+				'title' => $title,
+				'inputs' => $inputs,
+			];
+		} return $newinputs;
+	}
+
+	private static function initDimensionalForm(array $inputs) :array
+	{
+		$forms = [];
+		foreach ($inputs as $form) {
+			$form = self::initBasicForm($form);
+			$title = $form['title'] ?? null;
+			
+			$forms[] = [
+				...$form,
+				'title' => $title,
+			];
+		} return $forms;
 	}
 	
 }

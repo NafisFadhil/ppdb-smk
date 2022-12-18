@@ -55,30 +55,30 @@ class LaporanController extends Controller
         ]);
     }
 
-    private function filterPendaftaran ()
-    {
-        $type = request('type');
-        $thn = request('thn');
-        $year = $thn == 'all' ? '' : $thn;
+    // private function filterPendaftaran ()
+    // {
+    //     $type = request('type');
+    //     $thn = request('thn');
+    //     $year = $thn == 'all' ? '' : $thn;
 
-        if ($type === 'pembayaran') {
-            return DB::table('pendaftarans as p')
-            ->join('identitas as i', 'p.identitas_id', '=', 'i.id')
-            ->join('tagihans as t', 't.identitas_id', '=', 'i.id')
-            ->where('p.updated_at', 'like', "$year%")
-            ->whereNotNull('t.biaya_pendaftaran')
-            ->select([
-                'p.kode',
-                't.biaya_pendaftaran',
-                'p.updated_at',
-                't.admin_pendaftaran as admin_biaya_pendaftaran',
-                'i.nama_lengkap',
-                'i.no_wa_siswa',
-                'i.nama_jurusan'
-            ])->get();
-        } elseif ($type === 'pendaftaran') {
-            return Identitas::where('created_at','like',"$year%")->get();
-        }
-    }
+    //     if ($type === 'pembayaran') {
+    //         return DB::table('pendaftarans as p')
+    //         ->join('identitas as i', 'p.identitas_id', '=', 'i.id')
+    //         ->join('tagihans as t', 't.identitas_id', '=', 'i.id')
+    //         ->where('p.updated_at', 'like', "$year%")
+    //         ->whereNotNull('t.biaya_pendaftaran')
+    //         ->select([
+    //             'p.kode',
+    //             't.biaya_pendaftaran',
+    //             'p.updated_at',
+    //             't.admin_pendaftaran as admin_biaya_pendaftaran',
+    //             'i.nama_lengkap',
+    //             'i.no_wa_siswa',
+    //             'i.nama_jurusan'
+    //         ])->get();
+    //     } elseif ($type === 'pendaftaran') {
+    //         return Identitas::where('created_at','like',"$year%")->get();
+    //     }
+    // }
 
 }

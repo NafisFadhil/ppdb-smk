@@ -1,9 +1,12 @@
-<?php $input = FormHelper::initInput($input) ?>
+<?php
+$variant ??= 'default';
+$input = FormHelper::initInput($input);
+?>
 
 <div class="w-100 mx-auto" style="max-width: max-content">
 	<div class="card">
 		<div class="card-body text-center">
-			<form action="">
+			@if($variant !== 'noform') <form action=""> @endif
 				<div class="input-group d-flex flex-nowrap">
 					<div class="input-group-prepend">
 						<div class="input-group-text">
@@ -23,7 +26,7 @@
 						<button class="btn btn-primary btn-sm">Temukan</button>
 					</div>
 				</div>
-			</form>
+			@if($variant !== 'noform') </form> @endif
 		</div>
 	</div>
 </div>

@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class DUSeragamController extends Controller
 {
-    protected $admValidations = [
+    protected $validations = [
         // 'jalur_pendaftaran_id', 
         // 'nama_lengkap', 
         // 'tanggal_lahir', 
@@ -107,23 +107,14 @@ class DUSeragamController extends Controller
 
     public function store(Request $req)
     {
-        $creden = $req->validate(Identitas::getValidations(DUSeragam::$validations));
-
-        $seragamCreden = $req->validate([
-            'ukuran_seragam' => 'required'
-        ]);
+        $creden = $req->validate(Identitas::getValidations($this->validations));
+        $seragamCreden = $req->validate(DUSeragam::getValidations($this->duseragamValidations));
 
         try {
 
             $user = $req->user();
-            $identitas = $user->identitas;
-            $iden = $identitas->update([
-                'status_id' => $user->identitas->status_id+1,
-                ...$creden,
-            ]);
-            $duseragam = $identitas->duseragam->update([
-                ...$seragamCreden
-            ]);
+            $user->identitas->duseragam->update($seragamCreden);
+            $user->identitas->update($creden);
 
             return redirect('/siswa')->withErrors([
                 'alerts' => ['success' => 'Daftar ulang berhasil.']
@@ -144,7 +135,7 @@ class DUSeragamController extends Controller
             'form' => [
                 'action' => '/admin/formulir-duseragam/'.$identitas->id,
                 'button' => [
-                    'variant' => 'btn-primary text-white',
+                    'variant' => 'primary text-white',
                     'content' => '<i class="fa">SUBMIT</i>',
                 ],
                 'inputs' => $this->getAdvancedFormInputs($identitas)

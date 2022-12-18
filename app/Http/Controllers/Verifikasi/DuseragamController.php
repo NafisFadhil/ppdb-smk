@@ -11,6 +11,7 @@ class DuseragamController extends Controller
 {
     public function index()
 	{
+        session(['oldpath' => request()->path()]);
         return view('admin.pages.verifikasi.duseragam', [
             'page' => ['title' => 'Verifikasi DU & Seragam'],
             'peserta' => Identitas::whereRelation('status', 'level', 'Daftar Ulang & Seragam')
@@ -31,17 +32,22 @@ class DuseragamController extends Controller
 
         try {
 
-            $lunas = [
-                'daftar_ulang' => $creden['biaya_daftar_ulang'] <= 0,
-                'seragam' => $creden['biaya_seragam'] <= 0,
+            $bayars = [
+                'daftar_ulang' => Pembayaran::getBayar($identitas->tagihan->pembayarans, 'daftar_ulang'),
+                'seragam' => Pembayaran::getBayar($identitas->tagihan->pembayarans, 'seragam'),
             ];
+            
+            $tagihans = [
+                'daftar_ulang' => $creden['biaya_daftar_ulang'] - $bayars['daftar_ulang'],
+                'seragam' => $creden['biaya_seragam'] - $bayars['seragam'],
+            ]; foreach ($tagihans as $type => $value) $tagihans[$type] = $value <= 0 ? 0 : $value;
 
             $identitas->tagihan->update([
                 ...\Illuminate\Support\Arr::except($creden, 'admin_duseragam'),
-                'tagihan_daftar_ulang' => $creden['biaya_daftar_ulang'],
-                'lunas_daftar_ulang' => $lunas['daftar_ulang'],
-                'tagihan_seragam' => $creden['biaya_seragam'],
-                'lunas_seragam' => $lunas['seragam'],
+                'tagihan_daftar_ulang' => $tagihans['daftar_ulang'],
+                'lunas_daftar_ulang' => $tagihans['daftar_ulang']<=0,
+                'tagihan_seragam' => $tagihans['seragam'],
+                'lunas_seragam' => $tagihans['seragam']<=0,
                 'admin_daftar_ulang' => $creden['admin_duseragam'],
                 'admin_seragam' => $creden['admin_duseragam'],
             ]);
@@ -49,12 +55,12 @@ class DuseragamController extends Controller
 
             if ($identitas->reset) {
                 $identitas->update([
-                    'status_id' => $lunas['daftar_ulang']&&$lunas['seragam'] ? 7 : $identitas->status_id+1,
+                    'status_id' => $tagihans['daftar_ulang']<=0&&$tagihans['seragam']<=0 ? 6 : $identitas->status_id+1,
                     'reset' => false,
                     'old_status_id' => 0
                 ]);
                 $alerts['warning'] = 'Perubahan jalur pendaftaran berhasil diselesaikan. Status siswa disesuaikan dengan status lama.';
-            } else $identitas->update(['status_id' => $lunas['daftar_ulang']&&$lunas['seragam'] ? 7 : $identitas->status_id+1]);
+            } else $identitas->update(['status_id' => $tagihans['daftar_ulang']<=0&&$tagihans['seragam']<=0 ? 6 : $identitas->status_id+1]);
 
             return redirect('/admin/verifikasi/duseragam')->withErrors([
                 'alerts' => ['success' => 'Verifikasi biaya daftar ulang dan seragam berhasil.']
@@ -71,8 +77,9 @@ class DuseragamController extends Controller
 
 	public function pembayaran(Request $req, $type, Identitas $identitas)
 	{
+        $type = str_replace('-', '_', $type);
         $xtype = str_replace('_', ' ', $type);
-        $invtype = $xtype === 'seragam' ? 'daftar_ulang' : $xtype;
+        $invtype = $type === 'seragam' ? 'daftar_ulang' : $xtype;
         $creden = $req->validate([
             'bayar' => 'required',
             'admin' => 'required',
@@ -82,7 +89,7 @@ class DuseragamController extends Controller
             
             $kurang = $identitas->tagihan["tagihan_$type"] - $creden['bayar'];
             $calc = [
-                'kurang' => $kurang < 0 ? 0 : $kurang,
+                'kurang' => $kurang <= 0 ? 0 : $kurang,
                 'lunas' => $kurang <= 0
             ];
 

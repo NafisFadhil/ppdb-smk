@@ -113,7 +113,6 @@ class Jurusan extends Model
 	
 	public static function new(string $singkatan)
 	{
-		self::initJurusan();
 		$jurusan = self::getJurusan($singkatan, 'singkatan');
 		return [
 			'kode' => self::getKode($singkatan),

@@ -18,7 +18,7 @@ class StatusSeeder extends Seeder
         DB::table('statuses')->insert([
             [
                 'level' => 'Pendaftar',
-                'sublevel' => 'Menunggu Input Pembayaran',
+                'sublevel' => 'Menunggu Input Tagihan',
                 'desc' => 'Menunggu admin menginputkan nominal biaya pendaftaran.',
             ],
             [
@@ -33,13 +33,8 @@ class StatusSeeder extends Seeder
             ],
             [
                 'level' => 'Daftar Ulang & Seragam',
-                'sublevel' => 'Menunggu Pengisian Formulir',
-                'desc' => 'Menunggu siswa mengisi formulir daftar ulang.',
-            ],
-            [
-                'level' => 'Daftar Ulang & Seragam',
-                'sublevel' => 'Menunggu Input Pembayaran',
-                'desc' => 'Menunggu admin menginputkan nominal biaya daftar ulang.',
+                'sublevel' => 'Menunggu Input Tagihan',
+                'desc' => 'Menunggu admin menginputkan nominal biaya daftar ulang dan seragam.',
             ],
             [
                 'level' => 'Daftar Ulang & Seragam',

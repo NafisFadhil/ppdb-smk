@@ -41,19 +41,22 @@ $error = isset($errors) && $errors->has($input['name']);
 
 @else
 
-	<div class="form-group row">
-		@if($input['variant'] === 'nolabel')
-		@elseif($input['variant'] === 'nolabelkeepcol')
-			<div class="form-label text-sm d-none d-sm-block col-12 col-sm-4 m-0">
+	@if(!in_array($input['variant'], ['filter']))
+		<div class="form-group row {{ $input['variant'] === 'nolabelkeepcol' ? 'mb-0' : '' }}">
+	@endif
+		
+		@if($input['variant'] === 'nolabelkeepcol')
+			<div class="form-label text-sm d-none d-sm-block col-12 col-sm-4 m-0 p-0">
 			</div>
+		@elseif(!in_array($input['variant'], ['nolabel', 'filter']))
+		<label for="{{ $input['id'] }}" class="form-label text-sm col-12 col-sm-4">
+			{{ $input['label'] }}
+			{!! in_array('required', $input['opts']) ? '<small class="text-primary"><b>*</b></small>' : '' !!}
+		</label>
 		@else
-			<label for="{{ $input['id'] }}" class="form-label text-sm col-12 col-sm-4">
-				{{ $input['label'] }}
-				{!! in_array('required', $input['opts']) ? '<small class="text-primary"><b>*</b></small>' : '' !!}
-			</label>
 		@endif
 		
-		@if($input['variant'] === 'nolabel')
+		@if(in_array($input['variant'], ['nolabel', 'filter']))
 			<div class="col-12">
 		@else
 			<div class="col-12 col-sm-8">
@@ -68,8 +71,11 @@ $error = isset($errors) && $errors->has($input['name']);
 						$label = $values['label'];
 					} else $value = $label = $values;
 					
-					$id = $input['id'] . mt_rand(1, 99);
+					$id = $input['id'] . rand(1, 99999);
 					$checked = $input['value'] == $value || old($input['name']) == $value;
+					$checked = $checked || (
+						$input['name'] === 'jalur_pendaftaran_id' && $input['value']??old($input['name'])??0 > 3 && $value == 3
+					);
 				?>
 					<div class="form-check d-inline-block mr-2">
 						<input type="radio"
@@ -77,8 +83,8 @@ $error = isset($errors) && $errors->has($input['name']);
 							id="{{ $id }}"
 							value="{{ $value }}"
 							class="form-check-input"
-							{{ $checked ? 'checked' : '' }}
 							{!! $input['attr'] !!}
+							@checked($checked)
 						/>
 						<label for="{{ $id }}" class="form-check-label">{{ $label }}</label>
 					</div>
@@ -153,7 +159,9 @@ $error = isset($errors) && $errors->has($input['name']);
 				<select type="{{ $input['type'] }}"
 					name="{{ $input['name'] }}"
 					id="{{ $input['id'] }}"
-					class="form-control form-control-sm {{ $input['type'] === 'select2' ? 'select2' : '' }} {{ $error?'is-invalid':'' }}"
+					class="form-control form-control-sm {{ $input['type'] === 'select2' ? 'select2' : '' }}
+					{{ $error?'is-invalid':'' }}
+					{{ $input['variant'] === 'nolabelkeepcol' ? 'mb-3' : '' }}"
 					style="width: 100%"
 					{!! $input['attr'] !!}
 				>
@@ -192,6 +200,8 @@ $error = isset($errors) && $errors->has($input['name']);
 				__($message)
 			</span>
 		@enderror
-
-	</div>
+		
+	@if(!in_array($input['variant'], ['filter']))
+		</div>
+	@endif
 @endif

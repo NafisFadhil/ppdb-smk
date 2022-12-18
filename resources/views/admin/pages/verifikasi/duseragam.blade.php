@@ -170,7 +170,7 @@ $inputs = [
 @section('content')
 <div class="row gap-2">
 	@include('admin.components.bigsearch', ['input' => [
-		'type' => 'search', 'name' => 'search', 'placeholder' => 'Cari peserta...'
+		'type' => 'search', 'name' => 'search', 'placeholder' => 'Cari siswa...'
 	]])
 	
 	<div class="col-12">
@@ -205,16 +205,12 @@ $inputs = [
 								</td>
 								<td>
 									<div class="btn-group btn-group-sm mb-1">
-										{{-- Manual Form --}}
-										<button type="button" title="Formulir DU & Seragam" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/formulir-duseragam/{{ $row->id }}'" {{ $row->status_id !== 4 ? 'disabled' : '' }}>
-											<i class="fa">F</i>
-										</button>
 
 										{{-- DUSeragam --}}
 										<button type="button" title="Konfirmasi Biaya Daftar Ulang & Seragam" data-toggle="modal"
-										data-target="#modalBiaya{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 5 ? 'disabled' : '' }} >
+										data-target="#modalBiaya{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 4 ? 'disabled' : '' }} >
 											<i class="fa fa-dollar-sign"></i> 
-											@if($row->status_id === 5)
+											@if($row->status_id === 4)
 												@include('admin.modals.duseragam.1_verifikasi_biaya_duseragam', [
 													'row' => $row,
 													'subinputs' => $inputs['biaya_duseragam']($row)
@@ -225,9 +221,9 @@ $inputs = [
 
 										{{-- Pembayaran DU --}}
 										<button type="button" title="Input Pembayaran Daftar Ulang" data-toggle="modal"
-										data-target="#modalPembayaranDaftarUlang{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 6 || $row->tagihan->lunas_daftar_ulang ? 'disabled' : '' }} >
+										data-target="#modalPembayaranDaftarUlang{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 5 || $row->tagihan->lunas_daftar_ulang ? 'disabled' : '' }} >
 											<i class="fa fa-check">DU</i>
-											@if($row->status_id === 6)
+											@if($row->status_id === 5)
 												@include('admin.modals.daftar_ulang.input_pembayaran', [
 													'row' => $row,
 													'subinputs' => $inputs['pembayaran_daftar_ulang']($row)
@@ -238,9 +234,9 @@ $inputs = [
 
 										{{-- Pembayaran Seragam --}}
 										<button type="button" title="Input Pembayaran Seragam" data-toggle="modal"
-										data-target="#modalPembayaranSeragam{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 6 || $row->tagihan->lunas_seragam ? 'disabled' : '' }} >
+										data-target="#modalPembayaranSeragam{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 5 || $row->tagihan->lunas_seragam ? 'disabled' : '' }} >
 											<i class="fa fa-check">S</i>
-											@if($row->status_id === 6)
+											@if($row->status_id === 5)
 												@include('admin.modals.seragam.input_pembayaran', [
 													'row' => $row,
 													'subinputs' => $inputs['pembayaran_seragam']($row)
@@ -250,9 +246,9 @@ $inputs = [
 
 										{{-- Verifikasi DU & Seragam --}}
 										<button type="button" title="Verifikasi DU & Seragam" data-toggle="modal"
-										data-target="#modalVerifikasi{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 7 || !$row->tagihan->lunas_daftar_ulang || !$row->tagihan->lunas_seragam ? 'disabled' : '' }} >
+										data-target="#modalVerifikasi{{ $row->id }}" class="btn btn-secondary" {{ $row->status_id !== 6 || !$row->tagihan->lunas_daftar_ulang || !$row->tagihan->lunas_seragam ? 'disabled' : '' }} >
 											<i class="fa fa-user-check"></i>
-											@if($row->status_id === 7)
+											@if($row->status_id === 6)
 												@include('admin.modals.duseragam.2_verifikasi_duseragam', [
 													'row' => $row,
 													'subinputs' => $inputs['verifikasi']($row)
@@ -264,9 +260,9 @@ $inputs = [
 									<div class="btn-group btn-group-sm">
 										{{-- Details --}}
 										<button type="button" title="Detail Siswa" data-toggle="modal"
-										data-target="#modalDetail{{ $row->id }}" class="btn btn-secondary" >
+										data-target="#modalDetail{{ $row->id }}" class="btn btn-secondary" disabled>
 											<i class="fa fa-eye"></i> 
-											@include('admin.modals.general.detail', [
+											{{-- @include('admin.modals.general.detail', [
 												'row' => $row,
 												'inputs' => [
 													['Kode DU & Seragam', $row->duseragam->kode],
@@ -282,7 +278,7 @@ $inputs = [
 													['No Wa Siswa', $row->no_wa_siswa],
 													['Keterangan', $row->tagihan->keterangan],
 												]
-											])
+											]) --}}
 										</button>
 
 										{{-- Tagihan --}}
