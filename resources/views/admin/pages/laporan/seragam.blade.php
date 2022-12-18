@@ -9,15 +9,17 @@
 			<th>Jurusan</th>
 			<th>Asal Sekolah</th>
 			<th>Jalur</th>
+			<th>Ukuran Seragam</th>
 
 			@if($type === 'pembayaran')
-				<th>Biaya Pendaftaran</th>
+				<th>Biaya Seragam</th>
+				<th>Status</th>
 				<th>Admin Pembayaran</th>
 			@endif
 			
 			<th>Admin Pendaftaran</th>
-			<th>Verifikasi Pendataan</th>
 			{{-- <th>Tanggal Verifikasi</th> --}}
+			<th>Verifikasi Pendataan</th>
 			<th>Keterangan</th>
 
 			@if(!$cetak)
@@ -37,17 +39,19 @@
 				<td>{{ strtoupper($row->nama_jurusan) }}</td>
 				<td>{{ $row->asal_sekolah }}</td>
 				<td>{{ ModelHelper::getJalur($row->jalur_pendaftaran) }}</td>
+				<td>{{ $row->duseragam->ukuran_seragam }}</td>
 				
 				@if($type === 'pembayaran')
-					<td>{{ NumberHelper::toRupiah($row->tagihan->biaya_pendaftaran) }}</td>
-					<td>{!! ModelHelper::getAdminBayar($row->tagihan->pembayarans, 'pendaftaran') !!}</td>
+					<td>{{ NumberHelper::toRupiah($row->tagihan->biaya_daftar_ulang) }}</td>
+					<td>{!! ModelHelper::getStatusBayar($row->tagihan, $bigtype) !!}</td>
+					<td>{!! ModelHelper::getAdminBayar($row->tagihan->pembayarans, $bigtype) !!}</td>
 				@endif
 				
 				<td>{{ $row->pendaftaran->admin_verifikasi }}</td>
-				<td>{{ $row->verifikasi ? 'Sudah' : 'Belum' }}</td>
 				{{-- <td>{{ ModelHelper::getTanggalTerakhirBayar(
 					$row->tagihan->pembayarans,'pendaftaran'
 				) ?? ModelHelper::formatTanggal($row->pendaftaran->updated_at) }}</td> --}}
+				<td>{{ $row->verifikasi ? 'Sudah' : 'Belum' }}</td>
 				<td>{{ $row->pendaftaran->keterangan }}</td>
 
 				@if(!$cetak)

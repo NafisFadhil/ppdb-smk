@@ -133,7 +133,9 @@ class DuseragamController extends Controller
                 ...$creden,
                 'verifikasi' => true,
             ]);
-            $identitas->update([ 'status_id' => $identitas->status_id+1 ]);
+            $identitas->update([
+                'status_id' => $identitas->verifikasi ? $identitas->status_id+2 : $identitas->status_id+1
+            ]);
             
             return redirect('/admin/verifikasi/duseragam')->withErrors([
                 'alerts' => ['success' => 'Siswa berhasil diverifikasi.']

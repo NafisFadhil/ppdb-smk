@@ -31,7 +31,7 @@ class PendataanController extends Controller
                 ...$creden,
                 'verifikasi' => true,
                 'tanggal_verifikasi' => now(),
-                'status_id' => 7
+                'status_id' => $identitas->status_id === 6 ? $identitas->status_id+1 : $identitas->status_id
             ]);
 
             return redirect('/admin/verifikasi/pendataan')->withErrors([

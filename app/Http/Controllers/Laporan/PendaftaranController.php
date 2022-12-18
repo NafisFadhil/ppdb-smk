@@ -14,30 +14,17 @@ class PendaftaranController extends LaporanController
     
     public function index(Request $req)
     {
-        $filters = [
-            ['name' => 'tahun', 'wheres' => [
-                'whereRelation' => ['pendaftaran', DB::raw('YEAR(created_at)')],
-            ]],
-            ['name' => 'bulan', 'wheres' => [
-                'whereRelation' => ['pendaftaran', DB::raw('MONTH(created_at)')],
-            ]],
-            ['name' => 'tanggal', 'wheres' => [
-                'whereRelation' => ['pendaftaran', DB::raw('DAY(created_at)')],
-            ]],
-            ['name' => 'jurusan', 'wheres' => [
-                'where' => ['nama_jurusan'],
-            ]],
-            ['name' => 'jalur', 'wheres' => [
-                'where' => ['jalur_pendaftaran_id'],
-            ]],
-            ['name' => 'search', 'variant' => 'midlike', 'wheres' => [
-                'where' => ['nama_lengkap', 'LIKE'],
-                'orWhere' => ['asal_sekolah', 'LIKE'],
-            ]],
-            ['name' => 'perPage', 'wheres' => [
-                'perPage' => [],
-            ]],
-        ];
+
+        $type = $req->query('type') ?? 'pendaftaran';
+        $filters = $this->getFilters([
+            'search',
+            'jurusan',
+            'jalur',
+            'tanggal',
+            'bulan',
+            'tahun',
+            'perPage',
+        ]);
 
         $data = Filter::filter(
             Identitas::with([
@@ -48,15 +35,16 @@ class PendaftaranController extends LaporanController
 			page: Filter::getValue('page') ?? Filter::$page
         );
 
-        return view('admin.pages.laporan.pendaftaran',[
+        return view('layouts.laporan',[
             'page' => ['title' => 'Laporan Pendaftaran'],
-            'type' => $req->query('type') ?? 'pendaftaran',
+            'type' => $type,
             'laporan' => $data,
             'filters' => [
                 [
-                    ['type' => 'search', 'name' => 'search', 'placeholder' => 'Cari peserta...', 'size' => 'sm'],
+                    ['type' => 'search', 'name' => 'search', 'placeholder' => 'Cari peserta...'],
                 ],
                 [
+                    ['type' => 'select', 'name' => 'type', 'value' => $type, 'options' => $this->getTypeOptions()],
                     ['type' => 'select', 'name' => 'jurusan', 'options' => Jurusan::getOptions()],
                     ['type' => 'select', 'name' => 'jalur', 'options' => JalurPendaftaran::getAdvancedOptions()],
                 ],
@@ -81,8 +69,9 @@ class PendaftaranController extends LaporanController
             'alerts' => ['danger' => 'Invalid request.']
         ]);
 
-        return view('admin.pages.cetak.pendaftaran', [
+        return view('layouts.cetak-laporan', [
             'title' => 'Laporan Pendaftaran',
+            'type' => $type,
             'laporan' => Identitas::with(['pendaftaran', 'jurusan', 'jalur_pendaftaran'])
                 ->get()
         ]);

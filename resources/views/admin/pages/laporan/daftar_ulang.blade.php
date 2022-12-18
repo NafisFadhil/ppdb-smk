@@ -11,18 +11,18 @@
 			<th>Jalur</th>
 
 			@if($type === 'pembayaran')
-				<th>Biaya Pendaftaran</th>
+				<th>Biaya</th>
+				<th>Status</th>
 				<th>Admin Pembayaran</th>
 			@endif
 			
-			<th>Admin Pendaftaran</th>
+			<th>Admin DU</th>
 			<th>Verifikasi Pendataan</th>
-			{{-- <th>Tanggal Verifikasi</th> --}}
 			<th>Keterangan</th>
 
-			@if(!$cetak)
+			{{-- @if(!$cetak)
 				<th>Cetak</th>
-			@endif
+			@endif --}}
 			
 		</tr>
 	</thead>
@@ -39,33 +39,31 @@
 				<td>{{ ModelHelper::getJalur($row->jalur_pendaftaran) }}</td>
 				
 				@if($type === 'pembayaran')
-					<td>{{ NumberHelper::toRupiah($row->tagihan->biaya_pendaftaran) }}</td>
-					<td>{!! ModelHelper::getAdminBayar($row->tagihan->pembayarans, 'pendaftaran') !!}</td>
+					<td>{{ NumberHelper::toRupiah($row->tagihan->biaya_daftar_ulang) }}</td>
+					<td>{!! ModelHelper::getStatusBayar($row->tagihan, $bigtype) !!}</td>
+					<td>{!! ModelHelper::getAdminBayar($row->tagihan->pembayarans, $bigtype) !!}</td>
 				@endif
 				
 				<td>{{ $row->pendaftaran->admin_verifikasi }}</td>
 				<td>{{ $row->verifikasi ? 'Sudah' : 'Belum' }}</td>
-				{{-- <td>{{ ModelHelper::getTanggalTerakhirBayar(
-					$row->tagihan->pembayarans,'pendaftaran'
-				) ?? ModelHelper::formatTanggal($row->pendaftaran->updated_at) }}</td> --}}
 				<td>{{ $row->pendaftaran->keterangan }}</td>
 
-				@if(!$cetak)
+				{{-- @if(!$cetak)
 					<td>
 						<div class="btn-group btn-group-sm">
 							<a href="/admin/cetak/pendaftaran/{{ $row->id }}"
-								title="Cetak Surat Pendaftaran"
+								title="Cetak Surat DU"
 								target="_blank" class="btn btn-secondary">
 								<i class="fa fa-print">P</i>
 							</a>
 							<a href="/admin/cetak/formulir/{{ $row->id }}"
-								title="Cetak Formulir Pendaftaran"
+								title="Cetak Formulir DU"
 								target="_blank" class="btn btn-secondary">
 								<i class="fa fa-print">F</i>
 							</a>
 						</div>
 					</td>
-				@endif
+				@endif --}}
 
 			</tr>
 			@endforeach

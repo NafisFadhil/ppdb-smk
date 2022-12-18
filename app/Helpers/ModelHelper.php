@@ -2,7 +2,10 @@
 
 namespace App\Helpers;
 
-use Illuminate\Support\Facades\Hash;
+use DateTime;
+
+// use App\Models\Pembayaran;
+// use Illuminate\Support\Facades\Hash;
 
 class ModelHelper
 {
@@ -31,6 +34,52 @@ class ModelHelper
 		if (isset($jalur->subjalur1)) $str .= ' ' . $jalur->subjalur1;
 		if (isset($jalur->subjalur2)) $str .= ' ' . $jalur->subjalur2;
 		return strtoupper($str);
+	}
+
+	public static function getStatusBayar($tagihan, $type)
+	{
+		$bayar = static::getBayar($tagihan->pembayarans, $type);
+		$selisih = $tagihan['tagihan_'.$type] - $bayar;
+		$lunas = $selisih <= 0;
+		$kurang = $lunas ? 0 : $selisih;
+		
+		if ($tagihan['lunas_'.$type] || $lunas) {
+			return 'Lunas';
+		} else return 'Kurang ' . NumberHelper::toRupiah($kurang);
+	}
+
+	public static function getBayar ($pembayarans, $type)
+    {
+        $bayar = 0;
+        foreach ($pembayarans as $pembayaran) {
+            if ($pembayaran['type'] === $type) $bayar += $pembayaran['bayar'];
+        } return $bayar;
+    }
+
+	public static function getTanggalTerakhirBayar($pembayarans, $type)
+	{
+		$tanggal = '';$last = null;
+		foreach ($pembayarans as $pembayaran) {
+			if ($pembayaran['type'] === $type) $last = $pembayaran;
+		}
+		$tanggal = $last['created_at'] ?? null;
+		if (!empty($tanggal)) {
+			return static::formatTanggal($tanggal);
+		} return null;
+	}
+
+	public static function formatTanggal($tanggal)
+	{
+		$date = new DateTime($tanggal);
+		return date_format($date, 'd-m-Y');
+	}
+
+	public static function getAdminBayar($pembayarans, $type)
+	{
+		$admin = []; $iter = 1;
+		foreach ($pembayarans as $pembayaran) {
+			if ($pembayaran['type'] === $type) $admin[] = $iter++ . '. ' . $pembayaran['admin'];
+		} return implode('<br/>', $admin);
 	}
 
 	public static function getValidations(array $names, array $validations)

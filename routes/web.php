@@ -153,11 +153,11 @@ Route::middleware('auth')->group(function () {
             Route::post('/formulir-duseragam/{identitas:id}', 'admstore');
         });
     
-        Route::prefix('/laporan')->group(function () {
-            Route::controller(LaporanPendaftaranController::class)->group(function () {
-                Route::get('/pendaftaran', 'index');
-                Route::get('/pendaftaran/cetak', 'cetak');
-            });
+        Route::prefix('/laporan')->controller(LaporanController::class)->group(function () {
+            Route::get('/{bigtype}', 'index');
+            Route::get('/{bigtype}/cetak', 'cetak');
+            // Route::controller(LaporanPendaftaranController::class)->group(function () {
+            // });
         });
 
         Route::controller(CetakController::class)->group(function () {
