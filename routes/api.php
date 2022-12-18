@@ -30,18 +30,17 @@ Route::get('/remigrate', function() {
     return 'OK';
 });
 
-Route::get('/reoptimize', function() {
+Route::get('/optimize', function() {
     Artisan::call('optimize:clear');
     Artisan::call('optimize');
-    return 'OPTIMIZED';
+    Artisan::call('view:cache');
+    return 'SUCCESS';
 });
 
 Route::get('/repull', function() {
-    exec('git pull');
-});
-
-Route::get('/production', function() {
-    exec('git pull');
+    $path = base_path();
+    exec('cd '.$path.' && git pull');
+    return 'SUCCESS';
 });
 
 // Route::get('/run-production', function() {
