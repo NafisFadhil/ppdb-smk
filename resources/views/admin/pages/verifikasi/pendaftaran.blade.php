@@ -132,7 +132,7 @@ $inputs = [
 	<div class="col-12">
 		<div class="card">
 			<div class="card-body" style="overflow-x: auto">
-				<table id="xtable" class="w-100 table table-sm table-bordered table-hover">
+				<table id="xtable" class="w-100 table table-sm table-bordered table-hover table-responsive">
 					<thead>
 						<tr>
 							<th>No</th>
@@ -258,7 +258,7 @@ $inputs = [
 					</tbody>
 				</table>
 
-				{!! $peserta->links() !!}
+				{!! $peserta->links('pagination::bootstrap-4') !!}
 			</div>
 		</div>
 	</div>

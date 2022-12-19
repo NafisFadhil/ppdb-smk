@@ -86,7 +86,7 @@
 				"searching": false,
 				"ordering": true,
 				"info": false,
-				"autoWidth": true,
+				"autoWidth": false,
 				"responsive": true,
 				"fixedHeader": false,
 			});
