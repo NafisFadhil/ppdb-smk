@@ -88,7 +88,7 @@
 				"info": false,
 				"autoWidth": true,
 				"responsive": true,
-				"fixedHeader": true,
+				"fixedHeader": false,
 			});
 			$('.select2').select2()
 		})
