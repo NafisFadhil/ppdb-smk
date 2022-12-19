@@ -87,7 +87,7 @@
 				"ordering": true,
 				"info": false,
 				"autoWidth": false,
-				"responsive": true,
+				"responsive": false,
 				"fixedHeader": false,
 			});
 			$('.select2').select2()

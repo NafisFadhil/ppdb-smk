@@ -28,7 +28,7 @@
 						@foreach($peserta as $row)
 							<tr>
 								<td>{{ $loop->iteration }}</td>
-								<td>{{ $row->pendaftaran->kode }}</td>
+								<td>{{ $row->pendaftaran->kode ?? '-' }}</td>
 								<td>{{ isset($row->jurusan->kode) ? $row->jurusan->kode : '-' }}</td>
 								<td>{{ $row->nama_lengkap }}</td>
 								<td>{{ ModelHelper::getJalur($row->jalur_pendaftaran) }}</td>

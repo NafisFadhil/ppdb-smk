@@ -15,7 +15,7 @@
 					type="text"
 					name="kode"
 					id="kode"
-					value="{{ old('kode') ?? isset($pendaftaran) ? $pendaftaran->kode : request()->query('kode') ?? '' }}"
+					value="{{ old('kode') ?? isset($pendaftaran) ? $pendaftaran->kode ?? '-' : request()->query('kode') ?? '' }}"
 					placeholder="P-0XX"
 					required autofocus
 					class="w-full py-1 px-2 rounded shadow bg-light"
@@ -47,7 +47,7 @@
 			<h1 class="text-2xl font-semibold">Hasil Data Pencarian</h1>
 			@isset($pendaftaran)
 				<?php $tampil = [
-					'Kode Pendaftaran' => $pendaftaran->kode,
+					'Kode Pendaftaran' => $pendaftaran->kode ?? '-',
 					'Jalur Pendaftaran' => $pendaftaran->identitas->jalur_pendaftaran,
 					'NamaLengkap' => $pendaftaran->identitas->nama_lengkap,
 					'Tempat Lahir' => $pendaftaran->identitas->tempat_lahir,
@@ -78,7 +78,7 @@
 					@endforeach
 				</ul>
 
-				<?php $url = '/pendaftaran/print/cetak?kode='.$pendaftaran->kode.'&nisn='.$pendaftaran->identitas->nisn ?>
+				<?php $url = '/pendaftaran/print/cetak?kode='.$pendaftaran->kode ?? '-'.'&nisn='.$pendaftaran->identitas->nisn ?>
 				<a href="{{ $url }}" target="_blank" class="p-2 px-6 bg-light rounded-lg shadow max-w-max hover:brightness-90 transition">
 					<i class="fa fa-print"></i> Print
 				</a>

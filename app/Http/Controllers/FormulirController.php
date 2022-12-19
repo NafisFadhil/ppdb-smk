@@ -328,7 +328,7 @@ class FormulirController extends Controller
             if (!$isadmin) {
                 session([
                     'pasca_pendaftaran' => true,
-                    'kode' => $pendaftaran->kode,
+                    'kode' => $pendaftaran->kode ?? '-',
                     'tagihan' => $tagihan->biaya_pendaftaran
                 ]);
             }

@@ -72,7 +72,7 @@ $inputs = [
 		return [
 			[
 				'name' => 'kode',
-				'value' => $row->pendaftaran->kode ?? '',
+				'value' => $row->pendaftaran->kode ?? '-' ?? '',
 				'attr' => 'disabled'
 			],
 			[
@@ -150,7 +150,7 @@ $inputs = [
 						@foreach($peserta as $row)
 							<tr>
 								<td>{{ $loop->iteration }}</td>
-								<td>{{ $row->pendaftaran->kode }}</td>
+								<td>{{ $row->pendaftaran->kode ?? '-' }}</td>
 								<td>{{ $row->nama_lengkap }}</td>
 								<td>{{ ModelHelper::getJalur($row->jalur_pendaftaran) }}</td>
 								<td>{{ $row->jenis_kelamin }}</td>
@@ -222,7 +222,7 @@ $inputs = [
 											{{-- @include('admin.modals.general.detail', [
 												'row' => $row,
 												'inputs' => [
-													['Kode Pendaftaran', $row->pendaftaran->kode],
+													['Kode Pendaftaran', $row->pendaftaran->kode ?? '-'],
 													['Jalur Pendaftaran', ModelHelper::getJalur($row->jalur_pendaftaran)],
 													['Nama Lengkap', $row->nama_lengkap],
 													['Jenis Kelamin', $row->jenis_kelamin],
