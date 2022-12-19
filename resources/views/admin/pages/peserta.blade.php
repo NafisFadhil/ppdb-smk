@@ -100,7 +100,7 @@
 						@endforeach
 					</tbody>
 				</table>
-				{!! $peserta->links() !!}
+				{!! $peserta->links('pagination::bootstrap-4') !!}
 			</div>
 		</div>
 	</div>

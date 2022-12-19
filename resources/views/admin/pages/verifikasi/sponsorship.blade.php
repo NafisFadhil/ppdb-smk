@@ -95,7 +95,7 @@
 							@endforeach
 						</tbody>
 					</table>
-				{!! $sponsorship->links() !!}
+				{!! $sponsorship->links('pagination::bootstrap-4') !!}
 			</div>
 		</div>
 	</div>

@@ -81,12 +81,14 @@
 			}
 			$('#xtable, table.datatable').DataTable({
 				"paging": false,
+				// "pageLength": 10,
 				"lengthChange": false,
 				"searching": false,
 				"ordering": true,
 				"info": false,
-				"autoWidth": false,
-				"responsive": false,
+				"autoWidth": true,
+				"responsive": true,
+				"fixedHeader": true,
 			});
 			$('.select2').select2()
 		})

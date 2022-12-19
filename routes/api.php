@@ -43,6 +43,15 @@ Route::get('/repull', function() {
     return 'SUCCESS';
 });
 
+Route::get('/renew', function() {
+    $path = base_path();
+    exec('cd '.$path.' && git pull');
+    Artisan::call('optimize:clear');
+    Artisan::call('optimize');
+    Artisan::call('view:cache');
+    return 'SUCCESS';
+});
+
 // Route::get('/run-production', function() {
 //     Artisan::call('config:clear');
 //     Artisan::call('config:cache');

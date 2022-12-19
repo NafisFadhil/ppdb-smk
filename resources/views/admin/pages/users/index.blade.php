@@ -45,7 +45,7 @@
 		</div>
 
 		<div class="col-12">
-			{!! $users->links() !!}
+			{!! $users->links('pagination::bootstrap-4') !!}
 		</div>
 	</div>
 @endsection
