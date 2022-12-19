@@ -17,10 +17,11 @@
 			<div class="mt-3 w-full flex flex-row justify-center items-center gap-2">
 				<button
 					type="submit"
-					class="g-recaptcha p-2 px-6 bg-primary text-white rounded-lg shadow max-w-max"
-					data-sitekey="{{ ConfigHelper::get('recaptcha_site_key') }}" 
-					data-callback='onSubmit' 
-					data-action='submit'
+					class="p-2 px-6 bg-primary text-white rounded-lg shadow max-w-max"
+					{{-- class="g-recaptcha p-2 px-6 bg-primary text-white rounded-lg shadow max-w-max" --}}
+					{{-- data-sitekey="{{ ConfigHelper::get('recaptcha_site_key') }}"  --}}
+					{{-- data-callback='onSubmit'  --}}
+					{{-- data-action='submit' --}}
 				> 
 					Daftar <i class="fa fa-sign-in-alt"></i>
 				</button>
@@ -32,7 +33,7 @@
 
 @push('scripts')
 	{{-- <script src="https://www.google.com/recaptcha/api.js?render={{ ConfigHelper::get('recaptcha_site_key') }}"></script> --}}
-	<script src="https://www.google.com/recaptcha/api.js"></script>
+	{{-- <script src="https://www.google.com/recaptcha/api.js"></script>
 	<script>
 		function onSubmit(token) {
 			document.getElementById("myform").submit();
@@ -52,5 +53,5 @@
 			}
 			if (elem.hasAttribute('checked')) elem.click();
 		})
-	</script>
+	</script> --}}
 @endpush
