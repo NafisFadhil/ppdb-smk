@@ -33,11 +33,11 @@
 
 @push('scripts')
 	{{-- <script src="https://www.google.com/recaptcha/api.js?render={{ ConfigHelper::get('recaptcha_site_key') }}"></script> --}}
-	{{-- <script src="https://www.google.com/recaptcha/api.js"></script>
+	{{-- <script src="https://www.google.com/recaptcha/api.js"></script> --}}
 	<script>
-		function onSubmit(token) {
-			document.getElementById("myform").submit();
-		}
+		// function onSubmit(token) {
+		// 	document.getElementById("myform").submit();
+		// }
 		let jalurs = document.querySelectorAll('input[name=jalur_pendaftaran_id]');
 		let jalurPrestasi = document.querySelector('select[name=sub_jalur_pendaftaran_id]');
 		// console.log(jalurPrestasi);
@@ -53,5 +53,5 @@
 			}
 			if (elem.hasAttribute('checked')) elem.click();
 		})
-	</script> --}}
+	</script>
 @endpush
