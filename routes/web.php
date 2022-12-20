@@ -5,6 +5,7 @@ use App\Http\Controllers\CetakController;
 // use App\Http\Controllers\DaftarUlangController;
 use App\Http\Controllers\DUSeragamController;
 use App\Http\Controllers\FormulirController;
+use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PrintController;
 use App\Http\Controllers\SiswaController;
@@ -42,20 +43,24 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::get('/', function () {
-    return view('pages.index', [
-        'page' => ['title' => 'PPDB SMK Muhammadiyah Bligo'],
-    ]);
-})->middleware('guest');
+// Route::get('/', })
 
 Route::get('/test', function () {
     // dd(auth()->user()->count());
     // dd(get_defined_vars());
     // new \App\Filters\TanggalFilter(['tanggal']);
+    // return view('layouts.landingpage', [
+    //     'page' => ['title' => 'Test']
+    // ]);
 });
 
 
 Route::middleware('guest')->group(function () {
+    Route::controller(LandingPageController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/kontak', 'index');
+    });
+    
     Route::controller(FormulirController::class)->group(function () {
         Route::get('/formulir', 'index');
         Route::post('/formulir', 'store');
@@ -90,6 +95,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/peserta', 'peserta');
             Route::get('/tagihan/{identitas:id}', 'tagihan');
             Route::get('/pembayaran/{identitas:id}', 'pembayaran');
+            Route::get('/hapus/{identitas:id}', 'hapus')->middleware('superadmin');
         });
         
         Route::controller(UserProfilController::class)->group(function () {
@@ -135,6 +141,7 @@ Route::middleware('auth')->group(function () {
                 Route::post('/', 'store');
                 Route::post('/{sponsorship:id}', 'verifikasi');
                 Route::post('/edit/{sponsorship:id}', 'update');
+                Route::get('/hapus/{sponsorship:id}', 'hapus')->middleware('superadmin');
             });
         });
     
@@ -152,12 +159,10 @@ Route::middleware('auth')->group(function () {
             Route::get('/formulir-duseragam/{identitas:id}', 'admcreate');
             Route::post('/formulir-duseragam/{identitas:id}', 'admstore');
         });
-    
+
         Route::prefix('/laporan')->controller(LaporanController::class)->group(function () {
             Route::get('/{bigtype}', 'index');
             Route::get('/{bigtype}/cetak', 'cetak');
-            // Route::controller(LaporanPendaftaranController::class)->group(function () {
-            // });
         });
 
         Route::controller(CetakController::class)->group(function () {

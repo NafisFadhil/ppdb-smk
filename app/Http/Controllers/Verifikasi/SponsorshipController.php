@@ -92,5 +92,19 @@ class SponsorshipController extends Controller
             ])->withInput($creden);
         }
     }
+
+    public function hapus (Sponsorship $sponsorship)
+    {
+        try {
+            $sponsorship->delete();
+            return back()->withErrors([
+                'alerts' => ['success' => 'Berhasil menghapus sponsorship.']
+            ]);
+        } catch (\Throwable $th) {
+            return back()->withErrors([
+                'alerts' => ['success' => 'Maaf, terjadi kesalahan saat menghapus sponsorship.']
+            ]);
+        }
+    }
     
 }

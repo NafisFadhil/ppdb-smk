@@ -24,7 +24,7 @@
 
 		<h1 class="text-center"> {{ $title ?? $page['title'] ?? '' }} </h1>
 		<br>
-		@include('admin.pages.laporan.'.$bigtype, ['type' => $type, 'variant' => 'cetak', 'laporan' => $laporan])
+		@include('admin.pages.table.'.$bigtype, ['type' => $type, 'variant' => 'cetak', 'laporan' => $laporan])
 	</div>
 	<script defer>
 		window.onload = () => window.print()

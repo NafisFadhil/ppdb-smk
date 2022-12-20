@@ -72,6 +72,15 @@
 											@endif
 										</button>
 
+										@if(auth()->user()->level->name === 'super-admin')
+											{{-- Hapus --}}
+											<a href="/admin/hapus/{{ $row->id }}" title="Hapus Data Pendaftaran"
+											class="btn btn-danger d-flex flex-nowrap align-items-center"
+											onclick="return confirm('Konfirmasi penghapusan data...')">
+												<i class="fa fa-trash"></i>
+											</a>
+										@endif
+
 									</div>
 
 									<div class="btn-group btn-group-sm">

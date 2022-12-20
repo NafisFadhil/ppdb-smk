@@ -4,6 +4,7 @@ namespace App\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -11,16 +12,21 @@ use Illuminate\Http\Request;
 
 class Filter
 {
-	use FilterAttributes;
+	use FilterAttributes, FilterOptions, FilterMethods;
 
 	/**
 	 * Create query builder instance query
 	 * 
-	 * @return \Illuminate\Database\Eloquent\Model
+	 * @return \Illuminate\Pagination\LengthAwarePaginator
 	 */
-	public static function filter (Model|Builder $model, Request $request, array $filters)
+	public static function filter (
+		Model|Builder $model,
+		Request $request,
+		array $filters = [],
+		array|null $names = null
+	) :LengthAwarePaginator
 	{
-		static::$filters = $filters;
+		static::$filters = static::getFilters($filters, $names); // Replace recursive
 		static::$request = $request;
 		static::$model = $model;
 		
@@ -36,10 +42,15 @@ class Filter
 				static::getFilter($filter);
 			}
 		}
-
-		return static::$model;
+		return static::paginate(static::$model);
 	}
 
+	/**
+	 * Init default filter value
+	 * 
+	 * @param array $filter
+	 * @return array
+	 */
 	protected static function initFilter(array $filter) :array
 	{
 		return [
@@ -51,7 +62,13 @@ class Filter
 		];
 	}
 	
-	protected static function initWheres (array $filter)
+	/**
+	 * Filter condition for custom value
+	 * 
+	 * @param array $filter
+	 * @return array
+	 */
+	protected static function initWheres (array $filter) :array
 	{
 		$wheres = [];;
 		foreach ($filter['wheres'] as $type => $conds) {
@@ -64,6 +81,13 @@ class Filter
 		return $wheres;
 	}
 
+	/**
+	 * Insert value from query parameter to conditions array
+	 * 
+	 * @param array $conds
+	 * @param string|null $value
+	 * @return array
+	 */
 	protected static function insertWhereValue (array $conds, string|null $value = null) :array
 	{
 		if (count($conds) >= 3) {
@@ -73,22 +97,24 @@ class Filter
 		return $conds;
 	}
 
+	/**
+	 * Get value from query paramter
+	 * 
+	 * @param string $name
+	 * @return string|int|null
+	 */
 	public static function getValue (string $name)
 	{
 		return static::$request->get($name);
 	}
 
-	protected static function getParams (array $filter)
-	{
-		$type = $filter['type'];
-		if (in_array($type, ['tanggal', 'bulan', 'tahun'])) {
-			return [$filter['table'], $filter['value']];
-		} elseif ($type === 'wheres') {
-			return [[...$filter['wheres'], $filter['value']]];
-		}
-	}
-
-	protected static function getFilter (array $filter)
+	/**
+	 * Call filter each wheres
+	 * 
+	 * @param array $filter
+	 * @return void
+	 */
+	protected static function getFilter (array $filter) :void
 	{
 		static::$filter = $filter;
 		foreach ($filter['wheres'] as $type => $conds) {
@@ -100,35 +126,31 @@ class Filter
 		}
 	}
 
-	protected static function globalFilter (string $type, array $conditions)
+	/**
+	 * Global filter method for unavailable custom filter method
+	 * Call query model each filter
+	 * 
+	 * @param string $type
+	 * @param array $conditions
+	 * @return \Illuminate\Database\Eloquent\Builder
+	 */
+	protected static function globalFilter (string $type, array $conditions) :Builder
 	{
 		$type = Str::camel($type);
 		return static::$model->$type(...$conditions);
 	}
 
-	protected static function filterPerPage () {
-		static::$perPage = static::$filter['value'];
-		return static::$model;
+	/**
+	 * Custom paginate overwrite builder paginate method
+	 * 
+	 * @return \Illuminate\Pagination\LengthAwarePaginator
+	 */
+	public static function paginate (Builder $query) :LengthAwarePaginator
+	{
+		return $query->paginate(
+            perPage: static::getValue('perPage') ?? static::$perPage,
+            page: static::getValue('page') ?? static::$page
+        );
 	}
-	protected static function filterPage () {
-		static::$page = static::$filter['value'];
-		return static::$model;
-	}
-
-	// protected static function filterWhere (array $conditions) {
-	// 	return static::$model->where(...$conditions);
-	// }
-	// protected static function filterWhereLike (array $conditions) {
-	// 	return static::$model->where(...$conditions);
-	// }
-	// protected static function filterOrWhereLike (array $conditions) {
-	// 	return static::$model->orWhere(...$conditions);
-	// }
-	// protected static function filterRelation (array $conditions) {
-	// 	return static::$model->whereRelation(...$conditions);
-	// }
-	// protected static function filterOr (array $conditions) {
-	// 	return static::$model->orWhere(...$conditions);
-	// }
 
 }

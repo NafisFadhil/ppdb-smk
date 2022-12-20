@@ -67,19 +67,19 @@ class FormulirController extends Controller
         return [
             ...JalurPendaftaran::getFormInput(),
             ['type' => 'text', 'name' => 'nama_lengkap', 'value' => $data->nama_lengkap??null,
-                'label' => null, 'placeholder' => null, 'opts' => ['uppercase']], 
+                'label' => null, 'placeholder' => null, 'opts' => ['uppercase','required']], 
             ['type' => 'radio', 'name' => 'jenis_kelamin', 'value' => $data->jenis_kelamin??null,
-                'label' => null, 'placeholder' => null, 'values' => $kelamins],
+                'label' => null, 'placeholder' => null, 'values' => $kelamins, 'opts' => ['required']],
             ['type' => 'date', 'name' => 'tanggal_lahir', 'value' => $data->tanggal_lahir??null,
-                'label' => null, 'placeholder' => null ], 
+                'label' => null, 'placeholder' => null , 'opts' => ['required']], 
             ['type' => 'text', 'name' => 'asal_sekolah', 'value' => $data->asal_sekolah??null,
-                'label' => null, 'placeholder' => null, 'opts' => ['uppercase']], 
+                'label' => null, 'placeholder' => null, 'opts' => ['uppercase','required']], 
             ['type' => 'number', 'name' => 'no_wa_siswa', 'value' => $data->no_wa_siswa??null,
-                'label' => 'WA Siswa', 'placeholder' => 'Cth. 08123456789' ], 
+                'label' => 'WA Siswa', 'placeholder' => 'Cth. 08123456789' , 'opts' => ['required']], 
             ['type' => 'number', 'name' => 'no_wa_ortu', 'value' => $data->no_wa_ortu??null,
-                'label' => 'WA Orang Tua/Wali', 'placeholder' => '(Opsional)' ],
+                'label' => 'WA Orang Tua/Wali', 'placeholder' => '(Opsional)' , 'opts' => ['required']],
             ['type' => 'select', 'name' => 'nama_jurusan', 'value' => $data->nama_jurusan??null,
-                'label' => null, 'placeholder' => null, 'options' => $jurusan],
+                'label' => null, 'placeholder' => null, 'options' => $jurusan, 'opts' => ['required']],
         ];
     }
 
@@ -229,7 +229,7 @@ class FormulirController extends Controller
 
     public function index ()
     {
-        return view('pages.formulir', [
+        return view('pages.pendaftaran', [
             'page' => ['title' => 'Formulir Pendaftaran'],
             'inputs' => $this->getFormInputs(),
         ]);

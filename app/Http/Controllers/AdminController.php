@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\Filter;
 use App\Helpers\NumberHelper;
 use App\Helpers\StringHelper;
 use App\Models\DataJurusan;
@@ -14,28 +15,23 @@ class AdminController extends Controller
     
     public function index()
     {
-        // array_merge()
         return view('admin.pages.index', [
             'page' => ['title' => 'Dashboard Admin PPDB'],
             'peserta' => Identitas::select('status_id', 'nama_jurusan')->get(),
-            'jurusanCounters' => Jurusan::getWidget()
+            'jurusanCounters' => Jurusan::getWidget(Identitas::select('nama_jurusan')->has('jurusan')->get())
         ]);
     }
 
-    public function peserta()
+    public function peserta(Request $req)
     {
         session(['oldpath' => request()->path()]);
-        $search = request('search') ?? false;
-        if ($search) {
-            $peserta = Identitas::where('nama_lengkap', 'like', "%$search%")
-                ->latest()->paginate(25);
-        } else $peserta = Identitas::latest()->with(['pendaftaran', 'user', 'status'])->paginate();
 
-        // dd($peserta->first()->jalur_pendaftaran);
+        $data = Filter::filter(Identitas::latest()->with(['pendaftaran', 'user', 'status']), $req);
+        // dd($data);
 
         return view('admin.pages.peserta', [
-            'page' => ['title' => 'Daftar Peserta'],
-            'peserta' => $peserta
+            'page' => ['title' => 'Daftar Peserta PPDB'],
+            'peserta' => $data
         ]);
     }
     
@@ -128,9 +124,30 @@ class AdminController extends Controller
         ]);
     }
 
-    public function postProfil(Request $req)
+    public function hapus(Identitas $identitas)
     {
-        
+        try {
+            if ($identitas->tagihan) {
+                $identitas->tagihan->delete();
+            } if ($identitas->pendaftaran) {
+                $identitas->pendaftaran->delete();
+            } if ($identitas->duseragam) {
+                $identitas->duseragam->delete();
+            } if ($identitas->duseragam) {
+                $identitas->duseragam->delete();
+            } if ($identitas->sponsorship) {
+                $identitas->sponsorship->delete();
+            } if ($identitas->user) {
+                $identitas->user->delete();
+            } $identitas->delete();
+            return back()->withErrors([
+                'alerts' => ['success' => 'Berhasil menghapus peserta.']
+            ]);
+        } catch (\Throwable $th) {
+            return back()->withErrors([
+                'alerts' => ['success' => 'Maaf, terjadi kesalahan saat menghapus peserta.']
+            ]);
+        }
     }
     
 }

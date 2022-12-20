@@ -54,13 +54,6 @@
 					</div>
 				@endforeach
 
-				@push('styles')
-					<style>
-						#filterForm .form-group { margin: .25rem }
-						#filterForm input::placeholder { text-align: center }
-					</style>
-				@endpush
-
 				<div class="d-flex justify-content-center align-items-center flex-row flex-wrap text-center mx-auto mt-2"
 				style="gap:.5rem;max-width:400px">
 					<button type="submit" class="btn btn-primary btn-sm px-4 m-0 mx-auto" style="flex:1;min-width:150px">

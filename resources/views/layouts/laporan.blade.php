@@ -1,10 +1,5 @@
 @extends('layouts.admin')
 
-<?php 
-// $segments = request()->segments();
-// $xtype = strtolower($segments[count($segments)-1]);
-?>
-
 @section('content')
 	<form id="filterForm" action="" class="row">
 		@include('admin.components.filter', ['filters' => $filters, 'errors' => $errors])
@@ -18,7 +13,7 @@
 				</a>
 			</div>
 			<div class="card-body p-2" style="overflow-x: auto; font-size: 12px">
-				@include('admin.pages.laporan.'.$bigtype, ['type' => $type, 'laporan' => $laporan])
+				@include('admin.pages.table.'.$bigtype, ['type' => $type, 'laporan' => $laporan])
 			</div>
 		</div>
 	</div>

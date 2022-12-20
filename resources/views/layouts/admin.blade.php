@@ -11,22 +11,10 @@
 	@stack('styles')
 	<link rel="stylesheet" href="/adminlte/css/adminlte.min.css">
 	<style>
-		@media print {
-			body * {
-				visibility: hidden;
-			}
-			#print-element, #print-element * {
-				visibility: visible;
-			}
-			#cetak-pdf-button, #cetak-pdf-button *{
-				visibility: hidden;
-			}
-			#print-element {
-				position: absolute;
-				left: 0;
-				top: 0;
-			}
-		}
+		#xtable {font-size: 12px}
+		#filterForm .form-group { margin: .25rem }
+		#filterForm input { text-align: center }
+		#filterForm input::placeholder { text-align: center }
 	</style>
 </head>
 <body class="hold-transition sidebar-mini">
@@ -34,20 +22,12 @@
 		@include('admin.components.navbar')
 		@include('admin.components.sidebar')
 		<div class="content-wrapper">
-			<!-- Content Header (Page header) -->
 			<section class="content-header">
 				<div class="container-fluid">
 					<div class="row mb-2">
 						<div class="col-sm-6">
 							<h1>{{ $page['header'] ?? $header ?? $page['title'] ?? $title ?? '' }}</h1>
 						</div>
-						{{-- <div class="col-sm-6">
-							<ol class="breadcrumb float-sm-right">
-								<li class="breadcrumb-item"><a href="#">Home</a></li>
-								<li class="breadcrumb-item"><a href="#">Layout</a></li>
-								<li class="breadcrumb-item active">Fixed Navbar Layout</li>
-							</ol>
-						</div> --}}
 					</div>
 				</div><!-- /.container-fluid -->
 			</section>

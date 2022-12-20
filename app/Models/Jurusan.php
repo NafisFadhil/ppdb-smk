@@ -80,7 +80,7 @@ class Jurusan extends Model
 		return $kode . '-' . $xnomor;
 	}
 
-	public static function getWidget() :array
+	public static function getWidget($peserta) :array
 	{
 		self::initJurusan();
 		$counters = [
@@ -94,7 +94,9 @@ class Jurusan extends Model
 			$counters = array_replace($counters, [
 				$jurusan['singkatan'] => 0
 			]);
-		} return $counters;
+		}
+		foreach ($peserta as $row) $counters[strtolower($row['nama_jurusan'])]++;
+		return $counters;
 	}
 
 	public static function getOptions()
