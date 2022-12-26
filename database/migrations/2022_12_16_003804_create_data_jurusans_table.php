@@ -15,12 +15,10 @@ return new class extends Migration
     {
         Schema::create('data_jurusans', function (Blueprint $table) {
             $table->id();
-
             $table->string('nama');
             $table->string('slug')->unique();
-            $table->string('singkatan');
+            $table->string('singkatan')->unique();
             $table->char('kode', 1)->unique();
-            
         });
     }
 

@@ -15,9 +15,15 @@ return new class extends Migration
     {
         Schema::create('seragams', function (Blueprint $table) {
             $table->id();
-            $table->char('kode', 5)->unique();
+            
+            $table->string('ukuran_wearpack', 10)->nullable();
+            $table->string('ukuran_olahraga', 10)->nullable();
+            $table->string('ukuran_almamater', 10)->nullable();
+            $table->string('keterangan')->nullable();
             
             $table->foreignId('identitas_id');
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

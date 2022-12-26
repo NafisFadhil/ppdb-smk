@@ -15,11 +15,12 @@ return new class extends Migration
     {
         Schema::create('jurusans', function (Blueprint $table) {
             $table->id();
-            $table->char('kode', 5)->unique();
-            $table->string('jurusan');
+
+            $table->char('kode', 5)->nullable();
+            $table->string('nama');
             $table->string('slug');
             $table->string('singkatan');
-            $table->smallInteger('nomor');
+            $table->smallInteger('nomor')->unsigned()->nullable();
 
             $table->foreignId('identitas_id');
             $table->softDeletes();

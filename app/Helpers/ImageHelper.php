@@ -12,7 +12,7 @@ class ImageHelper
 	public static function uploadAvatar ($file) :string
 	{
 		$fileext = $file->getClientOriginalExtension();
-		$filename = self::filenameGenerator();
+		$filename = static::filenameGenerator();
 		$filepath = public_path()."/storage/avatar/$filename.$fileext";
 		$imgclass = new \Intervention\Image\ImageManager;
 		$img = $imgclass->make($file);

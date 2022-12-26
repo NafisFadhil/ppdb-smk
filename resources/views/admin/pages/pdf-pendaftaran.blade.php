@@ -59,7 +59,7 @@
 
                         <div class="w-left">Tanggal Lahir</div>
                         <div class="w-colon">:</div>
-                        <div class="w-right pl-left border-bottom-dotted">{{ $data->tanggal_lahir }}</div>
+                        <div class="w-right pl-left border-bottom-dotted">{{ $data->new_tanggal_lahir }}</div>
 
                         <div class="w-left">KODE</div>
                         <div class="w-colon">:</div>

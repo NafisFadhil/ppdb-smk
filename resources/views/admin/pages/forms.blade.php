@@ -15,7 +15,11 @@ function htmlFormOnly($subform, $row = false) { ?>
 <?php }
 
 function htmlButtonOnly($button) { ?>
-	<button type="submit" class="btn btn-{{ $button['variant'] }} btn-block mx-auto"
+	<a href="{{ back()->getTargetUrl() }}" class="btn btn-sm btn-secondary mx-auto"
+	style="max-width: max-content">
+		<i class="fa fa-arrow-left"></i> Kembali
+	</a>
+	<button type="submit" class="btn btn-sm btn-{{ $button['variant'] }} mx-auto"
 	style="max-width: max-content">
 		{!! $button['content'] !!}
 	</button>
@@ -41,7 +45,7 @@ function htmlButtonOnly($button) { ?>
 									@include('admin.components.input', ['input' => $input])
 								@endforeach
 					
-								<div class="form-group text-center">
+								<div class="form-group text-center mb-3">
 									{!! htmlButtonOnly($subform['button']) !!}
 								</div>
 
@@ -59,7 +63,7 @@ function htmlButtonOnly($button) { ?>
 				<div class="{{ $form['cols'] }}">
 					<div class="card">
 						@isset($subform['title'])
-							<div class="card-header m-0 p-2 p-sm-3">
+							<div class="card-header m-0 py-2 px-3">
 								<h5 class="m-0"> {{ $subform['title'] }} </h5>
 							</div>
 						@endisset
@@ -73,7 +77,7 @@ function htmlButtonOnly($button) { ?>
 				</div>
 			@endforeach
 
-			<div class="col-12 text-center">
+			<div class="col-12 text-center mb-3">
 				{!! htmlButtonOnly($form['button']) !!}
 			</div>
 		</form>
@@ -90,7 +94,7 @@ function htmlButtonOnly($button) { ?>
 							@include('admin.components.input', ['input' => $input])
 						@endforeach
 			
-						<div class="form-group text-center">
+						<div class="form-group text-center mb-3">
 							{!! htmlButtonOnly($form['button']) !!}
 						</div>
 

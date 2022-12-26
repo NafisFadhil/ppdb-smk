@@ -24,7 +24,7 @@ $isadmin = request()->is('login/admin');
 						$error = $errors->has($input['name']);
 					?>
 				
-					<div class="flex w-full flex-col items-center justify-start">
+					<div class="flex w-full flex-col items-center justify-start relative">
 						<input type="{{ $input['type'] }}"
 							name="{{ $input['name'] }}"
 							id="{{ $input['id'] }}"
@@ -34,6 +34,14 @@ $isadmin = request()->is('login/admin');
 							{{ $error?'border-red-800':'' }} text-center outline-none"
 							{!! $input['attr'] !!}
 						/>
+
+						@if($input['name'] === 'password' && $input['type'] === 'password')
+							<button type="button" data-input="#{{ $input['id'] }}" onclick="toggleEye(this)"
+							class="absolute top-0 right-0">
+								<i class="fa fa-eye py-2.5 px-3"></i>
+							</button>
+						@endif
+						
 						@error($input['name'])
 							<p class="col-span-3 text-sm text-red-800">
 								<i class="fa fa-exclamation-triangle mr-1"></i> {{ __($message) }}
@@ -50,3 +58,21 @@ $isadmin = request()->is('login/admin');
 		</div>
 	</section>
 @endsection
+
+@push('scripts')
+<script>
+	function toggleEye(elem) {
+		let icon = elem.children[0];
+		let target = elem.getAttribute('data-input');
+		let input = document.querySelector(target);
+		let isPassword = input.getAttribute('type') === 'password';
+		if (isPassword) {
+			input.setAttribute('type', 'text');
+			icon.classList.add('text-primary');
+		} else {
+			input.setAttribute('type', 'password');
+			icon.classList.remove('text-primary');
+		}
+	}
+</script>
+@endpush

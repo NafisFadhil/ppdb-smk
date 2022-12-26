@@ -2,11 +2,7 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
-use App\Models\DUSeragam;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,10 +24,13 @@ class DatabaseSeeder extends Seeder
             ConfigSeeder::class,
             UserLevelSeeder::class,
             UserSeeder::class,
+
             StatusSeeder::class,
             DataJurusanSeeder::class,
-            JalurPendaftaranSeeder::class,
-            // PesertaSeeder::class,
+            DataSeragamSeeder::class,
+            DataJenisKelaminSeeder::class,
+            DataJalurPendaftaranSeeder::class,
+            PesertaSeeder::class,
         ]);
         
         // $identitas = \App\Models\Identitas::create([

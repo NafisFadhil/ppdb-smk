@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class UserLevel extends Model
 {
@@ -17,11 +18,11 @@ class UserLevel extends Model
 
     public static function getOptions ()
     {
-        $levels = UserLevel::all();
+        $levels = Cache::rememberForever('user_levels', fn() => UserLevel::all());
         $opts = [];
         foreach ($levels as $level) {
             $opts[] = [
-                'label' => $level->name,
+                'label' => $level->level,
                 'value' => $level->id
             ];
         } return $opts;

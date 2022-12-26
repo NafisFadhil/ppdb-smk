@@ -43,7 +43,7 @@
 											<button type="button" title="Edit Siswa Sponsorship" data-toggle="modal"
 											data-target="#modalSponsorship{{ $row->id }}" class="btn btn-warning text-white">
 												<i class="fa fa-pen"></i>
-												@include('admin.modals.general.sponsorship', [
+												@include('admin.modals.sponsorship.sponsorship', [
 													'row' => $row->identitas,
 													'edit' => true
 												])

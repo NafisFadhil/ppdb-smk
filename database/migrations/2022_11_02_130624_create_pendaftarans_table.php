@@ -15,14 +15,12 @@ return new class extends Migration
     {
         Schema::create('pendaftarans', function (Blueprint $table) {
             $table->id();
-            $table->char('kode', 5)->unique();
 
-            $table->boolean('verifikasi')->default(false);
-            $table->string('admin_verifikasi')->nullable();
-            
+            $table->char('kode', 5)->unique();
             $table->string('keterangan')->nullable();
 
             $table->foreignId('identitas_id');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

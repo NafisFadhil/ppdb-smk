@@ -25,7 +25,11 @@ use App\Http\Controllers\Verifikasi\DuseragamController as VerifikasiDuseragamCo
 use App\Http\Controllers\Verifikasi\PendaftaranController as VerifikasiPendaftaranController;
 use App\Http\Controllers\Verifikasi\SponsorshipController as VerifikasiSponsorshipController;
 use App\Http\Controllers\Verifikasi\PendataanController as VerifikasiPendataanController;
-
+use App\Models\DataJurusan;
+use App\Models\Jurusan;
+use App\Models\Pendaftaran;
+use App\Models\Tagihan;
+use App\Models\UserLevel;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,6 +56,8 @@ Route::get('/test', function () {
     // return view('layouts.landingpage', [
     //     'page' => ['title' => 'Test']
     // ]);
+    // dd(Tagihan::with('admin_pendaftaran')->get()->first()->admin_pendaftaran);
+    // dd(Pendaftaran::getKode());
 });
 
 
@@ -125,7 +131,7 @@ Route::middleware('auth')->group(function () {
                 Route::get('/', 'index');
                 Route::post('/biaya-duseragam/{identitas:id}', 'biaya');
                 Route::post('/pembayaran/{type}/{identitas:id}', 'pembayaran');
-                Route::post('/{identitas:id}', 'verifikasi');
+                Route::post('/{type}/{identitas:id}', 'verifikasi');
             });
 
             Route::prefix('/pendataan')->controller(VerifikasiPendataanController::class)
@@ -138,8 +144,8 @@ Route::middleware('auth')->group(function () {
             Route::prefix('/sponsorship')->controller(VerifikasiSponsorshipController::class)
             ->group(function () {
                 Route::get('/', 'index');
-                Route::post('/', 'store');
-                Route::post('/{sponsorship:id}', 'verifikasi');
+                Route::post('/{identitas:id}', 'store');
+                Route::post('/{identitas:id}', 'verifikasi');
                 Route::post('/edit/{sponsorship:id}', 'update');
                 Route::get('/hapus/{sponsorship:id}', 'hapus')->middleware('superadmin');
             });

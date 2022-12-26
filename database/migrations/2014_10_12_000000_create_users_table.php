@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            
             $table->string('name')->nullable();
             $table->string('username')->unique();
             $table->string('password');
@@ -22,6 +23,8 @@ return new class extends Migration
             
             $table->foreignId('identitas_id')->default(0);
             $table->foreignId('level_id')->default(1);
+
+            $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();
         });

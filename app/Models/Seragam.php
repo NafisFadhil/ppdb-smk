@@ -4,28 +4,51 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 class Seragam extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
+    protected static $unguarded = true;
+    protected $casts = [
+        'ukuran_warepack' => 'string',
+        'ukuran_almamater' => 'string',
+        'ukuran_olahraga' => 'string',
+        'keterangan' => 'string',
+    ];
 
 	public function identitas () {
         return $this->belongsTo(Identitas::class);
     }
+	public function verifikasi () {
+        return $this->hasOneThrough(Verifikasi::class, Identitas::class);
+    }
+    public function tagihan () {
+        return $this->hasOneThrough(Tagihan::class, Identitas::class);
+    }
+    public function status () {
+        return $this->hasOneThrough(Status::class, Identitas::class);
+    }
 
-	public static $seragam = [
-		[]
-	];
-	
-	public static function getKode()
-	{
-		$kode = 'S';
-		$model = Seragam::select(['id'])->latest()->limit(1)->get()->first();
-		if (!$model) return $kode.'-001';
+    public static function getSeragams()
+    {
+        return Cache::rememberForever('seragams', fn() => DataSeragam::all());
+    }
 
-		$nomor = $model->id + 1;
-		$xnomor = str_pad($nomor, 3, '0', STR_PAD_LEFT);
-		return $kode.'-'.$xnomor;
-	}
+    public static function getOptions(string $type)
+    {
+        $seragams = static::getSeragams();
+        $xtype = ucfirst($type);
+        $opts = [['label' => "-- Pilih Ukuran $xtype --", 'value' => '']];
+        foreach ($seragams as $row) {
+            if ($row->seragam !== $type) continue;
+            $ukuran = json_decode($row->ukuran, true);
+            foreach ($ukuran as $ukr) {
+                $opts[] = $ukr;
+            }
+        } return $opts;
+    }
 
 }

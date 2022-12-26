@@ -4,7 +4,7 @@ $adm = str_replace('admin-', '', $user->level->name ?? '');
 $issupadm = $user->level->name === 'super-admin';
 
 $menu = array_merge([
-	['href' => '/admin', 'label' => 'Beranda', 'icon' => 'fa fa-tachometer-alt'],
+	['href' => '/admin', 'label' => 'Dashboard', 'icon' => 'fa fa-tachometer-alt'],
 	['href' => '/admin/peserta', 'label' => 'Semua Peserta', 'icon' => 'fa fa-users'],
 ],
 
@@ -16,12 +16,12 @@ $issupadm ? [[
 	'variant' => 'dropdown', 'href' => '/admin/verifikasi', 'label' => 'Verifikasi', 'icon' => 'fa fa-user-check', 'dropdown' => [
 		['href' => '/admin/verifikasi/pendaftaran', 'label' => 'Pendaftaran'],
 		['href' => '/admin/verifikasi/duseragam', 'label' => 'DU & Seragam'],
-		['href' => '/admin/verifikasi/pendataan', 'label' => 'Pendataan'],
 		['href' => '/admin/verifikasi/sponsorship', 'label' => 'Sponsorship'],
-	]
-]] : ($user->level->name === 'admin-pendataan' ? [[
-	'variant' => 'dropdown', 'href' => '/admin/verifikasi', 'label' => 'Verifikasi', 'icon' => 'fa fa-user-check', 'dropdown' => [
 		['href' => '/admin/verifikasi/pendataan', 'label' => 'Pendataan'],
+	]
+]] : ($user->level->name === 'admin-duseragam' ? [[
+	'variant' => 'dropdown', 'href' => '/admin/verifikasi', 'label' => 'Verifikasi', 'icon' => 'fa fa-user-check', 'dropdown' => [
+		['href' => '/admin/verifikasi/duseragam', 'label' => 'DU & Seragam'],
 		['href' => '/admin/verifikasi/sponsorship', 'label' => 'Sponsorship'],
 	]
 ]] : [
@@ -62,7 +62,7 @@ $issupadm ? [[
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
 	<!-- Brand Logo -->
-	<a href="/admin" class="brand-link elevation-4">
+	<a href="/admin" class="brand-link" style="padding: 0.52rem">
 		<img src="/adminlte/img/AdminLTELogo.png"
 			alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
 			style="opacity: .8">

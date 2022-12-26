@@ -17,11 +17,12 @@ return new class extends Migration
             $table->id();
 
             $table->string('type');
-            $table->unsignedMediumInteger('bayar');
-            $table->unsignedMediumInteger('kurang');
-            $table->string('admin');
+            $table->string('bayar');
+            $table->string('kurang');
+            $table->integer('admin_id');
             
             $table->foreignId('tagihan_id');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

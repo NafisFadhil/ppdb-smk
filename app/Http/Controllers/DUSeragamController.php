@@ -42,7 +42,7 @@ class DUSeragamController extends Controller
     protected function getAdvancedFormInputs (Identitas $data = null)
     {
         $jurusan = Jurusan::getOptions();
-        $jalurs = JalurPendaftaran::getAdvancedOptions();
+        $jalurs = DataJalurPendaftaran::getAdvancedOptions();
         $kelamins = ['LAKI-LAKI', 'PEREMPUAN'];
 
         return [

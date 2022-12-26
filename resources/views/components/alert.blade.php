@@ -4,7 +4,9 @@
 		$colors = [
 			'error' => 'bg-red-800',
 			'warning' => 'bg-yellow-600',
-			'success' => 'bg-green-800'
+			'success' => 'bg-green-800',
+			'info' => 'bg-primary',
+			'primary' => 'bg-primary',
 		]
 	?>
 

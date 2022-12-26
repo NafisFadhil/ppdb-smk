@@ -1,22 +1,22 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="row gap-2">
-	@include('admin.components.bigsearch', ['input' => [
+<div class="row">
+	{{-- @include('admin.components.bigsearch', ['input' => [
 		'type' => 'search', 'name' => 'search', 'placeholder' => 'Cari siswa...'
-	]])
+	]]) --}}
+	@include('admin.components.filter', ['filters' => $filters])
 	
 	<div class="col-12">
 		<div class="card">
-			<div class="card-body">
+			<div class="card-body p-2">
 				<table id="xtable" class="table table-sm table-bordered table-hover table-responsive">
 					<thead>
 						<tr>
 							<th>No</th>
-							<th>Kode Pendaftaran</th>
-							<th>Kode Jurusan</th>
-							<th>Nama Lengkap</th>
-							<th>Jalur Pendaftaran</th>
+							<th>Kode</th>
+							<th>Nama</th>
+							<th>Jalur</th>
 							<th>Jenis Kelamin</th>
 							<th>Asal Sekolah</th>
 							<th>Jurusan</th>
@@ -28,13 +28,17 @@
 						@foreach($peserta as $row)
 							<tr>
 								<td>{{ $loop->iteration }}</td>
-								<td>{{ $row->pendaftaran->kode ?? '-' }}</td>
-								<td>{{ isset($row->jurusan->kode) ? $row->jurusan->kode : '-' }}</td>
+								<td>
+									{{ $row->pendaftaran->kode ?? '-' }}
+									@isset($row->jurusan->kode)
+										<br> {{ $row->jurusan->kode }}
+									@endisset
+								</td>
 								<td>{{ $row->nama_lengkap }}</td>
 								<td>{{ ModelHelper::getJalur($row->jalur_pendaftaran) }}</td>
-								<td>{{ $row->jenis_kelamin }}</td>
+								<td>{{ ModelHelper::getJenisKelamin($row->jenis_kelamin_id) }}</td>
 								<td>{{ $row->asal_sekolah }}</td>
-								<td>{{ strtoupper($row->nama_jurusan) }}</td>
+								<td>{{ $row->jurusan->singkatan }}</td>
 								<td class="text-success" title="{{ $row->status->desc }}">
 									{{ $row->status->level }} ({{ $row->status->sublevel }})
 								</td>
@@ -52,7 +56,7 @@
 														['Nama Lengkap', $row->nama_lengkap],
 														['Jenis Kelamin', $row->jenis_kelamin],
 														['Asal Sekolah', $row->asal_sekolah],
-														['Jurusan', StringHelper::toCapital($row->nama_jurusan)],
+														['Jurusan', StringHelper::toCapital($row->jurusan->singkatan)],
 														['No Wa Siswa', $row->no_wa_siswa],
 													]
 											]) --}}
@@ -68,7 +72,7 @@
 										data-target="#modalSponsorship{{ $row->id }}" class="btn btn-secondary" {{ $row->sponsorship ? 'disabled' : '' }} >
 											<i class="fa">S+</i>
 											@if(!$row->sponsorship)
-												@include('admin.modals.general.sponsorship', [ 'row' => $row ])
+												@include('admin.modals.sponsorship.sponsorship', [ 'row' => $row ])
 											@endif
 										</button>
 
@@ -89,18 +93,18 @@
 											<i class="fa">T</i>
 										</button>
 										
-										{{-- Data Pembayaran Pendaftaran --}}
-										<button type="button" title="Data Pembayaran Pendaftaran" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=pendaftaran'">
+										{{-- Detail Pembayaran Pendaftaran --}}
+										<button type="button" title="Detail Pembayaran Pendaftaran" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=pendaftaran'">
 											<i class="fa fa-dollar-sign">P</i>
 										</button>
 
-										{{-- Data Pembayaran Daftar Ulang --}}
-										<button type="button" title="Data Pembayaran Daftar Ulang" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=daftar_ulang'">
+										{{-- Detail Pembayaran Daftar Ulang --}}
+										<button type="button" title="Detail Pembayaran Daftar Ulang" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=daftar_ulang'">
 											<i class="fa fa-dollar-sign">DU</i>
 										</button>
 
-										{{-- Data Pembayaran Seragam --}}
-										<button type="button" title="Data Pembayaran Seragam" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=seragam'">
+										{{-- Detail Pembayaran Seragam --}}
+										<button type="button" title="Detail Pembayaran Seragam" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=seragam'">
 											<i class="fa fa-dollar-sign">S</i>
 										</button>
 									</div>
@@ -109,9 +113,11 @@
 						@endforeach
 					</tbody>
 				</table>
-				{!! $peserta->links('pagination::bootstrap-4') !!}
+
 			</div>
 		</div>
 	</div>
+	
+	@include('admin.components.paginate')
 </div>
 @endsection

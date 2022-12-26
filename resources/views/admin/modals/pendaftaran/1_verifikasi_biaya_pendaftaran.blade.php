@@ -13,7 +13,7 @@
 		@endforeach
 
 		<div class="form-group text-center">
-			<button class="btn btn-secondary">
+			<button class="btn btn-primary">
 				Submit
 			</button>
 		</div>

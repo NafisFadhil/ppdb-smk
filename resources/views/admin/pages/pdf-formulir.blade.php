@@ -33,7 +33,7 @@
 				<div class="row w-90">
 					<div class="col-12 col-md-4">
 						<h4 class="w-90 font-weight-bold mt-2">
-							{{$data->jurusan->jurusan ?? $data->nama_jurusan}}
+							{{ $data->jurusan->nama ?? null }}
 						</h4>
 					</div>
 					<div class="col-6 col-md-2">
@@ -80,7 +80,7 @@
 												<span class="font-weight-bold">: </span>
 											</div>
 											<div class="ml-2 w-val">
-												<input type="text" class="w-100" value="{{ $data->jurusan->kode ?? '-' }}">
+												<input type="text" class="w-100" value="{{ $data->jurusan->kode ?? $data->pendaftaran->kode ?? '-' }}">
 											</div>
 										</div>
 									</div>
@@ -110,7 +110,7 @@
 												<span class="font-weight-bold">: </span>
 											</div>
 											<div class="ml-2 w-val">
-												<input type="text" class="w-100" value="{{ $data->tanggal_lahir }}">
+												<input type="text" class="w-100" value="{{ $data->new_tanggal_lahir }}">
 											</div>
 										</div>
 									</div>
@@ -142,12 +142,12 @@
 											<div class="ml-2 d-flex flex-row flex-wrap">
 												<div class="d-flex flex-row">
 													<div class="mr-2">L</div>
-													<input type="checkbox" class="form-control" {{$data->jenis_kelamin == 'Laki-laki' ? 'checked'
+													<input type="checkbox" class="form-control" {{ModelHelper::getJenisKelamin($data->jenis_kelamin_id) == 'LAKI-LAKI' ? 'checked'
 													: '' }}>
 												</div>
 												<div class="d-flex flex-row ml-4">
 													<div class="mr-2">P</div>
-													<input type="checkbox" class="form-control" {{$data->jenis_kelamin == 'Perempuan' ? 'checked'
+													<input type="checkbox" class="form-control" {{ModelHelper::getJenisKelamin($data->jenis_kelamin_id) == 'PEREMPUAN' ? 'checked'
 													: '' }}>
 												</div>
 											</div>
@@ -187,7 +187,7 @@
 														<div class="d-flex flex-row w-3">
 															<div class="w-label w-l">Gg</div>
 															<div class="w-input">
-																<input type="text">
+																<input type="text" value="{{ $data->alamat_gg }}">
 															</div>
 														</div>
 													</div>
@@ -223,7 +223,7 @@
 												</div>
 												<div class="w-input-label">
 													<div>tahun lahir</div>
-													<input type="text">
+													<input type="text" value="{{ $data->tahun_lahir_ayah }}">
 												</div>
 											</div>
 										</div>
@@ -244,7 +244,7 @@
 												</div>
 												<div class="w-input-label">
 													<div>tahun lahir</div>
-													<input type="text">
+													<input type="text" value="{{ $data->tahun_lahir_ibu }}">
 												</div>
 											</div>
 										</div>
@@ -363,7 +363,7 @@
 												<span class="font-weight-bold">: </span>
 											</div>
 											<div class="ml-2 d-flex flex-row w-val">
-												<input type="text" class="w-100" value="{{ $data->no_wa }}">
+												<input type="text" class="w-100" value="{{ $data->no_wa_siswa }}">
 											</div>
 										</div>
 									</div>

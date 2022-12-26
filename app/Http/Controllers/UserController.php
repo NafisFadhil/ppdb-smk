@@ -57,7 +57,7 @@ class UserController extends Controller
             ['level_id', '!=', 1]
         ])->with(['level'])->paginate();
         
-        return view('admin.pages.users.index', [
+        return view('admin.pages.users', [
             'page' => ['title' => 'Kelola User Admin'],
             'users' => $model
         ]);
@@ -77,7 +77,7 @@ class UserController extends Controller
             ['level_id', 1]
         ])->with(['level'])->paginate();
 
-        return view('admin.pages.users.index', [
+        return view('admin.pages.users', [
             'page' => ['title' => 'Kelola User Siswa'],
             'users' => $model
         ]);

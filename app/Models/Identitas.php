@@ -2,116 +2,84 @@
 
 namespace App\Models;
 
-use DateTime;
-use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Casts\UppercaseCast;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Identitas extends Model
 {
-    protected static $unguarded = true;
+    use HasFactory, SoftDeletes;
     
-    // Accessor and Mutators
-    private function uppercaseAttribute() :Attribute {
-        return Attribute::make(
-            get: fn ($value) => strtoupper($value),
-            set: fn ($value) => strtoupper($value),
-        );
-    }
-    protected function namaLengkap() :Attribute {
-        return $this->uppercaseAttribute();
-    } 
-    protected function jenisKelamin() :Attribute {
-        return $this->uppercaseAttribute();
-    } 
-    protected function asalSekolah() :Attribute {
-        return $this->uppercaseAttribute();
-    } 
-    protected function namaJurusan() :Attribute {
-        return $this->uppercaseAttribute();
-    } 
-    protected function tempatLahir() :Attribute {
-        return $this->uppercaseAttribute();
-    } 
-    protected function alamatDesa() :Attribute {
-        return $this->uppercaseAttribute();
-    } 
-    protected function alamatKec() :Attribute {
-        return $this->uppercaseAttribute();
-    } 
-    protected function alamatKotaKab() :Attribute {
-        return $this->uppercaseAttribute();
-    } 
-    protected function namaAyah() :Attribute {
-        return $this->uppercaseAttribute();
-    } 
-    protected function namaIbu() :Attribute {
-        return $this->uppercaseAttribute();
-    } 
+    protected static $unguarded = true;
+
+    protected $casts = [
+        'nama_lengkap' => UppercaseCast::class,
+        'jenis_kelamin' => UppercaseCast::class,
+        'asal_sekolah' => UppercaseCast::class,
+        'nama_jurusan' => UppercaseCast::class,
+        'tempat_lahir' => UppercaseCast::class,
+        'alamat_desa' => UppercaseCast::class,
+        'alamat_kec' => UppercaseCast::class,
+        'alamat_kota_kab' => UppercaseCast::class,
+        'nama_ayah' => UppercaseCast::class,
+        'nama_ibu' => UppercaseCast::class,
+        'tanggal_lahir' => 'timestamp',
+        'alamat_rt' => 'integer',
+        'alamat_rw' => 'integer',
+        'alamat_gg' => 'integer',
+        'tahun_lahir_ayah' => 'integer',
+        'tahun_lahir_ibu' => 'integer',
+        'jumlah_saudara_kandung' => 'integer',
+        'nik' => 'integer',
+        'nisn' => 'integer',
+        'no_ujian_nasional' => 'integer',
+        'no_ijazah' => 'string',
+        'buta_warna' => 'boolean',
+        'jenis_kelamin_id' => 'integer',
+        'jalur_pendaftaran_id' => 'integer',
+        'status_id' => 'integer',
+        'session_id' => 'integer',
+    ];
     
     // Eloquent Relationship
     public function pendaftaran () {
         return $this->hasOne(Pendaftaran::class);
     }
-    public function duseragam () {
-        return $this->hasOne(DUSeragam::class);
+    public function daftar_ulang () {
+        return $this->hasOne(DaftarUlang::class);
     }
-    public function user () {
-        return $this->hasOne(User::class);
-    }
-    public function sponsorship () {
-        return $this->hasOne(Sponsorship::class);
-    }
-    public function jurusan () {
-        return $this->hasOne(Jurusan::class);
+    public function seragam () {
+        return $this->hasOne(Seragam::class);
     }
     public function tagihan () {
         return $this->hasOne(Tagihan::class);
     }
+    public function verifikasi () {
+        return $this->hasOne(Verifikasi::class);
+    }
+    public function user () {
+        return $this->hasOne(User::class);
+    }
+    public function jurusan () {
+        return $this->hasOne(Jurusan::class);
+    }
+    public function sponsorship () {
+        return $this->hasONe(Sponsorship::class);
+    }
+    public function jenis_kelamin () {
+        return $this->belongsTo(DataJenisKelamin::class);
+    }
     public function jalur_pendaftaran () {
-        return $this->belongsTo(JalurPendaftaran::class);
+        return $this->belongsTo(DataJalurPendaftaran::class);
     }
     public function status () {
         return $this->belongsTo(Status::class);
     }
 
-    public static $validations = [
-        'jalur_pendaftaran_id' => 'required|numeric',
-        'sub_jalur_pendaftaran_id' => 'nullable|required_if:jalur_pendaftaran_id,3|numeric',
-        'nama_lengkap' => 'required|string',
-        'tanggal_lahir' => 'required|date',
-        'jenis_kelamin' => 'required|string',
-        'asal_sekolah' => 'required|string',
-        'no_wa_siswa' => 'required|numeric|digits_between:10,14',
-        'nama_jurusan' => 'required|string',
-        // Advanced Form Inputs
-        'no_wa_ortu' => 'nullable|numeric|digits_between:10,14',
-        'tempat_lahir' => 'nullable|string',
-        'alamat_desa' => 'nullable|string',
-        'alamat_kec' => 'nullable|string',
-        'alamat_kota_kab' => 'nullable|string',
-        'alamat_rt' => 'nullable|numeric',
-        'alamat_rw' => 'nullable|numeric',
-        'nama_ayah' => 'nullable|string',
-        'nama_ibu' => 'nullable|string',
-        'jumlah_saudara_kandung' => 'nullable|numeric',
-        'nik' => 'nullable|numeric|digits:16',
-        'nisn' => 'nullable|numeric|digits:10',
-        'no_ujian_nasional' => 'nullable|numeric',
-        'no_ijazah' => 'nullable|numeric',
-    ];
-
-    public static function getValidations(array $names)
-    {
-        $result = [];
-        foreach ($names as $key) {
-            $result[$key] = self::$validations[$key] ?? '';
-        }
-        return $result;
-    }
-
     public static function getSubPrestasi (array $creden)
     {
-        if ($creden['sub_jalur_pendaftaran_id'] && $creden['jalur_pendaftaran_id'] > 3) {
+        if ($creden['sub_jalur_pendaftaran_id'] && $creden['jalur_pendaftaran_id'] > 2) {
             $creden['jalur_pendaftaran_id'] = $creden['sub_jalur_pendaftaran_id'];
         }
         unset($creden['sub_jalur_pendaftaran_id']);
@@ -120,7 +88,7 @@ class Identitas extends Model
 
     public static function validateAge ($tanggal)
     {
-        $datetime = new DateTime($tanggal);
+        $datetime = new \DateTime($tanggal);
         $year = (int) $datetime->format('Y');
         $age = 2023 - $year;
         return $age <= 21 && $age >= 14 ? $tanggal : false;

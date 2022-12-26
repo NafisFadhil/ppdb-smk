@@ -41,15 +41,15 @@ class FormHelper
 		
 		if ($variant === 'multiform') {
 
-			$basicform = self::initBasicForm($form);
-			$basicform['inputs'] = self::initMultiForm($basicform['inputs']);
+			$basicform = static::initBasicForm($form);
+			$basicform['inputs'] = static::initMultiForm($basicform['inputs']);
 			return [
 				'variant' => $variant,
 				...$basicform,
 			];
 			
 		} elseif ($variant === 'dimensionalform') {
-		} else return self::initBasicForm($form);
+		} else return static::initBasicForm($form);
 	}
 
 	private static function initBasicForm(array $form) :array
@@ -95,7 +95,7 @@ class FormHelper
 	{
 		$forms = [];
 		foreach ($inputs as $form) {
-			$form = self::initBasicForm($form);
+			$form = static::initBasicForm($form);
 			$title = $form['title'] ?? null;
 			
 			$forms[] = [

@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
 	<link rel="stylesheet" href="/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
 	<link rel="stylesheet" href="/plugins/select2/css/select2.min.css">
+	{{-- <link rel="stylesheet" href="/plugins/daterangepicker/daterangepicker.min.css"> --}}
 	@stack('styles')
 	<link rel="stylesheet" href="/adminlte/css/adminlte.min.css">
 	<style>
@@ -15,6 +16,14 @@
 		#filterForm .form-group { margin: .25rem }
 		#filterForm input { text-align: center }
 		#filterForm input::placeholder { text-align: center }
+		.btn-group {margin-bottom: .2rem}
+		.btn.btn-warning {color:white !important}
+		.btn-group.btn-group-sm .btn {
+			font-size: .75rem;
+			line-height: .8rem;
+			padding: .25rem .4rem;
+			/* padding: .2rem .5rem !important */
+		}
 	</style>
 </head>
 <body class="hold-transition sidebar-mini">
@@ -25,8 +34,10 @@
 			<section class="content-header">
 				<div class="container-fluid">
 					<div class="row mb-2">
-						<div class="col-sm-6">
-							<h1>{{ $page['header'] ?? $header ?? $page['title'] ?? $title ?? '' }}</h1>
+						<div class="col-12">
+							<h1 class="d-inline-block">
+								{{ $page['header'] ?? $header ?? $page['title'] ?? $title ?? '' }}
+							</h1>
 						</div>
 					</div>
 				</div><!-- /.container-fluid -->
@@ -47,10 +58,12 @@
 	<script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	@include('admin.components.alerts')
 	
+	{{-- <script src="/plugins/daterangepicker/daterangepicker.js"></script> --}}
 	<script src="/plugins/select2/js/select2.full.min.js"></script>
 	<script src="/plugins/datatables/jquery.dataTables.min.js"></script>
 	<script src="/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 	<script src="/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+	<script src="/adminlte/js/adminlte.min.js"></script>
 	<script>
 		$(function () {
 			let inputs = document.getElementsByClassName('input-uppercase');
@@ -70,11 +83,17 @@
 				"responsive": false,
 				"fixedHeader": false,
 			});
-			$('.select2').select2()
+			$('.select2').select2();
+		// 	$('#reservation').daterangepicker({
+    //   timePicker: true,
+    //   timePickerIncrement: 30,
+    //   locale: {
+    //     format: 'MM/DD/YYYY hh:mm A'
+    //   }
+    // });
 		})
 	</script>
 	
 	@stack('scripts')
-	<script src="/adminlte/js/adminlte.min.js"></script>
 </body>
 </html>

@@ -3,38 +3,62 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ModelHelper;
+use App\Jobs\ResetTagihan;
+use App\Jobs\ResetVerifikasi;
+use App\Jobs\TambahPeserta;
+use App\Jobs\UpdatePeserta;
 use App\Models\DUSeragam;
 use App\Models\Identitas;
-use App\Models\JalurPendaftaran;
+use App\Models\DataJalurPendaftaran;
+use App\Models\DataJenisKelamin;
 use App\Models\Jurusan;
 use App\Models\Pembayaran;
 use App\Models\Pendaftaran;
+use App\Models\Seragam;
 use App\Models\Tagihan;
-use DateTime;
+use App\Models\Verifikasi;
+use App\Validations\IdentitasValidation;
+use App\Validations\JurusanValidation;
+use App\Validations\SeragamValidation;
+use Illuminate\Bus\Batch;
+use Illuminate\Bus\Dispatcher;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Session;
 
 class FormulirController extends Controller
 {
 
-    protected $myValidations = [
+    // public $identitas;
+
+    protected $identitas;
+    protected $identitas_creden;
+    protected $seragam_creden;
+
+    public static $kode_pendaftaran;
+    
+    private $validation_names = [
         'jalur_pendaftaran_id', 
         'sub_jalur_pendaftaran_id', 
         'nama_lengkap', 
         'tanggal_lahir', 
-        'jenis_kelamin', 
+        'jenis_kelamin_id', 
         'asal_sekolah', 
         'no_wa_siswa', 
         'no_wa_ortu', 
         'nama_jurusan', 
     ];
 
-    protected $admValidations = [
+    private $validation_admnames = [
         'jalur_pendaftaran_id', 
         'sub_jalur_pendaftaran_id', 
         'nama_lengkap', 
         'tanggal_lahir', 
-        'jenis_kelamin', 
+        'jenis_kelamin_id', 
         'asal_sekolah', 
         'no_wa_siswa', 
         'nama_jurusan',
@@ -46,8 +70,11 @@ class FormulirController extends Controller
         'alamat_kota_kab',
         'alamat_rt',
         'alamat_rw',
+        'alamat_gg',
         'nama_ayah',
+        'tahun_lahir_ayah',
         'nama_ibu',
+        'tahun_lahir_ibu',
         'jumlah_saudara_kandung',
         'nik',
         'nisn',
@@ -55,178 +82,309 @@ class FormulirController extends Controller
         'no_ijazah',
     ];
 
-    protected $duseragamValidations = [
-        'ukuran_seragam'
-    ];
-    
     protected function getFormInputs (Identitas $data = null)
     {
-        $jurusan = Jurusan::getOptions();
-        $kelamins = ['LAKI-LAKI', 'PEREMPUAN'];
+        $jurusan =  Cache::rememberForever('jurusan_options', fn() => Jurusan::getOptions());
+        $jenis_kelamins = Cache::rememberForever('jenis_kelamin_options', fn() => DataJenisKelamin::getOptions());
 
         return [
-            ...JalurPendaftaran::getFormInput(),
-            ['type' => 'text', 'name' => 'nama_lengkap', 'value' => $data->nama_lengkap??null,
-                'label' => null, 'placeholder' => null, 'opts' => ['uppercase','required']], 
-            ['type' => 'radio', 'name' => 'jenis_kelamin', 'value' => $data->jenis_kelamin??null,
-                'label' => null, 'placeholder' => null, 'values' => $kelamins, 'opts' => ['required']],
-            ['type' => 'date', 'name' => 'tanggal_lahir', 'value' => $data->tanggal_lahir??null,
-                'label' => null, 'placeholder' => null , 'opts' => ['required']], 
-            ['type' => 'text', 'name' => 'asal_sekolah', 'value' => $data->asal_sekolah??null,
-                'label' => null, 'placeholder' => null, 'opts' => ['uppercase','required']], 
-            ['type' => 'number', 'name' => 'no_wa_siswa', 'value' => $data->no_wa_siswa??null,
-                'label' => 'WA Siswa', 'placeholder' => 'Cth. 08123456789' , 'opts' => ['required']], 
-            ['type' => 'number', 'name' => 'no_wa_ortu', 'value' => $data->no_wa_ortu??null,
-                'label' => 'WA Orang Tua/Wali', 'placeholder' => '(Opsional)' , 'opts' => ['required']],
-            ['type' => 'select', 'name' => 'nama_jurusan', 'value' => $data->nama_jurusan??null,
-                'label' => null, 'placeholder' => null, 'options' => $jurusan, 'opts' => ['required']],
+            ...DataJalurPendaftaran::getFormInput(),
+            [
+                'type' => 'text', 'name' => 'nama_lengkap', 'value' => $data->nama_lengkap??null,
+                'label' => null, 'placeholder' => null, 'opts' => ['uppercase','required']
+            ], 
+            [
+                'type' => 'radio', 'name' => 'jenis_kelamin_id', 'value' => $data->jenis_kelamin??null,
+                'label' => 'Jenis Kelamin', 'placeholder' => null, 'values' => $jenis_kelamins,
+                'opts' => ['required']
+            ],
+            [
+                'type' => 'date', 'name' => 'tanggal_lahir', 'value' => $data->tanggal_lahir??null,
+                'label' => null, 'placeholder' => null , 'opts' => ['required']
+            ], 
+            [
+                'type' => 'text', 'name' => 'asal_sekolah', 'value' => $data->asal_sekolah??null,
+                'label' => null, 'placeholder' => null, 'opts' => ['uppercase','required']
+            ], 
+            [
+                'type' => 'number', 'name' => 'no_wa_siswa', 'value' => $data->no_wa_siswa??null,
+                'label' => 'WA Siswa', 'placeholder' => 'Cth. 08123456789' , 'opts' => ['required']
+            ], 
+            [
+                'type' => 'number', 'name' => 'no_wa_ortu', 'value' => $data->no_wa_ortu??null,
+                'label' => 'WA Orang Tua/Wali', 'placeholder' => '(Opsional)' , 'opts' => ['required']
+            ],
+            [
+                'type' => 'select', 'name' => 'nama_jurusan', 'value' => $data->nama_jurusan??null,
+                'label' => null, 'placeholder' => null, 'options' => $jurusan, 'opts' => ['required']
+            ],
         ];
     }
 
     protected function getAdvancedFormInputs (Identitas $data = null)
     {
-        $jurusan = Jurusan::getOptions();
-        $kelamins = ['LAKI-LAKI', 'PEREMPUAN'];
+        $jurusan =  Cache::rememberForever('jurusan_options', fn() => Jurusan::getOptions());
+        $jenis_kelamins = Cache::rememberForever('jenis_kelamin_options', fn() => DataJenisKelamin::getOptions());
+        // $seragam = Cache::rememberForever('seragam_options', fn() => Seragam::getOptions());
 
         return [
-            ...JalurPendaftaran::getFormInput($data),
-            ['type' => 'text', 'name' => 'nama_lengkap', 'value' => $data->nama_lengkap??null,
-                'label' => null, 'placeholder' => null, 'opts' => ['required', 'uppercase']], 
-            ['type' => 'text', 'name' => 'tempat_lahir', 'value' => $data->tempat_lahir??null,
-                'label' => null, 'placeholder' => null, 'opts' => ['uppercase']],
-            ['type' => 'date', 'name' => 'tanggal_lahir', 'value' => $data->tanggal_lahir??null,
-                'label' => null, 'placeholder' => null, 'opts' => ['required']], 
-            ['type' => 'radio', 'name' => 'jenis_kelamin', 'value' => $data->jenis_kelamin??null,
-                'label' => null, 'placeholder' => null, 'values' => $kelamins, 'opts' => ['required']],
-            ['type' => 'text', 'name' => 'alamat_desa', 'value' => $data->alamat_desa??null,
-                'label' => null, 'placeholder' => null, 'opts' => ['uppercase']],
-            ['type' => 'text', 'name' => 'alamat_kec', 'value' => $data->alamat_kec??null,
-                'label' => null, 'placeholder' => null, 'opts' => ['uppercase']],
-            ['type' => 'text', 'name' => 'alamat_kota_kab', 'value' => $data->alamat_kota_kab??null,
-                'label' => null, 'placeholder' => null, 'opts' => ['uppercase']],
-            ['type' => 'number', 'name' => 'alamat_rt', 'value' => $data->alamat_rt??null,
-                'label' => null, 'placeholder' => null],
-            ['type' => 'number', 'name' => 'alamat_rw', 'value' => $data->alamat_rw??null,
-                'label' => null, 'placeholder' => null],
-            ['type' => 'text', 'name' => 'nama_ayah', 'value' => $data->nama_ayah??null,
-                'label' => null, 'placeholder' => null, 'opts' => ['uppercase']],
-            ['type' => 'text', 'name' => 'nama_ibu', 'value' => $data->nama_ibu??null,
-                'label' => null, 'placeholder' => null, 'opts' => ['uppercase']],
-            ['type' => 'number', 'name' => 'jumlah_saudara_kandung', 'value' => $data->jumlah_saudara_kandung??null,
-                'label' => null, 'placeholder' => null],
-            ['type' => 'number', 'name' => 'nik', 'value' => $data->nik??null,
-                'label' => null, 'placeholder' => null],
-            ['type' => 'text', 'name' => 'asal_sekolah', 'value' => $data->asal_sekolah??null,
-                'label' => null, 'placeholder' => null, 'opts' => ['required', 'uppercase']], 
-            ['type' => 'number', 'name' => 'nisn', 'value' => $data->nisn??null,
-                'label' => null, 'placeholder' => null],
-            ['type' => 'number', 'name' => 'no_ujian_nasional', 'value' => $data->no_ujian_nasional??null,
-                'label' => null, 'placeholder' => null],
-            ['type' => 'number', 'name' => 'no_ijazah', 'value' => $data->no_ijazah??null,
-                'label' => null, 'placeholder' => null],
-            ['type' => 'number', 'name' => 'no_wa_siswa', 'value' => $data->no_wa_siswa??null,
-                'label' => 'WA Siswa', 'placeholder' => 'Cth. 08123456789', 'opts' => ['required']], 
-            ['type' => 'number', 'name' => 'no_wa_ortu', 'value' => $data->no_wa_ortu??null,
-                'label' => null, 'placeholder' => null],
-            ['type' => 'select', 'name' => 'nama_jurusan', 'value' => $data->nama_jurusan??null,
-                'label' => null, 'placeholder' => null, 'options' => $jurusan, 'opts' => ['required', 'uppercase']],
-            ['type' => 'select', 'name' => 'ukuran_seragam', 'value' => $data->duseragam->ukuran_seragam??null, 'options' => [
-                ['label' => '--Pilih Ukuran Seragam--', 'value' => ''],
-                'S', 'M', 'L', 'XL', 'XXL', 'XXXL'
-            ]],
+            ...DataJalurPendaftaran::getFormInput($data),
+            [
+                'type' => 'text', 'name' => 'nama_lengkap', 'value' => $data->nama_lengkap??null,
+                'label' => null, 'placeholder' => null, 'opts' => ['required', 'uppercase']
+            ],
+            [
+                'type' => 'text', 'name' => 'tempat_lahir', 'value' => $data->tempat_lahir??null,
+                'label' => null, 'placeholder' => null, 'opts' => ['uppercase']
+            ],
+            [
+                'type' => 'date', 'name' => 'tanggal_lahir', 'value' => $data->tanggal_lahir??null,
+                'label' => null, 'placeholder' => null, 'opts' => ['required']
+            ],
+            [
+                'type' => 'radio', 'name' => 'jenis_kelamin_id', 'value' => $data->jenis_kelamin??null,
+                'label' => 'Jenis Kelamin', 'placeholder' => null, 'values' => $jenis_kelamins,
+                'opts' => ['required']
+            ],
+            [
+                'type' => 'text', 'name' => 'alamat_desa', 'value' => $data->alamat_desa??null,
+                'label' => null, 'placeholder' => null, 'opts' => ['uppercase']
+            ],
+            [
+                'type' => 'text', 'name' => 'alamat_kec', 'value' => $data->alamat_kec??null,
+                'label' => null, 'placeholder' => null, 'opts' => ['uppercase']
+            ],
+            [
+                'type' => 'text', 'name' => 'alamat_kota_kab', 'value' => $data->alamat_kota_kab??null,
+                'label' => null, 'placeholder' => null, 'opts' => ['uppercase']
+            ],
+            [
+                'type' => 'number', 'name' => 'alamat_rt', 'value' => $data->alamat_rt??null,
+                'label' => null, 'placeholder' => null
+            ],
+            [
+                'type' => 'number', 'name' => 'alamat_rw', 'value' => $data->alamat_rw??null,
+                'label' => null, 'placeholder' => null
+            ],
+            [
+                'type' => 'text', 'name' => 'nama_ayah', 'value' => $data->nama_ayah??null,
+                'label' => null, 'placeholder' => null, 'opts' => ['uppercase']
+            ],
+            [
+                'type' => 'text', 'name' => 'nama_ibu', 'value' => $data->nama_ibu??null,
+                'label' => null, 'placeholder' => null, 'opts' => ['uppercase']
+            ],
+            [
+                'type' => 'number', 'name' => 'jumlah_saudara_kandung', 'value' => $data->jumlah_saudara_kandung??null,
+                'label' => null, 'placeholder' => null
+            ],
+            [
+                'type' => 'number', 'name' => 'nik', 'value' => $data->nik??null,
+                'label' => null, 'placeholder' => null
+            ],
+            [
+                'type' => 'text', 'name' => 'asal_sekolah', 'value' => $data->asal_sekolah??null,
+                'label' => null, 'placeholder' => null, 'opts' => ['required', 'uppercase']
+            ],
+            [
+                'type' => 'number', 'name' => 'nisn', 'value' => $data->nisn??null,
+                'label' => null, 'placeholder' => null
+            ],
+            [
+                'type' => 'number', 'name' => 'no_ujian_nasional', 'value' => $data->no_ujian_nasional??null,
+                'label' => null, 'placeholder' => null
+            ],
+            [
+                'type' => 'number', 'name' => 'no_ijazah', 'value' => $data->no_ijazah??null,
+                'label' => null, 'placeholder' => null
+            ],
+            [
+                'type' => 'number', 'name' => 'no_wa_siswa', 'value' => $data->no_wa_siswa??null,
+                'label' => 'WA Siswa', 'placeholder' => 'Cth. 08123456789', 'opts' => ['required']
+            ],
+            [
+                'type' => 'number', 'name' => 'no_wa_ortu', 'value' => $data->no_wa_ortu??null,
+                'label' => null, 'placeholder' => null
+            ],
+            [
+                'type' => 'select', 'name' => 'nama_jurusan', 'value' => $data->nama_jurusan??null,
+                'label' => null, 'placeholder' => null, 'options' => $jurusan,
+                'opts' => ['required', 'uppercase']
+            ],
+            [
+                'type' => 'select', 'name' => 'ukuran_seragam', 'value' => $data->duseragam->ukuran_seragam??null,
+                'options' => []
+            ],
         ];
     }
 
-    protected function getMultiFormInputs (Identitas $data = null)
+    public static function getMultiFormInputs (Identitas $data = null)
     {
-        $jurusan = Jurusan::getOptions();
-        $kelamins = ['LAKI-LAKI', 'PEREMPUAN'];
+        $jurusan =  Cache::rememberForever('jurusan_options', fn() => Jurusan::getOptions());
+        $jenis_kelamins = Cache::rememberForever('jenis_kelamin_options', fn() => DataJenisKelamin::getOptions());
+        $tanggal_lahir = isset($data->tanggal_lahir) ? date('Y-m-d', $data->tanggal_lahir) : null;
 
         return [
-            ['title' => 'Data Pendaftaran', 'inputs' => [
-                    ...JalurPendaftaran::getFormInput($data),
-                ['type' => 'text', 'name' => 'nama_lengkap', 'value' => $data->nama_lengkap??null,
-                    'label' => null, 'placeholder' => null, 'opts' => ['required', 'uppercase']], 
-                ['type' => 'text', 'name' => 'tempat_lahir', 'value' => $data->tempat_lahir??null,
-                    'label' => null, 'placeholder' => null, 'opts' => ['uppercase']],
-                ['type' => 'date', 'name' => 'tanggal_lahir', 'value' => $data->tanggal_lahir??null,
-                    'label' => null, 'placeholder' => null, 'opts' => ['required']], 
-                ['type' => 'radio', 'name' => 'jenis_kelamin', 'value' => $data->jenis_kelamin??null,
-                    'label' => null, 'placeholder' => null, 'values' => $kelamins, 'opts' => ['required']],
-                ['type' => 'text', 'name' => 'alamat_desa', 'value' => $data->alamat_desa??null,
-                    'label' => null, 'placeholder' => null, 'opts' => ['uppercase']],
-                ['type' => 'text', 'name' => 'alamat_kec', 'value' => $data->alamat_kec??null,
-                    'label' => null, 'placeholder' => null, 'opts' => ['uppercase']],
-                ['type' => 'text', 'name' => 'alamat_kota_kab', 'value' => $data->alamat_kota_kab??null,
-                    'label' => null, 'placeholder' => null, 'opts' => ['uppercase']],
-                ['type' => 'number', 'name' => 'alamat_rt', 'value' => $data->alamat_rt??null,
-                    'label' => null, 'placeholder' => null],
-                ['type' => 'number', 'name' => 'alamat_rw', 'value' => $data->alamat_rw??null,
-                    'label' => null, 'placeholder' => null],
-                ['type' => 'text', 'name' => 'nama_ayah', 'value' => $data->nama_ayah??null,
-                    'label' => null, 'placeholder' => null, 'opts' => ['uppercase']],
-                ['type' => 'text', 'name' => 'nama_ibu', 'value' => $data->nama_ibu??null,
-                    'label' => null, 'placeholder' => null, 'opts' => ['uppercase']],
-                ['type' => 'number', 'name' => 'jumlah_saudara_kandung', 'value' => $data->jumlah_saudara_kandung??null,
-                    'label' => null, 'placeholder' => null],
-                ['type' => 'number', 'name' => 'nik', 'value' => $data->nik??null,
-                    'label' => null, 'placeholder' => null],
-                ['type' => 'text', 'name' => 'asal_sekolah', 'value' => $data->asal_sekolah??null,
-                    'label' => null, 'placeholder' => null, 'opts' => ['required', 'uppercase']], 
-                ['type' => 'number', 'name' => 'nisn', 'value' => $data->nisn??null,
-                    'label' => null, 'placeholder' => null],
-                ['type' => 'number', 'name' => 'no_ujian_nasional', 'value' => $data->no_ujian_nasional??null,
-                    'label' => null, 'placeholder' => null],
-                ['type' => 'number', 'name' => 'no_ijazah', 'value' => $data->no_ijazah??null,
-                    'label' => null, 'placeholder' => null],
-                ['type' => 'number', 'name' => 'no_wa_siswa', 'value' => $data->no_wa_siswa??null,
-                    'label' => 'WA Siswa', 'placeholder' => 'Cth. 08123456789', 'opts' => ['required']], 
-                ['type' => 'number', 'name' => 'no_wa_ortu', 'value' => $data->no_wa_ortu??null,
-                    'label' => null, 'placeholder' => null],
-                ['type' => 'select', 'name' => 'nama_jurusan', 'value' => $data->nama_jurusan??null,
-                    'label' => null, 'placeholder' => null, 'options' => $jurusan, 'opts' => ['required', 'uppercase']],
+            ['title' => 'Data Pokok', 'inputs' => [
+                    ...DataJalurPendaftaran::getFormInput($data),
+                [
+                    'type' => 'text', 'name' => 'nama_lengkap', 'value' => $data->nama_lengkap??null,
+                    'label' => null, 'placeholder' => null, 'opts' => ['required', 'uppercase']
+                ],
+                [
+                    'type' => 'text', 'name' => 'tempat_lahir', 'value' => $data->tempat_lahir??null,
+                    'label' => null, 'placeholder' => null, 'opts' => ['uppercase']
+                ],
+                [
+                    'type' => 'date', 'name' => 'tanggal_lahir', 'value' => $tanggal_lahir??null,
+                    'label' => null, 'placeholder' => null, 'opts' => ['required']
+                ], 
+                [
+                    'type' => 'radio', 'name' => 'jenis_kelamin_id', 'value' => $data->jenis_kelamin_id??null,
+                    'label' => 'Jenis Kelamin', 'placeholder' => null, 
+                    'values' => $jenis_kelamins, 'opts' => ['required']
+                ],
+                [
+                    'type' => 'text', 'name' => 'asal_sekolah', 'value' => $data->asal_sekolah??null,
+                    'label' => null, 'placeholder' => null, 'opts' => ['required', 'uppercase']
+                ],
+                [
+                    'type' => 'select', 'name' => 'nama_jurusan', 'value' => strtolower($data->jurusan->singkatan??''),
+                    'label' => null, 'placeholder' => null, 'options' => $jurusan, 'opts' => ['required']
+                ],
+            ]],
+            ['title' => 'Data Lokasi', 'inputs' => [
+                [
+                    'type' => 'text', 'name' => 'alamat_desa', 'value' => $data->alamat_desa??null,
+                    'label' => null, 'placeholder' => null, 'opts' => ['uppercase']
+                ],
+                [
+                    'type' => 'text', 'name' => 'alamat_kec', 'value' => $data->alamat_kec??null,
+                    'label' => null, 'placeholder' => null, 'opts' => ['uppercase']
+                ],
+                [
+                    'type' => 'text', 'name' => 'alamat_kota_kab', 'value' => $data->alamat_kota_kab??null,
+                    'label' => null, 'placeholder' => null, 'opts' => ['uppercase']
+                ],
+                [
+                    'type' => 'number', 'name' => 'alamat_rt', 'value' => $data->alamat_rt??null,
+                    'label' => null, 'placeholder' => null
+                ],
+                [
+                    'type' => 'number', 'name' => 'alamat_rw', 'value' => $data->alamat_rw??null,
+                    'label' => null, 'placeholder' => null
+                ],
+                [
+                    'type' => 'number', 'name' => 'alamat_gg', 'value' => $data->alamat_gg??null,
+                    'label' => null, 'placeholder' => null
+                ],
+            ]],
+            ['title' => 'Data Keluarga', 'inputs' => [
+                [
+                    'type' => 'text', 'name' => 'nama_ayah', 'value' => $data->nama_ayah??null,
+                    'label' => null, 'placeholder' => null, 'opts' => ['uppercase']
+                ],
+                [
+                    'type' => 'number', 'name' => 'tahun_lahir_ayah', 'value' => $data->tahun_lahir_ayah??null,
+                    'label' => null, 'placeholder' => null,
+                ],
+                [
+                    'type' => 'text', 'name' => 'nama_ibu', 'value' => $data->nama_ibu??null,
+                    'label' => null, 'placeholder' => null, 'opts' => ['uppercase']
+                ],
+                [
+                    'type' => 'number', 'name' => 'tahun_lahir_ibu', 'value' => $data->tahun_lahir_ibu??null,
+                    'label' => null, 'placeholder' => null,
+                ],
+                [
+                    'type' => 'number', 'name' => 'jumlah_saudara_kandung', 'value' => $data->jumlah_saudara_kandung??null,
+                    'label' => null, 'placeholder' => null
+                ],
+            ]],
+            ['title' => 'Data Nasional', 'inputs' => [
+                [
+                    'type' => 'number', 'name' => 'nik', 'value' => $data->nik??null,
+                    'label' => null, 'placeholder' => null
+                ],
+                [
+                    'type' => 'number', 'name' => 'nisn', 'value' => $data->nisn??null,
+                    'label' => null, 'placeholder' => null
+                ],
+                [
+                    'type' => 'number', 'name' => 'no_ujian_nasional', 'value' => $data->no_ujian_nasional??null,
+                    'label' => null, 'placeholder' => null
+                ],
+                [
+                    'type' => 'number', 'name' => 'no_ijazah', 'value' => $data->no_ijazah??null,
+                    'label' => null, 'placeholder' => null
+                ],
+            ]],
+            ['title' => 'Data Komunikasi', 'inputs' => [
+                [
+                    'type' => 'number', 'name' => 'no_wa_siswa', 'value' => $data->no_wa_siswa??null,
+                    'label' => 'WA Siswa', 'placeholder' => 'Cth. 08123456789', 'opts' => ['required']]
+                    , 
+                [
+                    'type' => 'number', 'name' => 'no_wa_ortu', 'value' => $data->no_wa_ortu??null,
+                    'label' => null, 'placeholder' => null
+                ],
+                
             ]],
             ['title' => 'Data Seragam', 'inputs' => [
-                ['type' => 'select', 'name' => 'ukuran_seragam', 'value' => $data->duseragam->ukuran_seragam??null, 'options' => [
-                    ['label' => '--Pilih Ukuran Seragam--', 'value' => ''],
-                    'S', 'M', 'L', 'XL', 'XXL', 'XXXL'
-                ]],
+                [
+                    'type' => 'select', 'name' => 'ukuran_olahraga', 'value' => $data->seragam->ukuran_olahraga??null,
+                    'options' => Seragam::getOptions('olahraga'),
+                ],
+                [
+                    'type' => 'select', 'name' => 'ukuran_wearpack', 'value' => $data->seragam->ukuran_wearpack??null,
+                    'options' => Seragam::getOptions('wearpack'),
+                ],
+                [
+                    'type' => 'select', 'name' => 'ukuran_almamater', 'value' => $data->seragam->ukuran_almamater??null,
+                    'options' => Seragam::getOptions('almamater'),
+                ],
             ]]
         ];
     }
 
-    protected function validateRecaptcha (Request $req)
-    {
-        if (!$req->has('g-recaptcha-response') || !$req->get('g-recaptcha-response')) {
-            return redirect('/formulir')->withErrors([
-                'alerts' => ['danger' => 'Invalid reCAPTCHA!']
-            ])->withInput($req->toArray());
-        }
+    // private function resetTagihan (Identitas $identitas, $type) :int
+    // {
+    //     $jalur = $identitas->jalur_pendaftaran;
+    //     $tagihan = $identitas->tagihan;
+    //     $newbiaya = $jalur["biaya_$type"];
+    //     $oldbiaya = $tagihan["biaya_$type"];
+    //     $oldtagihan = $tagihan["tagihan_$type"];
 
-        $rawurl = 'https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s&remoteip=%s';
-        $token = $req->get('g-recaptcha-response');
-        $secretkey = env('RECAPTCHA_SECRET_KEY');
-        $clientip = $req->ip();
-        
-        $url = sprintf($rawurl, $secretkey, $token, $clientip);
-        // $result = file_get_contents($url);
-        // $response = json_decode($result, true);
+    //     $bayar = $oldbiaya - $oldtagihan;
+    //     return $newbiaya - $bayar <= 0 ? 0 : $newbiaya - $bayar;
+    // }
 
-        $c = curl_init();
-        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($c, CURLOPT_URL, $url);
-        $contents = curl_exec($c);
-        curl_close($c);
+    // private function resetPendaftaran (Identitas $identitas, array $tagihan) :void
+    // {
+    //     $identitas->tagihan->update([
+    //         'biaya_pendaftaran' => $identitas->jalur_pendaftaran->biaya_pendaftaran,
+    //         'tagihan_pendaftaran' => $tagihan['pendaftaran'],
+    //         'admin_pendaftaran' => null,
+    //         'lunas_pendaftaran' => $tagihan['pendaftaran'] <= 0 ? true : false,
 
-        $response = json_decode($contents, true);
+    //         'biaya_daftar_ulang' => $identitas->jalur_pendaftaran->biaya_daftar_ulang,
+    //         'tagihan_daftar_ulang' => $tagihan['daftar_ulang'],
+    //         'admin_daftar_ulang' => null,
+    //         'lunas_daftar_ulang' => $tagihan['daftar_ulang'] <= 0 ? true : false,
 
-        if (!$contents && !isset($response['success']) && !$response['success']) {
-            return redirect('/formulir')->withErrors([
-                'alerts' => ['danger' => 'Invalid reCAPTCHA!']
-            ])->withInput($req->toArray());
-        }
-    }
+    //         'biaya_seragam' => $identitas->jalur_pendaftaran->biaya_seragam,
+    //         'tagihan_seragam' => $tagihan['seragam'],
+    //         'admin_seragam' => null,
+    //         'lunas_seragam' => $tagihan['seragam'] <= 0 ? true : false,
+    //     ]);
+    //     $identitas->update([
+    //         'reset' => true,
+    //         'old_status_id' => $identitas->status_id,
+    //         'status_id' => 1,
+    //     ]);
+    // }
 
+    // Landing Page Formulir Pendaftaran
     public function index ()
     {
         return view('pages.pendaftaran', [
@@ -235,6 +393,7 @@ class FormulirController extends Controller
         ]);
     }
 
+    // Admin Tambah Peserta
     public function tambah ()
     {
         return view('admin.pages.forms', [
@@ -247,7 +406,7 @@ class FormulirController extends Controller
                     'variant' => 'primary text-white',
                     'content' => '<i class="fa fa-plus"></i> Tambah Data',
                 ],
-                'inputs' => $this->getMultiFormInputs()
+                'inputs' => static::getMultiFormInputs()
             ],
         ]);
     }
@@ -256,94 +415,77 @@ class FormulirController extends Controller
     {
         $isadmin = $req->user()->level_id ?? 1 !== 1;
         
-        // if (!$isadmin) {
-        //     if (!$req->has('g-recaptcha-response') || !$req->get('g-recaptcha-response')) {
-        //         return back()->withErrors([
-        //             'alerts' => ['error' => 'Invalid reCAPTCHA!']
-        //         ])->withInput($req->toArray());
-        //     }
-    
-        //     $rawurl = 'https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s&remoteip=%s';
-        //     $token = $req->get('g-recaptcha-response');
-        //     $secretkey = env('RECAPTCHA_SECRET_KEY');
-        //     $clientip = $req->ip();
-            
-        //     $url = sprintf($rawurl, $secretkey, $token, $clientip);
-        //     // $result = file_get_contents($url);
-        //     // $response = json_decode($result, true);
-    
-        //     $c = curl_init();
-        //     curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
-        //     curl_setopt($c, CURLOPT_URL, $url);
-        //     $contents = curl_exec($c);
-        //     curl_close($c);
-    
-        //     $response = json_decode($contents, true);
-    
-        //     if (!$contents && !isset($response['success']) && !$response['success']) {
-        //         return back()->withErrors([
-        //             'alerts' => ['error' => 'Invalid reCAPTCHA!']
-        //         ])->withInput($req->toArray());
-        //     }
-        // }
-        
-        $creden = $req->validate(Identitas::getValidations(
-            $isadmin ? $this->admValidations : $this->myValidations
+        // Initiation Credentials
+        // dd(IdentitasValidation::getValidations(
+        //     $isadmin ? $this->validation_admnames : $this->validation_names
+        // ));
+        $identitas_creden = $req->validate(IdentitasValidation::getValidations(
+            $isadmin ? $this->validation_admnames : $this->validation_names
         ));
-        
+
         try {
-
-            $creden = Identitas::getSubPrestasi($creden);
-            $duscreden = $req->validate(DUSeragam::getValidations($this->duseragamValidations));
-    
-            $onage = Identitas::validateAge($creden['tanggal_lahir']);
-            if (!$onage) {
-                return back()->withErrors([
-                    'alerts' => [$isadmin?'danger':'error' => 'Maaf, umur tidak memenuhi kriteria pendaftaran.']
-                ])->withInput($creden);
-            }
-        
-            $identitas = Identitas::create($creden);
-            $tagihan = Tagihan::create([
-                'biaya_pendaftaran' => $identitas->jalur_pendaftaran->biaya_pendaftaran,
-                'tagihan_pendaftaran' => $identitas->jalur_pendaftaran->biaya_pendaftaran,
-                'biaya_daftar_ulang' => $identitas->jalur_pendaftaran->biaya_daftar_ulang,
-                'tagihan_daftar_ulang' => $identitas->jalur_pendaftaran->biaya_daftar_ulang,
-                'biaya_seragam' => $identitas->jalur_pendaftaran->biaya_seragam,
-                'tagihan_seragam' => $identitas->jalur_pendaftaran->biaya_seragam,
-                'identitas_id' => $identitas->id,
-            ]);
-            $duseragam = DUSeragam::create([
-                'kode' => DUSeragam::getKode(),
-                'identitas_id' => $identitas->id,
-                ...$duscreden
-            ]);
-            $pendaftaran = Pendaftaran::create([
-                'kode' => Pendaftaran::getKode(),
-                'identitas_id' => $identitas->id
-            ]);
-
-            $redir = $isadmin ? '/admin/peserta' : '/';
+            
+            // Queue Database Transaction
+            $id = rand(1000000, 1000000000000);
+            TambahPeserta::dispatch($identitas_creden, $id);
 
             if (!$isadmin) {
-                session([
-                    'pasca_pendaftaran' => true,
-                    'kode' => $pendaftaran->kode ?? '-',
-                    'tagihan' => $tagihan->biaya_pendaftaran
-                ]);
-            }
-            
-            return redirect($redir)->withErrors([
-                'alerts' => ['success' => 'Pendaftaran berhasil.'],
+                Session::put('session_id', $id);
+                $alerts['primary'] = 'Mohon refresh halaman jika kode pendaftaran belum muncul.';
+            } else $alerts['info'] = 'Mohon refresh halaman jika kode pendaftaran belum muncul.';
+
+            $alerts['success'] = 'Pendaftaran berhasil.';
+            $redir_path = $isadmin ? '/admin/peserta' : '/';
+
+            return redirect($redir_path)->withErrors([
+                'alerts' => $alerts
             ]);
-            
-        } catch (\Exception $th) {
+
+        } catch (\Throwable $th) {
             throw $th;
             return back()->withErrors([
                 'alerts' => ['error' => 'Maaf, terjadi kesalahan saat memproses data.']
-            ])->withInput($creden);
-
+            ])->withInput($identitas_creden);
         }
+
+        // try {
+            
+        //     $validations = $isadmin ? $this->admValidations : $this->validations;
+        //     $validations = IdentitasValidation::getValidations($validations);
+        //     $creden = $req->validate($validations);
+        //     $creden = Identitas::getSubPrestasi($creden);
+        //     $onage = Identitas::validateAge($creden['tanggal_lahir']);
+
+        //     if (!$onage) {
+        //         return back()->withErrors([
+        //             'alerts' => [
+        //                 $isadmin?'danger':'error' => 'Maaf, umur tidak memenuhi kriteria pendaftaran.'
+        //             ]
+        //         ])->withInput($creden);
+        //     }
+        
+        //     Bus::batch([
+        //         new TambahPeserta($creden)
+        //     ])->then(function (Batch $batch) {
+        //         session([
+        //             'pasca_pendaftaran' => true,
+        //             'kode' => TambahPeserta::$peserta->pendaftaran->kode,
+        //             'tagihan' => TambahPeserta::$peserta->tagihan->biaya_pendaftaran
+        //         ]);
+        //     })->dispatch();
+        //     $redir = $isadmin ? '/admin/peserta' : '/';
+
+        //     return redirect($redir)->withErrors([
+        //         'alerts' => ['success' => 'Pendaftaran berhasil.'],
+        //     ]);
+            
+        // } catch (\Exception $th) {
+        //     throw $th;
+        //     return back()->withErrors([
+        //         'alerts' => ['error' => 'Maaf, terjadi kesalahan saat memproses data.']
+        //     ])->withInput($creden);
+
+        // }
             
     }
 
@@ -362,113 +504,83 @@ class FormulirController extends Controller
                 ],
                 'inputs' => $this->getMultiFormInputs($identitas)
             ],
-            // 'form' => [
-            //     'action' => '/admin/edit/'.$identitas->id,
-            //     'button' => [
-            //         'variant' => 'warning text-white',
-            //         'content' => '<i class="fa fa-pen"></i> Edit Data',
-            //     ],
-            //     'inputs' => $this->getAdvancedFormInputs($identitas)
-            // ],
         ]);
     }
 
-    private function resetTagihan (Identitas $identitas, $type) :int
-    {
-        $jalur = $identitas->jalur_pendaftaran;
-        $tagihan = $identitas->tagihan;
-        $newbiaya = $jalur["biaya_$type"];
-        $oldbiaya = $tagihan["biaya_$type"];
-        $oldtagihan = $tagihan["tagihan_$type"];
-
-        $bayar = $oldbiaya - $oldtagihan;
-        return $newbiaya - $bayar <= 0 ? 0 : $newbiaya - $bayar;
-    }
-
-    private function resetPendaftaran (Identitas $identitas, array $tagihan) :void
-    {
-        $identitas->tagihan->update([
-            'biaya_pendaftaran' => $identitas->jalur_pendaftaran->biaya_pendaftaran,
-            'tagihan_pendaftaran' => $tagihan['pendaftaran'],
-            'admin_pendaftaran' => null,
-            'lunas_pendaftaran' => $tagihan['pendaftaran'] <= 0 ? true : false,
-
-            'biaya_daftar_ulang' => $identitas->jalur_pendaftaran->biaya_daftar_ulang,
-            'tagihan_daftar_ulang' => $tagihan['daftar_ulang'],
-            'admin_daftar_ulang' => null,
-            'lunas_daftar_ulang' => $tagihan['daftar_ulang'] <= 0 ? true : false,
-
-            'biaya_seragam' => $identitas->jalur_pendaftaran->biaya_seragam,
-            'tagihan_seragam' => $tagihan['seragam'],
-            'admin_seragam' => null,
-            'lunas_seragam' => $tagihan['seragam'] <= 0 ? true : false,
-        ]);
-        $identitas->update([
-            'reset' => true,
-            'old_status_id' => $identitas->status_id,
-            'status_id' => 1,
-        ]);
-    }
-
+    // protected $identitas;
     public function update(Request $req, Identitas $identitas)
     {
-
-        $creden = $req->validate(Identitas::getValidations($this->admValidations));
-        $duscreden = $req->validate(DUSeragam::getValidations($this->duseragamValidations));
-        $creden = Identitas::getSubPrestasi($creden);
+        // Initiation Credentials
+        $identitas_creden = $req->validate(IdentitasValidation::getValidations($this->validation_admnames));
+        $seragam_creden = $req->validate(SeragamValidation::getValidations([
+            'ukuran_olahraga', 'ukuran_wearpack', 'ukuran_almamater'
+        ]));
+        $tagihan_creden = [];
+        $verifikasi_creden = [];
+        $jurusan_creden = [];
         $alerts = [];
 
         try {
-            
-            $jpid = $identitas->jalur_pendaftaran_id;
 
-            if (strtolower($creden['nama_jurusan']) !== strtolower($identitas->nama_jurusan) && $identitas->jurusan) {
-                $identitas->jurusan->delete();
-                if ($creden['jalur_pendaftaran_id'] == $jpid) {
-                    $creden['status_id'] = 1;
+            // Alur Logika Jalur Pendaftaran
+            $identitas_creden = Identitas::getSubPrestasi($identitas_creden);
+            
+            // Parse Nama Jurusan
+            $jurusan = Jurusan::getJurusan($identitas_creden['nama_jurusan']);
+            unset($identitas_creden['nama_jurusan']);
+            
+            // Checking State
+            $pindah_jalur = (int) $identitas_creden['jalur_pendaftaran_id'] !== (int) $identitas->jalur_pendaftaran_id;
+            $pindah_jurusan = strtolower($jurusan->singkatan) !== strtolower($identitas->jurusan->singkatan);
+
+            // Get Jalur Pendaftaran
+            $jalur = DataJalurPendaftaran::getJalurPendaftaran(
+                $identitas_creden['jalur_pendaftaran_id']
+            );
+
+            // Handle Pindah Jalur
+            if ($pindah_jalur || $pindah_jurusan) {
+                
+                // Dispatch Job Reset Tagihan
+                ResetTagihan::dispatchSync($identitas, $jalur);
+
+                // Dispatch Job Reset Verifikasi
+                ResetVerifikasi::dispatchSync($identitas);
+
+                // Jurusan Mocking
+                if ($pindah_jurusan) {
+                    $jurusan_creden = [
+                        'nama' => $jurusan->nama,
+                        'slug' => $jurusan->slug,
+                        'singkatan' => $jurusan->singkatan,
+                    ];
                 }
-                $alerts['warning'] = 'Kode jurusan peserta berubah dan yang lama tidak bisa dipakai lagi.';
+
+                // Identitas Mocking
+                $identitas_creden['status_id'] = 1;
             }
 
-            $identitas->update($creden);
-            $identitas->duseragam->update($duscreden);
+            // Database Transaction
+            if (!empty($jurusan_creden)) $identitas->jurusan->update($jurusan_creden);
+            if (!empty($tagihan_creden)) $identitas->tagihan->update($tagihan_creden);
+            if (!empty($verifikasi_creden)) $identitas->verifikasi->update($verifikasi_creden);
+            $identitas->seragam->update($seragam_creden);
+            $identitas->update($identitas_creden);
+
+            $alerts['success'] = ' Berhasil mengubah data.';
+            $redir_path = session('oldpath', '/admin/peserta');
             
-            $newbayar = [
-                'pendaftaran' => Pembayaran::getBayar($identitas->tagihan->pembayarans, 'pendaftaran'),
-                'daftar_ulang' => Pembayaran::getBayar($identitas->tagihan->pembayarans, 'daftar_ulang'),
-                'seragam' => Pembayaran::getBayar($identitas->tagihan->pembayarans, 'seragam'),
-            ];
-
-            $newtagihan = [
-                'pendaftaran' => $this->resetTagihan($identitas, 'pendaftaran') - $newbayar['pendaftaran'],
-                'daftar_ulang' => $this->resetTagihan($identitas, 'daftar_ulang') - $newbayar['daftar_ulang'],
-                'seragam' => $this->resetTagihan($identitas, 'seragam') - $newbayar['seragam'],
-            ];
-            
-            foreach ($newtagihan as $type => $item) $newtagihan[$type] = $item <= 0 ? 0 : $item;
-
-            if ($identitas->jalur_pendaftaran_id != $jpid) {
-                $this->resetPendaftaran($identitas, $newtagihan);
-                $alerts['warning'] = 'Data peserta kembali semula pasca pendaftaran karena perubahan jalur pendaftaran.';
-            }
-
-            $hasoldpath = $req->session()->has('oldpath');
-            $redir = $hasoldpath ? $req->session()->get('oldpath') : 'admin/peserta';
-
-            return redirect("/$redir")->withErrors([
-                'alerts' => [
-                    'success' => 'Data peserta berhasil diubah.',
-                    ...$alerts
-                ]
+            return redirect()->intended($redir_path)->withErrors([
+                'alerts' => $alerts
             ]);
             
         } catch (\Throwable $th) {
             throw $th;
             return back()->withErrors([
                 'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat memperbarui data. Mohon hubungi penyedia layanan untuk pengembangan.']
-            ])->withInput($creden);
+            ])->withInput($req->toArray());
         }
 
     }
-    
+
 }

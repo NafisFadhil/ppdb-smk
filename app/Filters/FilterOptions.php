@@ -33,7 +33,9 @@ trait FilterOptions
             'tanggal',
             'bulan',
             'tahun',
+            'jenis_kelamin',
             'perPage',
+            'page',
         ];
 	}
 
@@ -57,7 +59,7 @@ trait FilterOptions
             ],
             'jurusan' => [
                 'wheres' => [
-                    'where' => ['nama_jurusan'],
+                    'whereRelation' => ['jurusan', 'singkatan'],
                 ]
             ],
             'jalur' => [
@@ -65,14 +67,22 @@ trait FilterOptions
                     'where' => ['jalur_pendaftaran_id'],
                 ]
             ],
+            'jenis_kelamin' => [
+                'wheres' => [
+                    'where' => ['jenis_kelamin_id'],
+                ]
+            ],
             'search' => [
                 'variant' => 'midlike',
                 'wheres' => [
                     'where' => ['nama_lengkap', 'LIKE'],
                     'orWhere' => ['asal_sekolah', 'LIKE'],
+                    'orWhereRelation' => ['pendaftaran', 'kode', 'LIKE'],
+                    'orWhereRelation' => ['jurusan', 'kode', 'LIKE'],
                 ]
             ],
             'perPage' => ['wheres' => ['perPage' => []]],
+            'page' => ['wheres' => ['page' => []]],
         ], $usrfilter);
     }
 	

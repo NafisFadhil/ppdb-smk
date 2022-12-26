@@ -2,74 +2,146 @@
 
 namespace App\Http\Controllers\Verifikasi;
 
+use App\Filters\Filter;
+use App\Helpers\ModelHelper;
 use App\Http\Controllers\Controller;
+use App\Models\DataJalurPendaftaran;
 use App\Models\Identitas;
+use App\Models\Jurusan;
 use App\Models\Pembayaran;
+use App\Models\Seragam;
+use App\Validations\PembayaranValidation;
+use App\Validations\SeragamValidation;
+use App\Validations\TagihanValidation;
 use Illuminate\Http\Request;
 
 class DuseragamController extends Controller
 {
-    public function index()
+    private function getModel() {
+        return Identitas::with([
+            'daftar_ulang', 'status', 'jenis_kelamin', 'jurusan', 'tagihan', 'verifikasi'
+        ])->whereRelation('status', 'level', 'daftar ulang & seragam');
+    }
+    
+    public function index(Request $req)
 	{
         session(['oldpath' => request()->path()]);
-        return view('admin.pages.verifikasi.duseragam', [
+        $data = Filter::filter($this->getModel(), $req);
+
+        return view('admin.pages.table', [
             'page' => ['title' => 'Verifikasi DU & Seragam'],
-            'peserta' => Identitas::whereRelation('status', 'level', 'Daftar Ulang & Seragam')
-                ->with(['pendaftaran', 'tagihan', 'status'])->paginate(),
+            'table' => 'verifikasi-duseragam',
+            'peserta' => $data,
+            'options' => [
+                'seragam_olahraga' => Seragam::getOptions('olahraga'),
+                'seragam_wearpack' => Seragam::getOptions('wearpack'),
+                'seragam_almamater' => Seragam::getOptions('almamater'),
+            ],
+            'filters' => [
+                [
+                    ['type' => 'search', 'name' => 'search', 'placeholder' => 'Cari peserta...'],
+                ],
+                [
+                    ['type' => 'select', 'name' => 'jurusan', 'options' => Jurusan::getOptions()],
+                    ['type' => 'select', 'name' => 'jalur', 'options' => DataJalurPendaftaran::getAdvancedOptions()],
+                ],
+                [
+                    ['type' => 'select', 'name' => 'tanggal', 'options' => Filter::getTanggalOptions()],
+                    ['type' => 'select', 'name' => 'bulan', 'options' => Filter::getBulanOptions()],
+                    ['type' => 'select', 'name' => 'tahun', 'options' => Filter::getTahunOptions()],
+
+                    ['type' => 'select', 'name' => 'perPage', 'options' => [
+                        ['label' => '-- Per Page --', 'value' => ''],
+                        5,10,15,20,25,50,100
+                    ]],
+                ]
+            ]
         ]);
 	}
 
     public function biaya(Request $req, Identitas $identitas)
     {
-        $creden = $req->validate([
-            'biaya_daftar_ulang' => 'required',
-            'biaya_seragam' => 'required',
-            'admin_duseragam' => 'required',
+        // Initiation Credentials
+        $tagihan_creden = $req->validate(TagihanValidation::getValidations([
+            'biaya_daftar_ulang', 'biaya_seragam'
+        ]));
+        $seragam_creden = $req->validate(SeragamValidation::getValidations([
+            'ukuran_olahraga', 'ukuran_wearpack', 'ukuran_almamater'
+        ]));
+        $keterangan_creden = $req->validate([
+            'keterangan' => 'nullable|string'
         ]);
-        $duscreden = $req->validate([
-            'keterangan' => 'nullable',
-        ]);
+        $daftar_ulang_creden = [];
+        $identitas_creden = [];
+        $alerts = [];
 
         try {
 
-            $bayars = [
-                'daftar_ulang' => Pembayaran::getBayar($identitas->tagihan->pembayarans, 'daftar_ulang'),
-                'seragam' => Pembayaran::getBayar($identitas->tagihan->pembayarans, 'seragam'),
-            ];
+            // Alur Logika Tagihan Daftar Ulang
+            $biaya_du = $tagihan_creden['biaya_daftar_ulang'];
+            $bayar_du = ModelHelper::getBayar($identitas->tagihan->pembayaran, 'daftar_ulang');
+            $kurang_du = $biaya_du - $bayar_du;
+            $lunas_du = $kurang_du <= 0;
+
+            // Mock Tagihan Daftar Ulang
+            $tagihan_creden['tagihan_daftar_ulang'] = $kurang_du;
+            $tagihan_creden['lunas_daftar_ulang'] = $lunas_du;
+            $tagihan_creden['admin_daftar_ulang_id'] = $req->user()->id;
+
+            if ($lunas_du) {
+                $tagihan_creden['tanggal_lunas_daftar_ulang'] = now();
+                $alerts['info'] = 'Pembayaran daftar ulang lunas.';
+            }
+
+
+            // Alur Logika Tagihan Seragam
+            $biaya_seragam = $tagihan_creden['biaya_seragam'];
+            $bayar_seragam = ModelHelper::getBayar($identitas->tagihan->pembayaran, 'seragam');
+            $kurang_seragam = $biaya_seragam - $bayar_seragam;
+            $lunas_seragam = $kurang_seragam <= 0;
+
+            // Mock Tagihan Seragam
+            $tagihan_creden['tagihan_seragam'] = $kurang_seragam;
+            $tagihan_creden['lunas_seragam'] = $lunas_seragam;
+            $tagihan_creden['admin_seragam_id'] = $req->user()->id;
+
+            if ($lunas_seragam) {
+                $tagihan_creden['tanggal_lunas_seragam'] = now();
+                $alerts['info'] = 'Pembayaran seragam lunas.';
+            }
+
+            // Mock Identitas
+            $lunas = $lunas_du && $lunas_seragam;
+            $identitas_creden['status_id'] = $identitas->status_id + ($lunas ? 2 : 1);
+            if ($lunas) {
+                $alerts['info'] = 'Pembayaran daftar ulang dan seragam lunas.';
+            }
+
+            // Mock Keterangan
+            $daftar_ulang_creden['keterangan'] = $keterangan_creden['keterangan'];
+            $seragam_creden['keterangan'] = $keterangan_creden['keterangan'];
+
+            // Queue Database Transaction
+            dispatch_sync(function () use (
+                $tagihan_creden, $seragam_creden, $daftar_ulang_creden,
+                $identitas_creden, $identitas
+            ) {
+                $identitas->tagihan->update($tagihan_creden);
+                $identitas->daftar_ulang->update($daftar_ulang_creden);
+                $identitas->seragam->update($seragam_creden);
+                if (!empty($identitas_creden)) {
+                    $identitas->update($identitas_creden);
+                }
+            });
+
+            $alerts['success'] = 'Input tagihan biaya du & seragam berhasil.';
             
-            $tagihans = [
-                'daftar_ulang' => $creden['biaya_daftar_ulang'] - $bayars['daftar_ulang'],
-                'seragam' => $creden['biaya_seragam'] - $bayars['seragam'],
-            ]; foreach ($tagihans as $type => $value) $tagihans[$type] = $value <= 0 ? 0 : $value;
+            return back()->withErrors([ 'alerts' => $alerts ]);
 
-            $identitas->tagihan->update([
-                ...\Illuminate\Support\Arr::except($creden, 'admin_duseragam'),
-                'tagihan_daftar_ulang' => $tagihans['daftar_ulang'],
-                'lunas_daftar_ulang' => $tagihans['daftar_ulang']<=0,
-                'tagihan_seragam' => $tagihans['seragam'],
-                'lunas_seragam' => $tagihans['seragam']<=0,
-                'admin_daftar_ulang' => $creden['admin_duseragam'],
-                'admin_seragam' => $creden['admin_duseragam'],
-            ]);
-            $identitas->duseragam->update($duscreden);
-
-            if ($identitas->reset) {
-                $identitas->update([
-                    'status_id' => $tagihans['daftar_ulang']<=0&&$tagihans['seragam']<=0 ? 6 : $identitas->status_id+1,
-                    'reset' => false,
-                    'old_status_id' => 0
-                ]);
-                $alerts['warning'] = 'Perubahan jalur pendaftaran berhasil diselesaikan. Status siswa disesuaikan dengan status lama.';
-            } else $identitas->update(['status_id' => $tagihans['daftar_ulang']<=0&&$tagihans['seragam']<=0 ? 6 : $identitas->status_id+1]);
-
-            return redirect('/admin/verifikasi/duseragam')->withErrors([
-                'alerts' => ['success' => 'Verifikasi biaya daftar ulang dan seragam berhasil.']
-            ]);
-            
         } catch (\Throwable $th) {
             throw $th;
             return back()->withErrors([
-                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat memverifikasi biaya daftar ulang dan seragam.']
+                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat input tagihan du & seragam.']
             ]);
             
         }
@@ -77,39 +149,55 @@ class DuseragamController extends Controller
 
 	public function pembayaran(Request $req, $type, Identitas $identitas)
 	{
+        // Initiation Credentials
+        $pembayaran_creden = $req->validate(PembayaranValidation::getValidations([
+            'bayar'
+        ]));
+        $tagihan_creden = [];
+        $identitas_creden = [];
+        $alerts = [];
+        
+        // Type String Formatting
         $type = str_replace('-', '_', $type);
-        $xtype = str_replace('_', ' ', $type);
-        $invtype = $type === 'seragam' ? 'daftar_ulang' : $xtype;
-        $creden = $req->validate([
-            'bayar' => 'required',
-            'admin' => 'required',
-        ]);
         
         try {
+
+            // Alur Logika Pembayaran
+            $bayar = $pembayaran_creden['bayar'];
+            $kurang = $identitas->tagihan['tagihan_'.$type] - $bayar;
+            $lunas = $kurang <= 0;
             
-            $kurang = $identitas->tagihan["tagihan_$type"] - $creden['bayar'];
-            $calc = [
-                'kurang' => $kurang <= 0 ? 0 : $kurang,
-                'lunas' => $kurang <= 0
-            ];
-
-            $pembayaran = Pembayaran::create([
-                'type' => $type,
-                'kurang' => $calc['kurang'],
-                'tagihan_id' => $identitas->tagihan->id,
-                ...$creden,
-            ]);
-            $tagihan = $identitas->tagihan->update([
-                "tagihan_$type" => $calc['kurang'],
-                "lunas_$type" => $calc['lunas']
-            ]);
-
-            if ($calc['lunas'] && $identitas->tagihan["lunas_$invtype"]) {
-                $identitas->update(['status_id' => $identitas->status_id+1]);
+            // Mock Pembayaran
+            $pembayaran_creden['type'] = $type;
+            $pembayaran_creden['kurang'] = $kurang;
+            $pembayaran_creden['admin_id'] = $req->user()->id;
+            $pembayaran_creden['tagihan_id'] = $identitas->tagihan->id;
+            
+            // Mock Tagihan
+            $tagihan_creden['lunas_'.$type] = $lunas;
+            $tagihan_creden['tagihan_'.$type] = $kurang;
+            
+            if ($lunas) {
+                $tagihan_creden['tanggal_lunas_'.$type] = now();
+                $alerts['info'] = 'Pembayaran lunas.';
             }
 
-            return redirect('/admin/verifikasi/duseragam')->withErrors([
-                'alerts' => ['success' => "Input pembayaran $xtype berhasil."]
+            // Queue Database Transaction
+            dispatch_sync(function () use (
+                $pembayaran_creden, $tagihan_creden, $identitas_creden,
+                $identitas
+            ) {
+                $identitas->tagihan->pembayarans()->create($pembayaran_creden);
+                $identitas->tagihan->update($tagihan_creden);
+                if (!empty($identitas_creden)) {
+                    $identitas->update($identitas_creden);
+                }
+            });
+            
+            $alerts['success'] = 'Input pembayaran berhasil.';
+
+            return back()->withErrors([
+                'alerts' => $alerts
             ]);
             
         } catch (\Throwable $th) {
@@ -121,25 +209,46 @@ class DuseragamController extends Controller
         }
 	}
     
-	public function verifikasi(Request $req, Identitas $identitas)
+	public function verifikasi(Request $req, $type, Identitas $identitas)
 	{
-        $creden = $req->validate([
-            'admin_verifikasi' => 'required',
-        ]);
+        // Initiation Credentials
+        $verifikasi_creden = [];
+        $identitas_creden = [];
+        $alerts = [];
+
+        // Type String Formatting
+        $type = str_replace('-', '_', $type);
+        $invert_type = $type == 'seragam' ? 'daftar_ulang' : 'seragam';
 
         try {
             
-            $identitas->duseragam->update([
-                ...$creden,
-                'verifikasi' => true,
-            ]);
-            $identitas->update([
-                'status_id' => $identitas->verifikasi ? $identitas->status_id+2 : $identitas->status_id+1
-            ]);
+            // Cross Checking
+            $lulus = $identitas->verifikasi->$invert_type && true;
             
-            return redirect('/admin/verifikasi/duseragam')->withErrors([
-                'alerts' => ['success' => 'Siswa berhasil diverifikasi.']
-            ]);
+            // Mock Verifikasi
+            $verifikasi_creden[$type] = true;
+            $verifikasi_creden["tanggal_${type}"] = now();
+            $verifikasi_creden["admin_${type}_id"] = $req->user()->id;
+
+            // Mock Identitas
+            if ($lulus) {
+                $identitas_creden['status_id'] = $identitas->status_id + 1;
+                $alerts['info'] = 'Verifikasi daftar ulang dan seragam lengkap.';
+            }
+
+            // Queue Database Transaction
+            dispatch_sync(function () use (
+                $verifikasi_creden, $identitas_creden, $identitas
+            ) {
+                $identitas->verifikasi->update($verifikasi_creden);
+                if (!empty($identitas_creden)) {
+                    $identitas->update($identitas_creden);
+                }
+            });
+
+            $alerts['success'] = 'Verifikasi berhasil.';
+
+            return back()->withErrors([ 'alerts' => $alerts ]);
             
         } catch (\Throwable $th) {
             throw $th;

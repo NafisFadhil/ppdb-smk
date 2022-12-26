@@ -22,8 +22,8 @@ class Filter
 	public static function filter (
 		Model|Builder $model,
 		Request $request,
+		array|null $names = null,
 		array $filters = [],
-		array|null $names = null
 	) :LengthAwarePaginator
 	{
 		static::$filters = static::getFilters($filters, $names); // Replace recursive
@@ -90,9 +90,10 @@ class Filter
 	 */
 	protected static function insertWhereValue (array $conds, string|null $value = null) :array
 	{
-		if (count($conds) >= 3) {
-			array_splice($conds, 2, 0, $value);
-		} else $conds[] = $value;
+		// if (count($conds) >= 3) {
+		// 	array_splice($conds, 2, 0, $value);
+		// } else 
+		$conds[] = $value;
 
 		return $conds;
 	}

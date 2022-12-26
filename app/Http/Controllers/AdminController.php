@@ -3,124 +3,124 @@
 namespace App\Http\Controllers;
 
 use App\Filters\Filter;
+use App\Helpers\ModelHelper;
 use App\Helpers\NumberHelper;
 use App\Helpers\StringHelper;
+use App\Models\DataJalurPendaftaran;
 use App\Models\DataJurusan;
 use App\Models\Identitas;
 use App\Models\Jurusan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
     
+    private function getModel() {
+        return Identitas::latest()->with([
+            'pendaftaran', 'status', 'jenis_kelamin', 'jurusan'
+        ]);
+    }
+    
     public function index()
     {
+        $data = Identitas::with([
+            'jurusan', 'verifikasi', 'status'
+        ])->select(['id'])->get();
+
         return view('admin.pages.index', [
             'page' => ['title' => 'Dashboard Admin PPDB'],
-            'peserta' => Identitas::select('status_id', 'nama_jurusan')->get(),
-            'jurusanCounters' => Jurusan::getWidget(Identitas::select('nama_jurusan')->has('jurusan')->get())
+            'siswa' => $data,
+            'data_jurusans' => Jurusan::getJurusans()
         ]);
     }
 
     public function peserta(Request $req)
     {
         session(['oldpath' => request()->path()]);
+        $data = Filter::filter($this->getModel(), $req);
 
-        $data = Filter::filter(Identitas::latest()->with(['pendaftaran', 'user', 'status']), $req);
-        // dd($data);
-
-        return view('admin.pages.peserta', [
+        return view('admin.pages.table', [
             'page' => ['title' => 'Daftar Peserta PPDB'],
-            'peserta' => $data
+            'peserta' => $data,
+            'table' => 'peserta',
+            'filters' => [
+                [
+                    ['type' => 'search', 'name' => 'search', 'placeholder' => 'Cari peserta...'],
+                ],
+                [
+                    ['type' => 'select', 'name' => 'jurusan', 'options' => Jurusan::getOptions()],
+                    ['type' => 'select', 'name' => 'jalur', 'options' => DataJalurPendaftaran::getAdvancedOptions()],
+                ],
+                [
+                    ['type' => 'select', 'name' => 'tanggal', 'options' => Filter::getTanggalOptions()],
+                    ['type' => 'select', 'name' => 'bulan', 'options' => Filter::getBulanOptions()],
+                    ['type' => 'select', 'name' => 'tahun', 'options' => Filter::getTahunOptions()],
+
+                    ['type' => 'select', 'name' => 'perPage', 'options' => [
+                        ['label' => '-- Per Page --', 'value' => ''],
+                        5,10,15,20,25,50,100
+                    ]],
+                ]
+            ]
         ]);
     }
     
     public function tagihan(Identitas $identitas)
     {
-        $tagihan = $identitas->tagihan;
-
         return view('admin.pages.tagihan', [
             'page' => ['title' => 'Detail Data Tagihan'],
-            'forms' => [
-                [
-                    [
-                        'title' => 'Data Siswa',
-                        'inputs' => [
-                            ['attr' => 'disabled', 'name' => 'nama_lengkap', 'value' => $identitas->nama_lengkap],
-                            ['attr' => 'disabled', 'name' => 'kode', 'value' => $identitas->jurusan->kode ?? $identitas->pendaftaran->kode ?? '-'],
-                            ['attr' => 'disabled', 'name' => 'jalur_pendaftaran', 'value' => \App\Helpers\ModelHelper::getJalur($identitas->jalur_pendaftaran)],
-                            ['attr' => 'disabled', 'name' => 'status', 'value' => strtoupper($identitas->status->level)],
-                        ]
-                    ],
-                    [
-                        'title' => 'Pendaftaran',
-                        'inputs' => [
-                            ['attr' => 'disabled', 'name' => 'biaya_pendaftaran', 'value' => NumberHelper::toRupiah($tagihan->biaya_pendaftaran)],
-                            ['attr' => 'disabled', 'name' => 'tagihan_pendaftaran', 'value' => NumberHelper::toRupiah($tagihan->tagihan_pendaftaran)],
-                            ['attr' => 'disabled', 'name' => 'admin_pendaftaran', 'value' => $tagihan->admin_pendaftaran ?? '(Belum Ada)'],
-                            ['attr' => 'disabled', 'name' => 'lunas_pendaftaran', 'value' => $tagihan->lunas_pendaftaran ? 'Lunas' : 'Belum Lunas'],
-                        ]
-                    ],
-                ],
-                [
-                    [
-                        'title' => 'Daftar Ulang',
-                        'inputs' => [
-                            ['attr' => 'disabled', 'name' => 'biaya_daftar_ulang', 'value' => NumberHelper::toRupiah($tagihan->biaya_daftar_ulang)],
-                            ['attr' => 'disabled', 'name' => 'tagihan_daftar_ulang', 'value' => NumberHelper::toRupiah($tagihan->tagihan_daftar_ulang)],
-                            ['attr' => 'disabled', 'name' => 'admin_daftar_ulang', 'value' => $tagihan->admin_daftar_ulang ?? '(Belum Ada)'],
-                            ['attr' => 'disabled', 'name' => 'lunas_daftar_ulang', 'value' => $tagihan->lunas_daftar_ulang ? 'Lunas' : 'Belum Lunas'],
-                        ]
-                    ],
-                    [
-                        'title' => 'Seragam',
-                        'inputs' => [
-                            ['attr' => 'disabled', 'name' => 'biaya_seragam', 'value' => NumberHelper::toRupiah($tagihan->biaya_seragam)],
-                            ['attr' => 'disabled', 'name' => 'tagihan_seragam', 'value' => NumberHelper::toRupiah($tagihan->tagihan_seragam)],
-                            ['attr' => 'disabled', 'name' => 'admin_seragam', 'value' => $tagihan->admin_seragam ?? '(Belum Ada)'],
-                            ['attr' => 'disabled', 'name' => 'lunas_seragam', 'value' => $tagihan->lunas_seragam ? 'Lunas' : 'Belum Lunas'],
-                        ]
-                    ],
-                ],
-            ],
+            'data' => $identitas
+            // 'forms' => [
+            //     [
+            //         [
+            //             'title' => 'Data Siswa',
+            //             'inputs' => [
+            //                 ['attr' => 'disabled', 'name' => 'nama_lengkap', 'value' => $identitas->nama_lengkap],
+            //                 ['attr' => 'disabled', 'name' => 'kode', 'value' => $identitas->jurusan->kode ?? $identitas->pendaftaran->kode ?? '-'],
+            //                 ['attr' => 'disabled', 'name' => 'jalur_pendaftaran', 'value' => \App\Helpers\ModelHelper::getJalur($identitas->jalur_pendaftaran)],
+            //                 ['attr' => 'disabled', 'name' => 'status', 'value' => strtoupper($identitas->status->level)],
+            //             ]
+            //         ],
+            //         [
+            //             'title' => 'Pendaftaran',
+            //             'inputs' => [
+            //                 ['attr' => 'disabled', 'name' => 'biaya_pendaftaran', 'value' => NumberHelper::toRupiah($tagihan->biaya_pendaftaran)],
+            //                 ['attr' => 'disabled', 'name' => 'tagihan_pendaftaran', 'value' => NumberHelper::toRupiah($tagihan->tagihan_pendaftaran)],
+            //                 ['attr' => 'disabled', 'name' => 'admin_pendaftaran', 'value' => $tagihan->admin_pendaftaran->name ?? $tagihan->admin_pendaftaran->username ?? '-'],
+            //                 ['attr' => 'disabled', 'name' => 'status_pendaftaran', 'value' => ModelHelper::getStatusBayar($identitas->tagihan, 'pendaftaran')],
+            //             ]
+            //         ],
+            //     ],
+            //     [
+            //         [
+            //             'title' => 'Daftar Ulang',
+            //             'inputs' => [
+            //                 ['attr' => 'disabled', 'name' => 'biaya_daftar_ulang', 'value' => NumberHelper::toRupiah($tagihan->biaya_daftar_ulang)],
+            //                 ['attr' => 'disabled', 'name' => 'tagihan_daftar_ulang', 'value' => NumberHelper::toRupiah($tagihan->tagihan_daftar_ulang)],
+            //                 ['attr' => 'disabled', 'name' => 'admin_daftar_ulang', 'value' => $tagihan->admin_daftar_ulang->name ?? $tagihan->admin_daftar_ulang->username ?? '-'],
+            //                 ['attr' => 'disabled', 'name' => 'status_daftar_ulang', 'value' => ModelHelper::getStatusBayar($identitas->tagihan, 'daftar_ulang')],
+            //             ]
+            //         ],
+            //         [
+            //             'title' => 'Seragam',
+            //             'inputs' => [
+            //                 ['attr' => 'disabled', 'name' => 'biaya_seragam', 'value' => NumberHelper::toRupiah($tagihan->biaya_seragam)],
+            //                 ['attr' => 'disabled', 'name' => 'tagihan_seragam', 'value' => NumberHelper::toRupiah($tagihan->tagihan_seragam)],
+            //                 ['attr' => 'disabled', 'name' => 'admin_seragam', 'value' => $tagihan->admin_seragam->name ?? $tagihan->admin_seragam->username ?? '-'],
+            //                 ['attr' => 'disabled', 'name' => 'status_seragam', 'value' => ModelHelper::getStatusBayar($identitas->tagihan, 'seragam')],
+            //             ]
+            //         ],
+            //     ],
+            // ],
         ]);
     }
 
     public function pembayaran (Identitas $identitas)
     {
-        $tagihan = $identitas->tagihan;
-        $pembayarans = $tagihan->pembayarans;
-        $type = request('type') ?? null;
-        $iter = 0; $cards = [];
-        foreach ($pembayarans as $row) {
-            if ($type !== null && $row->type !== $type) continue;
-            $iter++;
-            
-            $cards[] = [
-                'title' => 'Pembayaran ' . $iter . ' ('  . StringHelper::toTitle($row->type) . ')',
-                'inputs' => [
-                    ['attr' => 'disabled', 'name' => 'bayar', 'value' => NumberHelper::toRupiah($row->bayar)],
-                    ['attr' => 'disabled', 'name' => 'kurang', 'value' => NumberHelper::toRupiah($row->kurang)],
-                    ['attr' => 'disabled', 'name' => 'status', 'value' => $row->kurang === 0 ? 'Lunas' : 'Belum Lunas'],
-                    ['attr' => 'disabled', 'name' => 'admin', 'value' => $row->admin],
-                ]
-            ];
-        }
-
         return view('admin.pages.pembayaran', [
             'page' => ['title' => 'Detail Pembayaran Siswa'],
-            'forms' => [
-                [
-                    'title' => 'Data Siswa',
-                    'inputs' => [
-                        ['attr' => 'disabled', 'name' => 'nama_lengkap', 'value' => NumberHelper::toRupiah($tagihan->biaya_pendaftaran)],
-                        ['attr' => 'disabled', 'name' => 'kode_jurusan', 'value' => $identitas->jurusan->kode ?? '-'],
-                        ['attr' => 'disabled', 'name' => 'jalur_pendaftaran', 'value' => \App\Helpers\ModelHelper::getJalur($identitas->jalur_pendaftaran)],
-                        ['attr' => 'disabled', 'name' => 'status', 'value' => $identitas->status->level],
-                    ]
-                ],
-                ...$cards
-            ],
+            'data' => $identitas
         ]);
     }
 

@@ -11,10 +11,10 @@ class ConfigHelper
 
 	public static function init()
 	{
-		if (isset(self::$configs)) {
-			return self::$configs;
+		if (isset(static::$configs)) {
+			return static::$configs;
 		} else {
-			return self::$configs = self::parse(ConfigModel::all()->toArray());
+			return static::$configs = static::parse(ConfigModel::all()->toArray());
 		}
 	}
 
@@ -29,13 +29,13 @@ class ConfigHelper
 
 	public static function get(string $key)
 	{
-		self::init();
-		return array_key_exists($key, self::$configs) ? self::$configs[$key] : null;
+		static::init();
+		return array_key_exists($key, static::$configs) ? static::$configs[$key] : null;
 	}
 
 	public static function update(string $key, $value)
 	{
-		self::init();
+		static::init();
 		return ConfigModel::where('key', $key)->update(['value' => $value]);
 	}
 	

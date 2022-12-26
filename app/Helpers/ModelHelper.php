@@ -2,6 +2,11 @@
 
 namespace App\Helpers;
 
+use App\Models\DataJenisKelamin;
+use App\Models\DataJurusan;
+use App\Models\Jurusan;
+use App\Models\Seragam;
+use App\Models\Status;
 use DateTime;
 
 // use App\Models\Pembayaran;
@@ -31,9 +36,19 @@ class ModelHelper
 	public static function getJalur($jalur)
 	{
 		$str = $jalur->jalur;
-		if (isset($jalur->subjalur1)) $str .= ' ' . $jalur->subjalur1;
+		if (isset($jalur->subjalur)) $str .= ' ' . $jalur->subjalur;
 		if (isset($jalur->subjalur2)) $str .= ' ' . $jalur->subjalur2;
 		return strtoupper($str);
+	}
+
+	public static function getJurusan(string $value, string|null $key = 'singkatan')
+	{
+		return Jurusan::getJurusan($value, $key);
+	}
+
+	public static function getJenisKelamin($id)
+	{
+		return DataJenisKelamin::getJenisKelamin(intval($id));
 	}
 
 	public static function getStatusBayar($tagihan, $type)
@@ -48,13 +63,19 @@ class ModelHelper
 		} else return 'Kurang ' . NumberHelper::toRupiah($kurang);
 	}
 
-	public static function getBayar ($pembayarans, $type)
+	public static function getBayar ($pembayarans = [], $type)
     {
+		if (empty($pembayarans)) return 0;
         $bayar = 0;
         foreach ($pembayarans as $pembayaran) {
-            if ($pembayaran['type'] === $type) $bayar += $pembayaran['bayar'];
+            if ($pembayaran['type'] === $type) $bayar += $pembayaran['bayar'] ?? 0;
         } return $bayar;
     }
+
+	public static function getStatus (mixed $value, string $key = 'id')
+	{
+		return Status::getStatus($value, $key);
+	}
 
 	public static function getTanggalTerakhirBayar($pembayarans, $type)
 	{
@@ -68,27 +89,64 @@ class ModelHelper
 		} return null;
 	}
 
-	public static function formatTanggal($tanggal)
+	public static function formatTanggal($tanggal = null)
 	{
 		$date = new DateTime($tanggal);
 		return date_format($date, 'd-m-Y');
+	}
+
+	public static function formatFullTanggal($tanggal = null)
+	{
+		$date = new DateTime($tanggal);
+		return date_format($date, 'D F Y');
+	}
+
+	public static function getUkuranSeragam($seragam)
+	{
+		$results = []; $types = ['olahraga', 'wearpack', 'almamater'];
+		$iter = 1;
+
+		foreach ($types as $type) {
+			$results[] = $iter++ . '. '. ucfirst($type) . ': ' . $seragam['ukuran_'.$type];
+		}
+		return implode('<br>', $results);
+	}
+	
+	public static function getNominalBayar($pembayarans, $type)
+	{
+		$bayars = []; $iter = 1;
+		foreach ($pembayarans as $pembayaran) {
+			if ($pembayaran['type'] === $type) {
+				$bayars[] = $iter++ . '. ' . NumberHelper::toRupiah($pembayaran->bayar);
+			}
+		}
+		return implode('<br/>', $bayars);
 	}
 
 	public static function getAdminBayar($pembayarans, $type)
 	{
 		$admin = []; $iter = 1;
 		foreach ($pembayarans as $pembayaran) {
-			if ($pembayaran['type'] === $type) $admin[] = $iter++ . '. ' . $pembayaran['admin'];
+			$name = $pembayaran->admin->name ?? $pembayaran->admin->username ?? '';
+			if ($pembayaran['type'] === $type) {
+				// $str_lunas = $pembayaran->kurang <= 0 ? ' (Lunas)' : '';
+				$str_lunas = '';
+				$admin[] = $iter++ . ".${name}${str_lunas}";
+			}
+		}
+		return implode('<br/>', $admin);
+	}
+
+	public static function getTanggalBayar($pembayarans, $type)
+	{
+		$admin = []; $iter = 1;
+		foreach ($pembayarans as $pembayaran) {
+			if ($pembayaran['type'] === $type) {
+				// $str_lunas = $pembayaran->kurang <= 0 ? ' (Lunas)' : '';
+				$str_lunas = '';
+				$admin[] = $iter++.'. '.static::formatTanggal($pembayaran['created_at']).$str_lunas;
+			}
 		} return implode('<br/>', $admin);
 	}
 
-	public static function getValidations(array $names, array $validations)
-	{
-		$result = [];
-		foreach ($names as $key) {
-			$result[$key] = $validations[$key] ?? '';
-		}
-		return $result;
-	}
-	
 }

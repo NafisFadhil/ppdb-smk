@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('user_levels', function (Blueprint $table) {
             $table->id();
+            $table->string('label');
             $table->string('name')->unique();
             $table->string('desc');
-            // $table->timestamps();
         });
     }
 

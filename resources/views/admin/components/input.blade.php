@@ -74,7 +74,7 @@ $error = isset($errors) && $errors->has($input['name']);
 					$id = $input['id'] . rand(1, 99999);
 					$checked = $input['value'] == $value || old($input['name']) == $value;
 					$checked = $checked || (
-						$input['name'] === 'jalur_pendaftaran_id' && $input['value']??old($input['name'])??0 > 3 && $value == 3
+						$input['name'] === 'jalur_pendaftaran_id' && ($input['value']??old($input['name'])??0) > 3 && $value == 3
 					);
 				?>
 					<div class="form-check d-inline-block mr-2">

@@ -122,13 +122,13 @@ $inputs = [
 			],
 			[
 				'name' => 'jenis_kelamin',
-				'value' => $row->jenis_kelamin ?? '',
+				'value' => ModelHelper::getJenisKelamin($row->jenis_kelamin_id) ?? '',
 				'attr' => 'disabled'
 			],
 			[
 				'name' => 'nama_jurusan',
 				'label' => 'Jurusan',
-				'value' => StringHelper::toCapital($row->nama_jurusan ?? ''),
+				'value' => StringHelper::toCapital($row->jurusan->singkatan ?? ''),
 				'attr' => 'disabled'
 			],
 			[
@@ -197,9 +197,9 @@ $inputs = [
 								<td>{{ $row->jurusan->kode ?? '-' }}</td>
 								<td>{{ $row->nama_lengkap }}</td>
 								<td>{{ ModelHelper::getJalur($row->jalur_pendaftaran) }}</td>
-								<td>{{ $row->jenis_kelamin }}</td>
+								<td>{{ ModelHelper::getJenisKelamin($row->jenis_kelamin_id) }}</td>
 								<td>{{ $row->asal_sekolah }}</td>
-								<td>{{ StringHelper::toCapital($row->nama_jurusan) }}</td>
+								<td>{{ StringHelper::toCapital($row->jurusan->singkatan) }}</td>
 								<td class="text-success" title="{{ $row->status->desc }}">
 									{{ $row->status->sublevel }}
 								</td>
@@ -270,7 +270,7 @@ $inputs = [
 													['Nama Lengkap', $row->nama_lengkap],
 													['Jenis Kelamin', $row->jenis_kelamin],
 													['Asal Sekolah', $row->asal_sekolah],
-													['Jurusan', StringHelper::toCapital($row->nama_jurusan)],
+													['Jurusan', StringHelper::toCapital($row->jurusan->singkatan)],
 													['Biaya Daftar Ulang', NumberHelper::toRupiah($row->tagihan->biaya_daftar_ulang)],
 													['Tagihan Daftar Ulang', ($row->tagihan->tagihan_daftar_ulang ? 'Lunas' : 'Kurang ' . NumberHelper::toRupiah($row->tagihan->tagihan_daftar_ulang))],
 													['Biaya Seragam', NumberHelper::toRupiah($row->tagihan->biaya_seragam)],
@@ -286,13 +286,13 @@ $inputs = [
 											<i class="fa">T</i>
 										</button>
 
-										{{-- Data Pembayaran DU --}}
-										<button type="button" title="Data Pembayaran Daftar Ulang" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=daftar_ulang'">
+										{{-- Detail Pembayaran DU --}}
+										<button type="button" title="Detail Pembayaran Daftar Ulang" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=daftar_ulang'">
 											<i class="fa fa-dollar-sign">DU</i>
 										</button>
 
-										{{-- Data Pembayaran Seragam --}}
-										<button type="button" title="Data Pembayaran Seragam" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=seragam'">
+										{{-- Detail Pembayaran Seragam --}}
+										<button type="button" title="Detail Pembayaran Seragam" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=seragam'">
 											<i class="fa fa-dollar-sign">S</i>
 										</button>
 										

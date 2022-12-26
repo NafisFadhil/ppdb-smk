@@ -7,19 +7,12 @@
 	<form action="/admin/verifikasi/duseragam/pembayaran/daftar-ulang/{{ $row->id }}" method="post">
 		@csrf
 
-		{{-- <div class="row"> --}}
-			{{-- @foreach ($subinputers as $subinputs) --}}
-			{{-- <div class="col-12 col-md-6"> --}}
-				@foreach ($subinputs as $input)
-				@include('admin.components.input', [
-				'input' => $input])
-				@endforeach
-				{{-- </div> --}}
-			{{-- @endforeach --}}
-			{{-- </div> --}}
+		@foreach ($subinputs as $input)
+			@include('admin.components.input', ['input' => $input])
+		@endforeach
 
 		<div class="form-group text-center">
-			<button class="btn btn-secondary">
+			<button class="btn btn-primary">
 				<i class="fa fa-check"></i> Submit
 			</button>
 		</div>

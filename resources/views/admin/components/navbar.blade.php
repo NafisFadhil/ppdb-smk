@@ -1,21 +1,32 @@
-<nav class="main-header navbar navbar-expand navbar-white navbar-light">
+<nav class="main-header navbar navbar-expand navbar-white navbar-light py-0 py-sm-1 px-2 px-sm-3"
+style="line-height: 1.85">
 	<!-- Left navbar links -->
 	<ul class="navbar-nav">
+		<li class="nav-item mr-2">
+			<a class="nav-link p-1" data-widget="pushmenu" href="#" role="button">
+				<i class="fas fa-bars"></i>
+			</a>
+		</li>
+		<li class="nav-item mr-2">
+			<a href="{{ back()->getTargetUrl() }}" class="nav-link p-1"
+				title="Kembali" style="line-height: 1.85">
+				<i class="fa fa-angle-left fa-lg"></i>
+			</a>
+		</li>
 		<li class="nav-item">
-			<a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fa fa-bars"></i></a>
+			<a href="/admin" class="nav-link p-1"> Dashboard </a>
 		</li>
-		<li class="nav-item d-none d-sm-inline-block">
-			<a href="/admin" class="nav-link">Beranda</a>
-		</li>
-		{{-- <li class="nav-item d-none d-sm-inline-block">
-			<a href="#" class="nav-link">Contact</a>
+		{{-- <li class="nav-item d-sm-none">
+			<a class="nav-link" data-widget="fullscreen" href="#" role="button">
+				<i class="fa fa-expand-arrows-alt"></i>
+			</a>
 		</li> --}}
 	</ul>
 
 	<!-- Right navbar links -->
 	<ul class="navbar-nav ml-auto">
 		<!-- Navbar Search -->
-		<li class="nav-item">
+		{{-- <li class="nav-item">
 			<a class="nav-link" data-widget="navbar-search" href="#" role="button">
 				<i class="fa fa-search"></i>
 			</a>
@@ -27,14 +38,14 @@
 							<button class="btn btn-navbar" type="submit">
 								<i class="fa fa-search"></i>
 							</button>
-							<button class="btn btn-navbar" type="button" data-widget="navbar-search">
+							<button class="btn btn-navbar btn-sm p-1" type="button" data-widget="navbar-search">
 								<i class="fa fa-times"></i>
 							</button>
 						</div>
 					</div>
 				</form>
 			</div>
-		</li>
+		</li> --}}
 
 		{{-- <!-- Messages Dropdown Menu -->
 		<li class="nav-item dropdown">
@@ -122,7 +133,7 @@
 			</div>
 		</li> --}}
 		<li class="nav-item">
-			<a class="nav-link" data-widget="fullscreen" href="#" role="button">
+			<a class="nav-link p-1" data-widget="fullscreen" href="#" role="button">
 				<i class="fa fa-expand-arrows-alt"></i>
 			</a>
 		</li>

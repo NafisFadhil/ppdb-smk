@@ -3,126 +3,115 @@
 namespace App\Models;
 
 // use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+use App\Casts\UppercaseCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 class Jurusan extends Model
 {
-	// use HasFactory;
-	// protected $fillable = ['kode','jurusan','slug','singkatan','nomor','identitas_id'];
-
 	use SoftDeletes;
 
 	protected static $unguarded = true;
+	public static $nomor;
+
+	protected $casts = [
+		'nama' => UppercaseCast::class,
+		'singkatan' => UppercaseCast::class,
+		'kode' => UppercaseCast::class,
+	];
 
 	public function identitas () {
 		return $this->belongsTo(Identitas::class);
 	}
+	public function verifikasi () {
+        return $this->hasOneThrough(Verifikasi::class, Identitas::class);
+    }
+    public function tagihan () {
+        return $this->hasOneThrough(Tagihan::class, Identitas::class);
+    }
+    public function status () {
+        return $this->hasOneThrough(Status::class, Identitas::class);
+    }
 	
-	public static $nomor;
-
-	public static $jurusan = [];
-
-	public static $kode = [];
-
-	public static function initJurusan() :void
+	public static function getJurusans()
 	{
-		if (empty(self::$jurusan)) {
-			self::$jurusan = DataJurusan::all()->toArray();
-		}
+		return Cache::rememberForever('jurusans', fn() => DataJurusan::all());
 	}
 
-	public static function initKode() :void
+	public static function getJurusan($value, $key = 'singkatan') 
 	{
-		if (empty(self::$jurusan)) self::initJurusan();
-		if (empty(self::$kode)) {
-			$kode = [];
-			foreach (self::$jurusan as $jurusan) {
-				$kode[ $jurusan['singkatan'] ] = $jurusan['kode'];
-			} self::$kode = $kode;
-		}
-	}
-	
-	public static function getJurusan($value, $key = 'singkatan')
-	{
-		self::initJurusan();
-		if ($key === 'id') return self::$jurusan[$value];
-		else {
-			$value = strtolower($value);
-			foreach (self::$jurusan as $item) {
-				if ($item[$key] === $value) return $item;
-			}
+		$data_jurusans = static::getJurusans();
+		foreach ($data_jurusans as $jurusan) {
+			if ($jurusan->$key == $value) return $jurusan;
 		}
 	}
 
 	public static function getKode(string $singkatan, int $nomor = null)
 	{
-		$singkatan = strtolower($singkatan);
-		$jurusan = self::getJurusan($singkatan, 'singkatan');
+		$jurusan = static::getJurusan(strtolower($singkatan));
+		$kode = $jurusan->kode;
 
-		self::initKode();
-		if (!array_key_exists($jurusan['singkatan'], self::$kode)) return false;
-		
-		if (!$nomor) {
-			$model = Jurusan::withTrashed()
-				->where('singkatan', $jurusan['singkatan'])
-				->latest()->limit(1)->get()->first();
+        $model = Jurusan::withTrashed()->select('nomor')->where('singkatan', $singkatan)
+			->orderBy('id', 'DESC')->limit(1)->get()->first();
 
-			if (!$model) {
-				self::$nomor = 1;
-				return self::$kode[$jurusan['singkatan']] . '-001';
-			}
-			self::$nomor = $nomor = $model->nomor + 1;
-		}
+        if (!$model) $nomor = 1;
+        else $nomor = $model->nomor + 1;
 
-		$kode = self::$kode[$jurusan['singkatan']];
+		static::$nomor = $nomor;
+        
 		$xnomor = str_pad($nomor, 3, '0', STR_PAD_LEFT);
-		return $kode . '-' . $xnomor;
+		return $kode.'-'.$xnomor;
 	}
 
-	public static function getWidget($peserta) :array
+	public static function getNomor(string|null $kode = null)
 	{
-		self::initJurusan();
-		$counters = [
-			'tsm' => 0,
-			'tkr' => 0,
-			'tkj' => 0,
-			'akuntansi' => 0,
-			'fkk' => 0,
-		];
-		foreach (self::$jurusan as $jurusan) {
-			$counters = array_replace($counters, [
-				$jurusan['singkatan'] => 0
-			]);
-		}
-		foreach ($peserta as $row) $counters[strtolower($row['nama_jurusan'])]++;
-		return $counters;
+		if (is_null($kode)) return static::$nomor ?? 0;
+		return intval(substr($kode, 2));
 	}
 
 	public static function getOptions()
 	{
-		self::initJurusan();
-		$jurusan = self::$jurusan;
-		$new_jurusan = [['value' => '', 'label' => '--Pilih Jurusan--']];
+		$jurusan = static::getJurusans();
+		$opts = [['value' => '', 'label' => '-- Pilih Jurusan --']];
 		for ($i = 0; $i < count($jurusan); $i++) {
-			$new_jurusan[] = [
+			$opts[] = [
 				'label' => strtoupper($jurusan[$i]['nama'] . ' ('. $jurusan[$i]['singkatan'] .')'),
-				'value' => strtoupper($jurusan[$i]['singkatan'])
+				'value' => $jurusan[$i]['singkatan']
 			];
 		}
-		return $new_jurusan;
+		return $opts;
 	}
 	
-	public static function new(string $singkatan)
-	{
-		$jurusan = self::getJurusan($singkatan, 'singkatan');
-		return [
-			'kode' => self::getKode($singkatan),
-			'jurusan' => $jurusan['nama'],
-			'slug' => $jurusan['slug'],
-			'singkatan' => $jurusan['singkatan'],
-			'nomor' => self::$nomor
-		];
-	}
+	// public static function getWidget(array $peserta) :array
+	// {
+	// 	$counters = [
+	// 		'tsm' => 0,
+	// 		'tkr' => 0,
+	// 		'tkj' => 0,
+	// 		'akuntansi' => 0,
+	// 		'fkk' => 0,
+	// 	];
+	// 	foreach (static::$jurusan as $jurusan) {
+	// 		$counters = array_replace($counters, [
+	// 			$jurusan['singkatan'] => 0
+	// 		]);
+	// 	}
+	// 	foreach ($peserta as $row) $counters[strtolower($row['nama_jurusan'])]++;
+	// 	return $counters;
+	// }
+	
+	// public static function new(string $singkatan)
+	// {
+	// 	$jurusan = static::getJurusan($singkatan, 'singkatan');
+	// 	return [
+	// 		'kode' => static::getKode($singkatan),
+	// 		'jurusan' => $jurusan['nama'],
+	// 		'slug' => $jurusan['slug'],
+	// 		'singkatan' => $jurusan['singkatan'],
+	// 		'nomor' => static::$nomor
+	// 	];
+	// }
 
 }

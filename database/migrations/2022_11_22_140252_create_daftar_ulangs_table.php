@@ -16,11 +16,11 @@ return new class extends Migration
         Schema::create('daftar_ulangs', function (Blueprint $table) {
             $table->id();
 
-            $table->boolean('verifikasi')->default(false);
-            $table->string('admin_verifikasi')->nullable();
             $table->string('keterangan')->nullable();
             
             $table->foreignId('identitas_id');
+            
+            $table->softDeletes();
             $table->timestamps();
         });
     }

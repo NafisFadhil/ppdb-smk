@@ -24,9 +24,4 @@ class StringHelper
 		return Str::slug($str, $separator);
 	}
 
-	public static function toJurusan(string $singkatan)
-	{
-		return \App\Models\Jurusan::getJurusan($singkatan);
-	}
-	
 }

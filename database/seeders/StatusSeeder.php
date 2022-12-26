@@ -38,13 +38,13 @@ class StatusSeeder extends Seeder
             ],
             [
                 'level' => 'Daftar Ulang & Seragam',
-                'sublevel' => 'Menunggu Pembayaran Siswa',
-                'desc' => 'Menunggu siswa melakukan pembayaran.',
+                'sublevel' => 'Menunggu Transaksi Pembayaran',
+                'desc' => 'Menunggu siswa melakukan pembayaran dan verifikasi admin.',
             ],
             [
-                'level' => 'Daftar Ulang & Seragam',
-                'sublevel' => 'Menunggu Verifikasi Admin',
-                'desc' => 'Menunggu admin melakukan verifikasi.',
+                'level' => 'Pendataan',
+                'sublevel' => 'Menunggu Verifikasi Pendataan',
+                'desc' => 'Menunggu admin memeriksa kelengkapan identitas.',
             ],
             [
                 'level' => 'Lulus',

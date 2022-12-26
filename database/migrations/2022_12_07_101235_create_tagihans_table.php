@@ -16,22 +16,26 @@ return new class extends Migration
         Schema::create('tagihans', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedMediumInteger('biaya_pendaftaran')->nullable();
-            $table->unsignedMediumInteger('tagihan_pendaftaran')->nullable();
-            $table->string('admin_pendaftaran')->nullable();
+            $table->string('biaya_pendaftaran')->nullable();
+            $table->string('tagihan_pendaftaran')->nullable();
+            $table->bigInteger('admin_pendaftaran_id')->unsigned()->nullable();
             $table->boolean('lunas_pendaftaran')->default(false);
+            $table->timestamp('tanggal_lunas_pendaftaran')->nullable();
             
-            $table->unsignedMediumInteger('biaya_daftar_ulang')->nullable();
-            $table->unsignedMediumInteger('tagihan_daftar_ulang')->nullable();
-            $table->string('admin_daftar_ulang')->nullable();
+            $table->string('biaya_daftar_ulang')->nullable();
+            $table->string('tagihan_daftar_ulang')->nullable();
+            $table->bigInteger('admin_daftar_ulang_id')->unsigned()->nullable();
             $table->boolean('lunas_daftar_ulang')->default(false);
+            $table->timestamp('tanggal_lunas_daftar_ulang')->nullable();
 
-            $table->unsignedMediumInteger('biaya_seragam')->nullable();
-            $table->unsignedMediumInteger('tagihan_seragam')->nullable();
-            $table->string('admin_seragam')->nullable();
+            $table->string('biaya_seragam')->nullable();
+            $table->string('tagihan_seragam')->nullable();
+            $table->bigInteger('admin_seragam_id')->unsigned()->nullable();
             $table->boolean('lunas_seragam')->default(false);
+            $table->timestamp('tanggal_lunas_seragam')->nullable();
 
             $table->foreignId('identitas_id');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

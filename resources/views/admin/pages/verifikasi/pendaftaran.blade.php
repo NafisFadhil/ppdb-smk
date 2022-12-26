@@ -82,13 +82,13 @@ $inputs = [
 			],
 			[
 				'name' => 'jenis_kelamin',
-				'value' => $row->jenis_kelamin ?? '',
+				'value' => ModelHelper::getJenisKelamin($row->jenis_kelamin_id) ?? '',
 				'attr' => 'disabled'
 			],
 			[
 				'name' => 'nama_jurusan',
 				'label' => 'Jurusan',
-				'value' => StringHelper::toCapital($row->nama_jurusan ?? ''),
+				'value' => StringHelper::toCapital($row->jurusan->singkatan ?? ''),
 				'attr' => 'disabled'
 			],
 			[
@@ -153,9 +153,9 @@ $inputs = [
 								<td>{{ $row->pendaftaran->kode ?? '-' }}</td>
 								<td>{{ $row->nama_lengkap }}</td>
 								<td>{{ ModelHelper::getJalur($row->jalur_pendaftaran) }}</td>
-								<td>{{ $row->jenis_kelamin }}</td>
+								<td>{{ ModelHelper::getJenisKelamin($row->jenis_kelamin_id) }}</td>
 								<td>{{ $row->asal_sekolah }}</td>
-								<td>{{ StringHelper::toCapital($row->nama_jurusan) }}</td>
+								<td>{{ StringHelper::toCapital($row->jurusan->singkatan) }}</td>
 								<td class="text-success" title="{{ $row->status->desc }}">
 									{{ $row->status->sublevel }}
 								</td>
@@ -173,7 +173,7 @@ $inputs = [
 										data-target="#modalSponsorship{{ $row->id }}" class="btn btn-secondary" {{ $row->sponsorship ? 'disabled' : '' }} >
 											<i class="fa">S+</i>
 											@if(!$row->sponsorship)
-												@include('admin.modals.general.sponsorship', [ 'row' => $row ])
+												@include('admin.modals.sponsorship.sponsorship', [ 'row' => $row ])
 											@endif
 										</button>
 										
@@ -228,7 +228,7 @@ $inputs = [
 													['Jenis Kelamin', $row->jenis_kelamin],
 													['Asal Sekolah', $row->asal_sekolah],
 													['No Wa Siswa', $row->no_wa_siswa],
-													['Jurusan', StringHelper::toCapital($row->nama_jurusan)],
+													['Jurusan', StringHelper::toCapital($row->jurusan->singkatan)],
 													['Biaya Pendaftaran', NumberHelper::toRupiah($row->tagihan->biaya_pendaftaran)],
 													['Lunas', ($row->pendaftaran->lunas ? 'Lunas' : 'Belum Lunas')],
 													['Keterangan', $row->pendaftaran->keterangan],
@@ -241,8 +241,8 @@ $inputs = [
 											<i class="fa">T</i>
 										</button>
 
-										{{-- Data Pembayaran Pendaftaran --}}
-										<button type="button" title="Data Pembayaran Pendaftaran" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=pendaftaran'">
+										{{-- Detail Pembayaran Pendaftaran --}}
+										<button type="button" title="Detail Pembayaran Pendaftaran" class="btn btn-secondary d-flex flex-nowrap align-items-center" onclick="window.location = '/admin/pembayaran/{{ $row->id }}?type=pendaftaran'">
 											<i class="fa fa-dollar-sign">P</i>
 										</button>
 

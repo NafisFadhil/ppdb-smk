@@ -2,35 +2,43 @@
 
 namespace App\Models;
 
+use App\Casts\UppercaseCast;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Pendaftaran extends Model
 {
-    // use HasFactory;
-		// protected $fillable = [
-		// 	'kode',
-		// 	'identitas_id',
-		// 	'biaya_pendaftaran',
-		// 	'admin_biaya_pendaftaran',
-		// 	'verifikasi_pendaftaran',
-		// 	'admin_verifikasi_pendaftaran',
-			
-		// ];
+    use HasFactory, SoftDeletes;
 
-		protected static $unguarded = true;
+	protected static $unguarded = true;
+    private static string $kode = 'p';
+    protected $casts = [
+        'kode' => UppercaseCast::class,
+        'keterangan' => 'string',
+    ];
 
     public function identitas () {
         return $this->belongsTo(Identitas::class);
     }
+    public function verifikasi () {
+        return $this->hasOneThrough(Verifikasi::class, Identitas::class);
+    }
+    public function tagihan () {
+        return $this->hasOneThrough(Tagihan::class, Identitas::class);
+    }
+    public function status () {
+        return $this->hasOneThrough(Status::class, Identitas::class);
+    }
 
     public static function getKode()
 	{
-		$kode = 'P';
-		$model = Pendaftaran::select(['id'])->latest()->limit(1)->get()->first();
-		if (!$model) return $kode . '-001';
+		$kode = static::$kode;
 
-		$nomor = $model->id + 1;
+        $model = Pendaftaran::select(['id'])->orderBy('id', 'DESC')->limit(1)->get()->first();
+        if (!$model) return $kode . '-001';
+        $nomor = $model->id + 1;
+        
 		$xnomor = str_pad($nomor, 3, '0', STR_PAD_LEFT);
 		return $kode.'-'.$xnomor;
 	}

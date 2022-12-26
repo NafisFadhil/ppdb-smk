@@ -19,10 +19,6 @@ return new class extends Migration
             $table->string('kelas');
             $table->string('no_wa');
 
-            $table->boolean('verifikasi')->default(false);
-            $table->string('admin_verifikasi')->nullable();
-            $table->timestamp('tanggal_verifikasi')->nullable();
-
             $table->foreignId('identitas_id');
             $table->timestamps();
         });

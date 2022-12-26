@@ -1,10 +1,7 @@
 <?php $navbar_menu = [
 	['href' => '/', 'label' => 'Beranda', 'active' => '/'],
 	['href' => '/formulir', 'label' => 'Pendaftaran', 'desc' => 'Formulir Pendaftaran', 'active' => 'formulir'],
-	['href' => '/login', 'label' => 'Login', 'desc' => 'Login', 'dropdown' => [
-		['href' => '/login', 'label' => 'Siswa', 'desc' => 'Halaman Login Untuk Siswa Peserta PPDB'],
-		['href' => '/login/admin', 'label' => 'Admin', 'desc' => 'Halaman Login Untuk Admin PPDB']
-	]],
+	['href' => '/login', 'label' => 'Login', 'desc' => 'Login Siswa', 'active' => 'login'],
 	['href' => '/kontak', 'label' => 'Kontak'],
 ] ?>
 
