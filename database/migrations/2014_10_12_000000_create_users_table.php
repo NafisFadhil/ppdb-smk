@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreignId('identitas_id')->default(0);
             $table->foreignId('level_id')->default(1);
 
-            $table->softDeletes();
+            // $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();
         });

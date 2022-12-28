@@ -19,10 +19,10 @@
 							<li> Fotocopy Akta Kelahiran 4 lembar. </li>
 							<li> Fotocopy Kartu Keluarga 4 lembar. </li>
 							<li> PAS Foto Hitam Putih 4 lembar. </li>
-							<li> Fotocopy Ijazah SMP (Jika sudah ada) 4 lembar. </li>
-							<li> Fotocopy Raport SMP/MTs semester 1-5 (disertai bagian identitas) 1 lembar. </li>
+							<li> Fotocopy Ijazah SMP/MTS/Sederajat (jika sudah ada) 4 lembar. </li>
+							<li> Fotocopy Raport SMP/MTS/Sederajat semester 1-5 (disertai halaman identitas siswa) 1 lembar. </li>
 							<li> Fotocopy KIP/KKC (bagi yang punya). </li>
-							<li> Surat keterangan NISN dari SMP/MTs 1 lembar. </li>
+							<li> Surat keterangan NISN dari SMP/MTS 1 lembar. </li>
 						</ol>
 					</li>
 					<li>Persyaratan tambahan untuk Prestasi dan Afirmasi Bisa menghubungi WA:

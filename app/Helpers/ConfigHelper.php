@@ -3,22 +3,18 @@
 namespace App\Helpers;
 
 use App\Models\Config as ConfigModel;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class ConfigHelper
 {
 
-	public static array $configs;
-
-	public static function init()
+	public static function getConfigs ()
 	{
-		if (isset(static::$configs)) {
-			return static::$configs;
-		} else {
-			return static::$configs = static::parse(ConfigModel::all()->toArray());
-		}
+		return Cache::rememberForever('configs', fn() => ConfigModel::all());
 	}
 
-	public static function parse(array $configs)
+	public static function parse(mixed $configs)
 	{
 		$new_configs = [];
 		foreach ($configs as $config) {
@@ -29,14 +25,21 @@ class ConfigHelper
 
 	public static function get(string $key)
 	{
-		static::init();
-		return array_key_exists($key, static::$configs) ? static::$configs[$key] : null;
+		$configs = static::getConfigs();
+		return $configs->get($key) ?? null;
 	}
 
 	public static function update(string $key, $value)
 	{
-		static::init();
+		$configs = static::getConfigs();
 		return ConfigModel::where('key', $key)->update(['value' => $value]);
 	}
+
+	// public static function getKontak(string $name, string|null $key)
+	// {
+	// 	$configs = static::getConfigs();
+	// 	$config = json_decode($configs['kontak_'.$name]??json_encode([]), true);
+	// 	return $config[$key] ?? null;
+	// }
 	
 }

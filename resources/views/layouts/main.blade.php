@@ -14,7 +14,15 @@
 	{{-- Css --}}
 	<link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
 	<link rel="stylesheet" href="/dist/css/tailwind.css">
-	<link rel="stylesheet" href="/dist/css/style.css">
+	{{-- <link rel="stylesheet" href="/dist/css/style.css"> --}}
+	<style>
+		:root {
+			font-family: sans-serif;
+			font-size: 15px;
+		}
+		.big-marker { padding-left: 1.5rem }
+		.big-marker li::marker { font-size: 1.5rem }
+	</style>
 	@stack('styles')
 
 	{{-- Jquery --}}

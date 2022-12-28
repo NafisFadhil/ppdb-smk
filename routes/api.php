@@ -30,6 +30,11 @@ Route::get('/remigrate', function() {
     return 'OK';
 });
 
+// Route::get('/remigrate', function() {
+//     Artisan::call('migrate:fresh --seed');
+//     return 'OK';
+// });
+
 Route::get('/optimize', function() {
     Artisan::call('optimize:clear');
     Artisan::call('optimize');

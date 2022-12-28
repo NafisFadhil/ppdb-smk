@@ -83,7 +83,7 @@ class DUSeragamController extends Controller
             ['type' => 'number', 'name' => 'no_ijazah', 'value' => $data->no_ijazah??null,
                 'label' => null, 'placeholder' => null],
             ['type' => 'number', 'name' => 'no_wa_siswa', 'value' => $data->no_wa_siswa??null,
-                'label' => 'WA Siswa', 'placeholder' => 'Cth. 08123456789', 'opts' => ['required'], 'attr' => 'disabled'], 
+                'label' => 'No WA Siswa', 'placeholder' => 'Cth. 08123456789', 'opts' => ['required'], 'attr' => 'disabled'], 
             ['type' => 'number', 'name' => 'no_wa_ortu', 'value' => $data->no_wa_ortu??null,
                 'label' => null, 'placeholder' => null],
             ['type' => 'select', 'name' => 'nama_jurusan', 'value' => $data->nama_jurusan??null,

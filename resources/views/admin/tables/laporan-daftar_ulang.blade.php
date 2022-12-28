@@ -50,8 +50,8 @@
 					<td>{!! ModelHelper::getStatusBayar($row->tagihan, $bigtype) !!}</td>
 				@endif
 				
-				<td>{{ $row->verifikasi->pendataan ? 'Sudah' : 'Belum' }}</td>
-				<td>{{ $row->pendaftaran->keterangan }}</td>
+				<td>{{ $row->verifikasi->identitas ? 'Sudah' : 'Belum' }}</td>
+				<td>{{ $row->daftar_ulang->keterangan }}</td>
 
 				{{-- @if(!$cetak)
 					<td>

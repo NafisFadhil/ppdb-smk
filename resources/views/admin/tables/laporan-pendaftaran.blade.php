@@ -22,6 +22,8 @@ $counters = [
 				<th>Tanggal <br> Pembayaran</th>
 				<th>Admin <br> Pembayaran</th>
 				<th>Status <br> Pembayaran</th>
+			@else
+				<th>Tanggal Lahir</th>
 			@endif
 			
 			<th>Keterangan</th>
@@ -58,6 +60,8 @@ $counters = [
 						<td>{!! ModelHelper::getTanggalBayar($row->tagihan->pembayarans, 'pendaftaran') !!}</td>
 						<td>{!! ModelHelper::getAdminBayar($row->tagihan->pembayarans, 'pendaftaran') !!}</td>
 						<td>{!! ModelHelper::getStatusBayar($row->tagihan, 'pendaftaran') !!}</td>
+					@else
+						<td>{{ ModelHelper::formatTanggal($row->tanggal_lahir) }}</td>
 					@endif
 					
 					<td>{{ $row->pendaftaran->keterangan ?? '-' }}</td>

@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -13,7 +17,7 @@ class LoginController extends Controller
         return view('pages.login', [
             'page' => ['title' => 'Halaman Login Siswa'],
             'inputs' => [
-                ['type' => 'text', 'name' => 'username', 'label' => 'Kode Jurusan', 'attr' => 'autofocus'],
+                ['type' => 'text', 'name' => 'username', 'label' => 'Kode Jurusan', 'attr' => 'autofocus', 'opts' => ['uppercase']],
                 ['type' => 'date', 'name' => 'password', 'label' => 'Tanggal Lahir'],
             ]
         ]);
@@ -26,6 +30,9 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
+        // Mock User
+        $creden['password'] = Date::createFromFormat('Y-m-d', $creden['password']);
+        $creden['password'] = date_format($creden['password'], 'd-m-Y');
         $creden['level_id'] = 1;
 
         if (Auth::attempt($creden)) {

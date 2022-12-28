@@ -17,10 +17,10 @@
 <?php } ?>
 
 @section('content')
-	<div class="row">
 		@include('admin.components.bigsearch', [
 			'input' => ['name' => 'search', 'label' => 'Cari nama/username user...']
 		])
+	<div class="row">
 
 		<div class="col-12">
 			<div class="card">

@@ -6,6 +6,8 @@
 .font-poppins {font-family: poppins, sans-serif}
 
 :root {
-	font-family: poppins, sans-serif;
+	/* font-family: poppins, sans-serif; */
 	font-size: 15px;
 }
+
+h1,h2,h3,h4,h5,h6 { font-family: poppins, sans-serif; }

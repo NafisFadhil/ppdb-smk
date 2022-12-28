@@ -36,12 +36,12 @@ class CetakController extends Controller
     }
 
     public function cetakPendaftaran(Identitas $identitas){
-        $identitas->new_tanggal_lahir = $this->tgl_indo(date('Y-n-d', $identitas->tanggal_lahir));
+        $identitas->new_tanggal_lahir = $this->tgl_indo(date_format($identitas->tanggal_lahir, 'Y-m-d'));
         return view('admin.pages.pdf-pendaftaran',['data' => $identitas]);
     }
 
     public function cetakFormulir(Identitas $identitas){
-        $identitas->new_tanggal_lahir = $this->tgl_indo(date('Y-n-d', $identitas->tanggal_lahir));
+        $identitas->new_tanggal_lahir = $this->tgl_indo(date_format($identitas->tanggal_lahir, 'Y-m-d'));
         $identitas->date_now = $this->tgl_indo(date('Y-n-d'));
         return view('admin.pages.pdf-formulir',['data' => $identitas]);
     }

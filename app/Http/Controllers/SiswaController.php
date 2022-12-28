@@ -50,32 +50,39 @@ class SiswaController extends Controller
 
     public function daftar_ulang()
     {
-        return view('siswa.pages.profil', [
-            'page' => ['title' => 'Daftar Ulang & Seragam - Halaman Siswa', 'subtitle' => 'Daftar Ulang & Seragam']
-        ]);
-    }
-
-    public function update(Request $req)
-    {
-        $user = auth()->user();
-        $creden = $req->validate(Identitas::getValidations($this->validations));
-        $duscreden = $req->validate(DUSeragam::getValidations($this->duseragamValidations));
-        $creden = Identitas::getSubPrestasi($creden);
-
-        try {
-            
-            $user->identitas->update($creden);
-            $user->duseragam->update($duscreden);
-            return redirect('/siswa/profil')->withErrors([
-                'alerts' => ['success' => 'Profil berhasil diperbarui.']
-            ]);
-            
-        } catch (\Throwable $th) {
-            return back()->withErrors([
-                'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat memproses data.']
+        if (auth()->user()->identitas->verifikasi->identitas) {
+            return redirect('/siswa')->withErrors([
+                'alerts' => ['warning' => 'Maaf, identitas sudah diverifikasi oleh admin dan tidak dapat diubah.']
             ]);
         }
         
+        return view('siswa.pages.duseragam', [
+            'page' => ['title' => 'Daftar Ulang & Seragam - Halaman Siswa', 'subtitle' => 'Daftar Ulang & Seragam'],
+            // 'forms' => FormulirController::getMultiFormInputs(auth()->user()->identitas)
+        ]);
     }
+
+    // public function update(Request $req)
+    // {
+    //     $user = auth()->user();
+    //     $creden = $req->validate(Identitas::getValidations($this->validations));
+    //     $duscreden = $req->validate(DUSeragam::getValidations($this->duseragamValidations));
+    //     $creden = Identitas::getSubPrestasi($creden);
+
+    //     try {
+            
+    //         $user->identitas->update($creden);
+    //         $user->duseragam->update($duscreden);
+    //         return redirect('/siswa/profil')->withErrors([
+    //             'alerts' => ['success' => 'Profil berhasil diperbarui.']
+    //         ]);
+            
+    //     } catch (\Throwable $th) {
+    //         return back()->withErrors([
+    //             'alerts' => ['danger' => 'Maaf, terjadi kesalahan saat memproses data.']
+    //         ]);
+    //     }
+        
+    // }
     
 }

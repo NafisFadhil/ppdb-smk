@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
 	<link rel="stylesheet" href="/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
 	<link rel="stylesheet" href="/plugins/select2/css/select2.min.css">
-	{{-- <link rel="stylesheet" href="/plugins/daterangepicker/daterangepicker.min.css"> --}}
+	<link rel="stylesheet" href="/plugins/daterangepicker/daterangepicker.min.css">
 	@stack('styles')
 	<link rel="stylesheet" href="/adminlte/css/adminlte.min.css">
 	<style>
@@ -24,6 +24,7 @@
 			padding: .25rem .4rem;
 			/* padding: .2rem .5rem !important */
 		}
+		#formFilter .form-group { margin: .25rem }
 	</style>
 </head>
 <body class="hold-transition sidebar-mini">

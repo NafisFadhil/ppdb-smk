@@ -3,7 +3,7 @@
 ])
 
 @section('subcontent')
-	<div class="p-4 md:p-8 max-w-screen-xl mx-auto">
+	<div class="p-4 md:p-8 max-w-screen-lg mx-auto">
 		<table class="w-full table table-auto text-left bg-white rounded-lg">
 			<style>
 				table th, table td { padding: .25rem }

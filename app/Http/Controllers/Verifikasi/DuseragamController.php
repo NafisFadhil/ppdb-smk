@@ -20,7 +20,9 @@ class DuseragamController extends Controller
     private function getModel() {
         return Identitas::with([
             'daftar_ulang', 'status', 'jenis_kelamin', 'jurusan', 'tagihan', 'verifikasi'
-        ])->whereRelation('status', 'level', 'daftar ulang & seragam');
+        ])
+        ->whereRelation('verifikasi', 'pendaftaran', true)
+        ->whereRelation('status', 'level', 'daftar ulang & seragam');
     }
     
     public function index(Request $req)
@@ -232,8 +234,13 @@ class DuseragamController extends Controller
 
             // Mock Identitas
             if ($lulus) {
-                $identitas_creden['status_id'] = $identitas->status_id + 1;
-                $alerts['info'] = 'Verifikasi daftar ulang dan seragam lengkap.';
+                $plus = 1;
+                if ($identitas->verifikasi->identitas) {
+                    $plus += 1;
+                    $alerts['info'] = 'Verifikasi daftar ulang dan seragam lengkap dan sudah verifikasi pendataan.';
+                } else $alerts['info'] = 'Verifikasi daftar ulang dan seragam lengkap.';
+
+                $identitas_creden['status_id'] = $identitas->status_id + $plus;
             }
 
             // Queue Database Transaction

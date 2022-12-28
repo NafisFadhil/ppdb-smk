@@ -58,13 +58,19 @@ Route::get('/test', function () {
     // ]);
     // dd(Tagihan::with('admin_pendaftaran')->get()->first()->admin_pendaftaran);
     // dd(Pendaftaran::getKode());
+    // $model = Jurusan::withTrashed()->select('nomor')->whereNotNull('nomor')
+    // ->where('singkatan', 'tsm')->orderBy('nomor', 'DESC')->limit(1)->get()->first();
+    // dd($model->nomor + 1);
+    // dd(Jurusan::getKode('tsm'));
+    // dd([...request()->query->all()]);
+    dd(request()->fullUrlWithQuery([...request()->query->all(), 'page' => 2]));
 });
 
 
 Route::middleware('guest')->group(function () {
     Route::controller(LandingPageController::class)->group(function () {
         Route::get('/', 'index');
-        Route::get('/kontak', 'index');
+        Route::get('/kontak', 'kontak');
     });
     
     Route::controller(FormulirController::class)->group(function () {
@@ -81,15 +87,22 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::prefix('/siswa')->middleware('siswa')->group(function () {
+
     
+    Route::prefix('/siswa')->middleware('siswa')->group(function () {
+        
         Route::controller(SiswaController::class)->group(function () {
             Route::get('/', 'index');
+            Route::get('/daftar-ulang', 'daftar_ulang');
         });
     
         Route::controller(DUSeragamController::class)->group(function () {
-            Route::get('/duseragam', 'index');
-            Route::post('/duseragam', 'store');
+            // Route::get('/duseragam', 'index');
+            // Route::post('/duseragam', 'store');
+        });
+
+        Route::controller(FormulirController::class)->group(function () {
+            Route::post('/duseragam/{identitas:id}', 'update');
         });
         
     });
@@ -150,7 +163,6 @@ Route::middleware('auth')->group(function () {
                 Route::get('/hapus/{sponsorship:id}', 'hapus')->middleware('superadmin');
             });
         });
-    
     
         Route::get('/print/{identitas:id}', [PrintController::class, 'pendaftaran']);
     

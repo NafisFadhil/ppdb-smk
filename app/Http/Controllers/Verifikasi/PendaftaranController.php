@@ -20,7 +20,7 @@ class PendaftaranController extends Controller
     private function getModel() {
         return Identitas::with([
             'pendaftaran', 'status', 'jenis_kelamin', 'jurusan', 'tagihan', 'verifikasi', 'sponsorship'
-        ])->whereRelation('status', 'level', 'pendaftar');
+        ])->whereRelation('verifikasi', 'pendaftaran', false);
     }
 
     public function index (Request $req)
@@ -179,6 +179,7 @@ class PendaftaranController extends Controller
         $jurusan_creden = [];
         $verifikasi_creden = [];
         $daftar_ulang_creden = [];
+        $user_creden = [];
         $alerts = [];
 
         try {
@@ -209,10 +210,31 @@ class PendaftaranController extends Controller
                 $identitas->seragam()->create($seragam_creden);
                 $identitas->update($identitas_creden);
             });
-            dispatch(function () use ($identitas, $jurusan_creden) {
-                $jurusan_creden['kode'] = Jurusan::getKode($identitas->jurusan->singkatan);
-                $jurusan_creden['nomor'] = Jurusan::getNomor($jurusan_creden['kode']);
-                $identitas->jurusan->update($jurusan_creden);
+            dispatch(function () use ($identitas, $user_creden) {
+                $model = Jurusan::withTrashed()->select('nomor')->whereNotNull('nomor')
+                ->where('singkatan', $identitas->jurusan->singkatan)->orderBy('nomor', 'DESC')->limit(1)->get()->first();
+
+                if (!$model) $nomor = 1;
+                else $nomor = $model->nomor + 1;
+
+                $jurusan = Jurusan::getJurusan(strtolower($identitas->jurusan->singkatan));
+                $kode = $jurusan->kode;
+
+                $xnomor = str_pad($nomor, 3, '0', STR_PAD_LEFT);
+                $kode = $kode.'-'.$xnomor;
+
+                // Mock User
+                $identitas->user()->create([
+                    'name' => $identitas->nama_lengkap,
+                    'username' => $kode,
+                    'password' => Hash::make(date_format($identitas->tanggal_lahir, 'd-m-Y')),
+                    'identitas_id' => $identitas->id,
+                ]);
+
+                $identitas->jurusan->update([
+                    'kode' => $kode,
+                    'nomor' => $nomor
+                ]);
             });
 
             $alerts['success'] = 'Verifikasi pendaftaran berhasil.';

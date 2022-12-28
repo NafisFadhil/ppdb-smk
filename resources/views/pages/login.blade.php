@@ -31,6 +31,7 @@ $isadmin = request()->is('login/admin');
 							placeholder="{{ $input['placeholder'] }}"
 							value="{{ old($input['name']) ?? $input['value'] ?? '' }}"
 							class="flex-1 w-full px-3 py-1.5 bg-white backdrop-brightness-95 rounded-lg border
+							{{ in_array('uppercase', $input['opts']) ? 'input-uppercase' : '' }}
 							{{ $error?'border-red-800':'' }} text-center outline-none"
 							{!! $input['attr'] !!}
 						/>

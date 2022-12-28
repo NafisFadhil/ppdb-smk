@@ -6,7 +6,7 @@
 
 {{-- @dd(get_defined_vars()) --}}
 <div class="w-100" style="overflow-x: auto">
-	<table class="w-100 mb-0 table table-sm table-bordered table-hover">
+	<table id="xtable" class="mb-0 table table-sm table-bordered table-hover table-sm">
 		<thead>
 			<tr>
 				<th>No</th>

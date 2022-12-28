@@ -52,10 +52,8 @@ class TambahPeserta implements ShouldQueue
     public function handle()
     {
         $creden = $this->creden;
-
-        if ($creden['sub_jalur_pendaftaran_id']??0 > 3) {
-            $creden = Identitas::getSubPrestasi($creden);
-        }
+        $creden['sub_jalur_pendaftaran_id'] ??= 0;
+        $creden = Identitas::getSubPrestasi($creden);
 
         if ($creden['nama_jurusan']) {
             $jurusan = Jurusan::getJurusan($creden['nama_jurusan']);

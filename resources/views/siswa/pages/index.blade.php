@@ -11,8 +11,7 @@
 	$overviewCard = [
 		['label' => 'Status', 'value' => $status->level],
 		['label' => 'Kode Pendaftaran', 'value' => $pendaftaran->kode ?? '(Belum Ada)'],
-		['label' => 'Kode Jurusan', 'value' => $jurusan->kode ?? '(Belum Ada)'],
-		['label' => 'Kode Seragam', 'value' => $seragam->kode ?? '(Belum Ada)'],
+		['label' => 'Kode Jurusan', 'value' => $jurusan->kode ?? '-'],
 	];
 
 	$identitasCard = [
@@ -20,10 +19,10 @@
 		'list' => [
 			['Nama', $identitas->nama_lengkap],
 			['Asal Sekolah', $identitas->asal_sekolah],
-			['Jenis Kelamin', $identitas->jenis_kelamin],
-			['Tanggal Lahir', $identitas->tanggal_lahir],
+			['Jenis Kelamin', ModelHelper::getJenisKelamin($identitas->jenis_kelamin_id)],
+			['Tanggal Lahir', ModelHelper::formatTanggal($identitas->tanggal_lahir)],
 			['Jalur Pendaftaran', ModelHelper::getJalur($identitas->jalur_pendaftaran)],
-			['Jurusan', StringHelper::toCapital($identitas->nama_jurusan)],
+			['Jurusan', $identitas->jurusan->nama],
 		]
 	];
 
@@ -90,8 +89,10 @@
 						@foreach ($xstatus as $xstat)
 							<?php
 								$icon = $xstat->id < $status->id ? $progressCard['icons']['on'] : (
-									$xstat->id > $status->id ? $progressCard['icons']['off'] : $progressCard['icons']['in']
+									$xstat->id > $status->id ? $progressCard['icons']['off'] :
+									$progressCard['icons']['in']
 								);
+								if ($loop->last && $xstat->id === $status->id) $icon = $progressCard['icons']['on'];
 							?>
 							<div class="timeline-block mb-3">
 								<span class="timeline-step">

@@ -5,8 +5,8 @@
 	['href' => '/kontak', 'label' => 'Kontak'],
 ] ?>
 
-<nav id="navbar" class="w-full relative bg-primary text-white">
-	<div class="max-w-screen-xl mx-auto px-2 sm:px-4 sm:py-1">
+<nav id="navbar" class="w-full relative bg-white text-black">
+	<div class="max-w-screen-lg mx-auto px-2 sm:px-4 py-0">
 		<div class="flex justify-start md:justify-between gap-2 items-center">
 
 			<button type="button" id="navbarToggler" class="cursor-pointer block md:hidden bg-transparent outline-none hover:opacity-80 transition-opacity p-2">
@@ -14,19 +14,20 @@
 			</button>
 
 			<a href="/" class="">
-				<img src="/dist/img/logo-smk-putih.png"
+				<img src="/dist/img/logo-smk.png"
 					alt="Logo {{ ConfigHelper::get('nama_sekolah') }}"
 					class="w-full h-auto max-w-[130px] md:max-w-[150px] py-2" />
 			</a>
 
 			<div id="navbarMenu" class="hidden md:block absolute md:relative top-full left-0 right-0 z-20">
-				<ul class="flex flex-col md:flex-row w-full bg-primary justify-center items-center">
+				<ul class="flex flex-col md:flex-row w-full bg-white justify-center items-center">
 					@foreach ($navbar_menu as $menu)
 					<?php $active = request()->is($menu['active'] ?? substr($menu['href'], 1).'*') ?>
 	
 							<li class="group relative w-full">
 								<a href="{{ isset($menu['dropdown']) ? 'javascript:void()' : $menu['href'] }}"
-								title="{{ $menu['desc'] ?? '' }}" class="hover:opacity-75 transition-opacity flex flex-nowrap items-center gap-2
+								title="{{ $menu['desc'] ?? '' }}"
+								class="hover:opacity-100 transition-opacity flex flex-nowrap items-center gap-2 opacity-75
 									{{ $active ? 'text-secondary' : '' }} p-3 block {{ isset($menu['dropdown']) ? 'navbar-dropdown-toggler' : '' }}">
 									{{ $menu['label'] }} @isset($menu['dropdown']) <i class="fa fa-angle-down"></i> @endisset
 								</a>

@@ -1,7 +1,7 @@
 <div class="col-12">
 	<div class="card">
 		<div class="card-body">
-			<form action="">
+			<form id="filterForm" action="">
 				<div class="row">
 					@foreach ($filters as $row)
 						<div class="col-12 form-group row d-flex flex-wrap flex-row justify-content-center align-items-center"
@@ -11,6 +11,11 @@
 								$input = FormHelper::initInput($input);
 								$error = $errors->has($input['name']);
 								$input['size'] ??= 'sm';
+
+								$bigtype ??= '';
+
+								if (($bigtype === 'pendataan' || $bigtype === 'sponsorship') && $input['name'] === 'type') continue;
+
 								?>
 								
 								@if ($input['type'] === 'select')

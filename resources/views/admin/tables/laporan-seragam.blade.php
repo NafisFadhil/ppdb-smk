@@ -64,7 +64,7 @@
 					$row->tagihan->pembayarans,'pendaftaran'
 				) ?? ModelHelper::formatTanggal($row->pendaftaran->updated_at) }}</td> --}}
 				{{-- <td>{{ $row->verifikasi ? 'Sudah' : 'Belum' }}</td> --}}
-				<td>{{ $row->pendaftaran->keterangan }}</td>
+				<td>{{ $row->seragam->keterangan }}</td>
 
 			</tr>
 			@endforeach

@@ -24,7 +24,7 @@ class Identitas extends Model
         'alamat_kota_kab' => UppercaseCast::class,
         'nama_ayah' => UppercaseCast::class,
         'nama_ibu' => UppercaseCast::class,
-        'tanggal_lahir' => 'timestamp',
+        'tanggal_lahir' => 'datetime',
         'alamat_rt' => 'integer',
         'alamat_rw' => 'integer',
         'alamat_gg' => 'integer',

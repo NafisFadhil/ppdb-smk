@@ -4,7 +4,7 @@
 
 @section('subcontent')
 
-<div class="p-4 md:p-8 max-w-screen-xl mx-auto my-3">
+<div class="p-4 md:p-8 max-w-screen-lg mx-auto my-3">
 
 	<div class="flex flex-col justify-center items-center rounded-lg shadow-lg bg-white p-4 md:p-8 gap-3 mb-4">
 		<h1 class="text-2xl font-semibold">Cari Data Pendaftaran</h1>

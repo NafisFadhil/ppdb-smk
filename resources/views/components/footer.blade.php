@@ -1,4 +1,4 @@
-<footer id="footer" class="bg-dark text-white">
+<footer id="footer" class="bg-neutral-900 text-white">
 	<div class="w-full px-3 py-10 max-w-screen-xs mx-auto text-center flex flex-col justify-center items-center gap-3">
 		<h1 class="text-4xl font-bold -mb-2">PPDB 2023</h1>
 		<p class="text-xl font-semibold">{{ ConfigHelper::get('nama_sekolah') }}</p>

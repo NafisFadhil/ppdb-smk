@@ -22,7 +22,7 @@ class DataJalurPendaftaranSeeder extends Seeder
                 'subjalur' => null,
                 'biaya_pendaftaran' => 50000,
                 'biaya_daftar_ulang' => 500000,
-                'biaya_seragam' => 450000,
+                'biaya_seragam' => 1_100_000,
                 'periode_akhir' => now()->setDay(7)->setMonth(4)->setYear(2023)->setTime(23,59,59,59),
             ],
             // Afirmasi
@@ -43,7 +43,7 @@ class DataJalurPendaftaranSeeder extends Seeder
                 'subjalur' => null,
                 'biaya_pendaftaran' => 0,
                 'biaya_daftar_ulang' => 0,
-                'biaya_seragam' => 450000,
+                'biaya_seragam' => 1_100_000,
                 'periode_akhir' => now()->setDay(19)->setMonth(4)->setYear(2023)->setTime(23,59,59,59),
             ],
 
@@ -53,7 +53,7 @@ class DataJalurPendaftaranSeeder extends Seeder
                 'subjalur' => 'Kedinasan',
                 'biaya_pendaftaran' => 0,
                 'biaya_daftar_ulang' => 0,
-                'biaya_seragam' => 450000,
+                'biaya_seragam' => 1_100_000,
                 'periode_akhir' => now()->setDay(19)->setMonth(4)->setYear(2023)->setTime(23,59,59,59),
             ],
 
@@ -62,7 +62,7 @@ class DataJalurPendaftaranSeeder extends Seeder
                 'subjalur' => 'Non-Kedinasan',
                 'biaya_pendaftaran' => 0,
                 'biaya_daftar_ulang' => 0,
-                'biaya_seragam' => 450000,
+                'biaya_seragam' => 1_100_000,
                 'periode_akhir' => now()->setDay(19)->setMonth(4)->setYear(2023)->setTime(23,59,59,59),
             ],
             [
@@ -70,7 +70,7 @@ class DataJalurPendaftaranSeeder extends Seeder
                 'subjalur' => 'Aktivis',
                 'biaya_pendaftaran' => 0,
                 'biaya_daftar_ulang' => 0,
-                'biaya_seragam' => 450000,
+                'biaya_seragam' => 1_100_000,
                 'periode_akhir' => now()->setDay(19)->setMonth(4)->setYear(2023)->setTime(23,59,59,59),
             ],
             [
@@ -78,7 +78,7 @@ class DataJalurPendaftaranSeeder extends Seeder
                 'subjalur' => 'Bintang Kelas',
                 'biaya_pendaftaran' => 0,
                 'biaya_daftar_ulang' => 0,
-                'biaya_seragam' => 450000,
+                'biaya_seragam' => 1_100_000,
                 'periode_akhir' => now()->setDay(19)->setMonth(4)->setYear(2023)->setTime(23,59,59,59),
             ],
             [
@@ -86,7 +86,7 @@ class DataJalurPendaftaranSeeder extends Seeder
                 'subjalur' => 'Tahfid Quran',
                 'biaya_pendaftaran' => 0,
                 'biaya_daftar_ulang' => 0,
-                'biaya_seragam' => 450000,
+                'biaya_seragam' => 1_100_000,
                 'periode_akhir' => now()->setDay(19)->setMonth(4)->setYear(2023)->setTime(23,59,59,59),
             ],
         ]);

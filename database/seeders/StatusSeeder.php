@@ -47,9 +47,9 @@ class StatusSeeder extends Seeder
                 'desc' => 'Menunggu admin memeriksa kelengkapan identitas.',
             ],
             [
-                'level' => 'Lulus',
-                'sublevel' => 'Sudah Diterima',
-                'desc' => 'Siswa telah menyelesaikan tahapan PPDB Online',
+                'level' => 'Selesai PPDB',
+                'sublevel' => 'Selesai Tahapan PPDB',
+                'desc' => 'Siswa telah menyelesaikan tahapan PPDB Online.',
             ],
         ]);
     }

@@ -37,6 +37,34 @@ class Seragam extends Model
         return Cache::rememberForever('seragams', fn() => DataSeragam::all());
     }
 
+    public static function getInputs(Identitas|null $data)
+    {
+        return [
+            [
+                'type' => 'select', 'name' => 'ukuran_olahraga', 'value' => $data->seragam->ukuran_olahraga??null,
+                'options' => Seragam::getOptions('olahraga'),
+            ],
+            [
+                'type' => 'select', 'name' => 'ukuran_wearpack', 'value' => $data->seragam->ukuran_wearpack??null,
+                'options' => Seragam::getOptions('wearpack'),
+            ],
+            [
+                'type' => 'select', 'name' => 'ukuran_almamater', 'value' => $data->seragam->ukuran_almamater??null,
+                'options' => Seragam::getOptions('almamater'),
+            ]
+        ];
+    }
+
+    public static function getInputsDisabled(Identitas|null $data)
+    {
+        $inputs = static::getInputs($data);
+        $newinputs = [];
+        foreach ($inputs as $input) {
+            $newinputs[] = [...$input, 'attr' => 'disabled'];
+        }
+        return $newinputs;
+    }
+
     public static function getOptions(string $type)
     {
         $seragams = static::getSeragams();

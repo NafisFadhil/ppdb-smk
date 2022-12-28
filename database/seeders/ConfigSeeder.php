@@ -29,6 +29,12 @@ class ConfigSeeder extends Seeder
                 'value' => '2023'
             ],
             [
+                'key' => 'kontak_maps',
+                'value' => json_encode([
+                    'href' => 'https://goo.gl/maps/UQL435A251ZTReik9',
+                ])
+            ],
+            [
                 'key' => 'recaptcha_site_key',
                 'value' => env('RECAPTCHA_SITE_KEY')
             ],

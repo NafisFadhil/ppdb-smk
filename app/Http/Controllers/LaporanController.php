@@ -44,7 +44,10 @@ class LaporanController extends Controller
         } elseif ($bigtype === 'pendataan') {
             return $model
             ->whereRelation('verifikasi', 'pendaftaran', true);
-            // ->whereRelation('verifikasi', 'daftar_ulang', true);
+        } elseif ($bigtype === 'sponsorship') {
+            return $model
+            ->whereRelation('verifikasi', 'pendaftaran', true)
+            ->has('sponsorship');
         }
     }
     
@@ -55,7 +58,8 @@ class LaporanController extends Controller
         $data = Filter::filter($this->getModel($bigtype), $req);
         $title_type = $type == $bigtype ? '' : ' '.ucfirst($type);
         $title_bigtype = Str::title(str_replace('_', ' ', $bigtype));
-
+        
+        
         return view('admin.pages.laporan',[
             'page' => ['title' => 'Laporan'.$title_type.' '.$title_bigtype],
             'type' => $type,

@@ -24,6 +24,14 @@ class ModelHelper
 		return $new_arrays;
 	}
 
+	public static function getPaginateUrl(int $page)
+	{
+		return request()->fullUrlWithQuery([
+			...request()->query->all(),
+			'page' => $page
+		]);
+	}
+
 	public static function parseByKey(array $arrays, string $key, string $value)
 	{
 		$new_arrays = [];
@@ -87,6 +95,11 @@ class ModelHelper
 		if (!empty($tanggal)) {
 			return static::formatTanggal($tanggal);
 		} return null;
+	}
+
+	public static function toTanggal($tanggal = null)
+	{
+		return date('d-m-Y', $tanggal);
 	}
 
 	public static function formatTanggal($tanggal = null)

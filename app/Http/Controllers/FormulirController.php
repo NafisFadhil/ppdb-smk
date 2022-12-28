@@ -108,7 +108,7 @@ class FormulirController extends Controller
             ], 
             [
                 'type' => 'number', 'name' => 'no_wa_siswa', 'value' => $data->no_wa_siswa??null,
-                'label' => 'WA Siswa', 'placeholder' => 'Cth. 08123456789' , 'opts' => ['required']
+                'label' => 'No WA Siswa', 'placeholder' => 'Cth. 08123456789' , 'opts' => ['required']
             ], 
             [
                 'type' => 'number', 'name' => 'no_wa_ortu', 'value' => $data->no_wa_ortu??null,
@@ -200,7 +200,7 @@ class FormulirController extends Controller
             ],
             [
                 'type' => 'number', 'name' => 'no_wa_siswa', 'value' => $data->no_wa_siswa??null,
-                'label' => 'WA Siswa', 'placeholder' => 'Cth. 08123456789', 'opts' => ['required']
+                'label' => 'No WA Siswa', 'placeholder' => 'Cth. 08123456789', 'opts' => ['required']
             ],
             [
                 'type' => 'number', 'name' => 'no_wa_ortu', 'value' => $data->no_wa_ortu??null,
@@ -222,7 +222,7 @@ class FormulirController extends Controller
     {
         $jurusan =  Cache::rememberForever('jurusan_options', fn() => Jurusan::getOptions());
         $jenis_kelamins = Cache::rememberForever('jenis_kelamin_options', fn() => DataJenisKelamin::getOptions());
-        $tanggal_lahir = isset($data->tanggal_lahir) ? date('Y-m-d', $data->tanggal_lahir) : null;
+        // $tanggal_lahir = isset($data->tanggal_lahir) ? date('Y-m-d', $data->tanggal_lahir) : null;
 
         return [
             ['title' => 'Data Pokok', 'inputs' => [
@@ -236,7 +236,7 @@ class FormulirController extends Controller
                     'label' => null, 'placeholder' => null, 'opts' => ['uppercase']
                 ],
                 [
-                    'type' => 'date', 'name' => 'tanggal_lahir', 'value' => $tanggal_lahir??null,
+                    'type' => 'date', 'name' => 'tanggal_lahir', 'value' => $data->tanggal_lahir??null,
                     'label' => null, 'placeholder' => null, 'opts' => ['required']
                 ], 
                 [
@@ -322,7 +322,7 @@ class FormulirController extends Controller
             ['title' => 'Data Komunikasi', 'inputs' => [
                 [
                     'type' => 'number', 'name' => 'no_wa_siswa', 'value' => $data->no_wa_siswa??null,
-                    'label' => 'WA Siswa', 'placeholder' => 'Cth. 08123456789', 'opts' => ['required']]
+                    'label' => 'No WA Siswa', 'placeholder' => 'Cth. 08123456789', 'opts' => ['required']]
                     , 
                 [
                     'type' => 'number', 'name' => 'no_wa_ortu', 'value' => $data->no_wa_ortu??null,
@@ -330,59 +330,9 @@ class FormulirController extends Controller
                 ],
                 
             ]],
-            ['title' => 'Data Seragam', 'inputs' => [
-                [
-                    'type' => 'select', 'name' => 'ukuran_olahraga', 'value' => $data->seragam->ukuran_olahraga??null,
-                    'options' => Seragam::getOptions('olahraga'),
-                ],
-                [
-                    'type' => 'select', 'name' => 'ukuran_wearpack', 'value' => $data->seragam->ukuran_wearpack??null,
-                    'options' => Seragam::getOptions('wearpack'),
-                ],
-                [
-                    'type' => 'select', 'name' => 'ukuran_almamater', 'value' => $data->seragam->ukuran_almamater??null,
-                    'options' => Seragam::getOptions('almamater'),
-                ],
-            ]]
+            ['title' => 'Data Seragam', 'inputs' => Seragam::getInputs($data)]
         ];
     }
-
-    // private function resetTagihan (Identitas $identitas, $type) :int
-    // {
-    //     $jalur = $identitas->jalur_pendaftaran;
-    //     $tagihan = $identitas->tagihan;
-    //     $newbiaya = $jalur["biaya_$type"];
-    //     $oldbiaya = $tagihan["biaya_$type"];
-    //     $oldtagihan = $tagihan["tagihan_$type"];
-
-    //     $bayar = $oldbiaya - $oldtagihan;
-    //     return $newbiaya - $bayar <= 0 ? 0 : $newbiaya - $bayar;
-    // }
-
-    // private function resetPendaftaran (Identitas $identitas, array $tagihan) :void
-    // {
-    //     $identitas->tagihan->update([
-    //         'biaya_pendaftaran' => $identitas->jalur_pendaftaran->biaya_pendaftaran,
-    //         'tagihan_pendaftaran' => $tagihan['pendaftaran'],
-    //         'admin_pendaftaran' => null,
-    //         'lunas_pendaftaran' => $tagihan['pendaftaran'] <= 0 ? true : false,
-
-    //         'biaya_daftar_ulang' => $identitas->jalur_pendaftaran->biaya_daftar_ulang,
-    //         'tagihan_daftar_ulang' => $tagihan['daftar_ulang'],
-    //         'admin_daftar_ulang' => null,
-    //         'lunas_daftar_ulang' => $tagihan['daftar_ulang'] <= 0 ? true : false,
-
-    //         'biaya_seragam' => $identitas->jalur_pendaftaran->biaya_seragam,
-    //         'tagihan_seragam' => $tagihan['seragam'],
-    //         'admin_seragam' => null,
-    //         'lunas_seragam' => $tagihan['seragam'] <= 0 ? true : false,
-    //     ]);
-    //     $identitas->update([
-    //         'reset' => true,
-    //         'old_status_id' => $identitas->status_id,
-    //         'status_id' => 1,
-    //     ]);
-    // }
 
     // Landing Page Formulir Pendaftaran
     public function index ()
@@ -416,12 +366,18 @@ class FormulirController extends Controller
         $isadmin = $req->user()->level_id ?? 1 !== 1;
         
         // Initiation Credentials
-        // dd(IdentitasValidation::getValidations(
-        //     $isadmin ? $this->validation_admnames : $this->validation_names
-        // ));
         $identitas_creden = $req->validate(IdentitasValidation::getValidations(
             $isadmin ? $this->validation_admnames : $this->validation_names
         ));
+        $onage = Identitas::validateAge($identitas_creden['tanggal_lahir']);
+
+        if (!$onage) {
+            return back()->withErrors([
+                'alerts' => [
+                    $isadmin?'danger':'error' => 'Maaf, umur tidak memenuhi kriteria pendaftaran.'
+                ]
+            ])->withInput($identitas_creden);
+        }
 
         try {
             
@@ -435,7 +391,7 @@ class FormulirController extends Controller
             } else $alerts['info'] = 'Mohon refresh halaman jika kode pendaftaran belum muncul.';
 
             $alerts['success'] = 'Pendaftaran berhasil.';
-            $redir_path = $isadmin ? '/admin/peserta' : '/';
+            $redir_path = $isadmin ? session('oldpath', '/admin/peserta') : '/';
 
             return redirect($redir_path)->withErrors([
                 'alerts' => $alerts
@@ -447,46 +403,6 @@ class FormulirController extends Controller
                 'alerts' => ['error' => 'Maaf, terjadi kesalahan saat memproses data.']
             ])->withInput($identitas_creden);
         }
-
-        // try {
-            
-        //     $validations = $isadmin ? $this->admValidations : $this->validations;
-        //     $validations = IdentitasValidation::getValidations($validations);
-        //     $creden = $req->validate($validations);
-        //     $creden = Identitas::getSubPrestasi($creden);
-        //     $onage = Identitas::validateAge($creden['tanggal_lahir']);
-
-        //     if (!$onage) {
-        //         return back()->withErrors([
-        //             'alerts' => [
-        //                 $isadmin?'danger':'error' => 'Maaf, umur tidak memenuhi kriteria pendaftaran.'
-        //             ]
-        //         ])->withInput($creden);
-        //     }
-        
-        //     Bus::batch([
-        //         new TambahPeserta($creden)
-        //     ])->then(function (Batch $batch) {
-        //         session([
-        //             'pasca_pendaftaran' => true,
-        //             'kode' => TambahPeserta::$peserta->pendaftaran->kode,
-        //             'tagihan' => TambahPeserta::$peserta->tagihan->biaya_pendaftaran
-        //         ]);
-        //     })->dispatch();
-        //     $redir = $isadmin ? '/admin/peserta' : '/';
-
-        //     return redirect($redir)->withErrors([
-        //         'alerts' => ['success' => 'Pendaftaran berhasil.'],
-        //     ]);
-            
-        // } catch (\Exception $th) {
-        //     throw $th;
-        //     return back()->withErrors([
-        //         'alerts' => ['error' => 'Maaf, terjadi kesalahan saat memproses data.']
-        //     ])->withInput($creden);
-
-        // }
-            
     }
 
     public function edit(Identitas $identitas)

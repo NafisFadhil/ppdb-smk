@@ -20,7 +20,8 @@ class PesertaSeeder extends Seeder
     {
         $faker = Factory::create();
         $limit = 100;
-        $jalurs = [1,2,4,5,6,7,8];
+        $jalurs = [1,2,3];
+        $jalurs2 = [4,5,6,7,8];
         $jurusan = ['tkr', 'tsm', 'tkj', 'akuntansi', 'fkk'];
 
         for ($i = 1; $i <= $limit; $i++) {
@@ -31,7 +32,8 @@ class PesertaSeeder extends Seeder
                 'asal_sekolah' => $faker->streetName(),
                 'no_wa_siswa' => '08123456789',
                 'jenis_kelamin_id' => rand(1,2),
-                'jalur_pendaftaran_id' => $jalurs[rand(0,count($jalurs)-1)],
+                'jalur_pendaftaran_id' => rand(1,3),
+                'sub_jalur_pendaftaran_id' => rand(4,8),
             ]);
         }
 

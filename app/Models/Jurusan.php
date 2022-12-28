@@ -53,11 +53,12 @@ class Jurusan extends Model
 		$jurusan = static::getJurusan(strtolower($singkatan));
 		$kode = $jurusan->kode;
 
-        $model = Jurusan::withTrashed()->select('nomor')->where('singkatan', $singkatan)
-			->orderBy('id', 'DESC')->limit(1)->get()->first();
+        $model = Jurusan::withTrashed()->select('nomor')->whereNotNull('nomor')
+		->where('singkatan', $singkatan)->orderBy('nomor', 'DESC')->limit(1)->get()->first();
 
-        if (!$model) $nomor = 1;
-        else $nomor = $model->nomor + 1;
+        if (!$model) {
+			$nomor = 1;
+		} else $nomor = $model->nomor + 1;
 
 		static::$nomor = $nomor;
         

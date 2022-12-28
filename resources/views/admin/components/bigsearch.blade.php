@@ -17,10 +17,10 @@ $input = FormHelper::initInput($input);
 						type="search"
 						name="{{ $input['name'] }}"
 						id="{{ $input['id'] }}"
-						class="form-control vw-100"
+						class="form-control form-control-sm vw-100"
 						value="{{ old('search') ?? request('search') ?? '' }}"
 						placeholder="{{ $input['placeholder'] }}" style="max-width: 400px"
-						autofocus autocomplete="false"
+						autofocus
 					>
 					<div class="input-group-append">
 						<button class="btn btn-primary btn-sm">Temukan</button>
