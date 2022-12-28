@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             DataSeragamSeeder::class,
             DataJenisKelaminSeeder::class,
             DataJalurPendaftaranSeeder::class,
-            PesertaSeeder::class,
+            // PesertaSeeder::class,
         ]);
         
         // $identitas = \App\Models\Identitas::create([
