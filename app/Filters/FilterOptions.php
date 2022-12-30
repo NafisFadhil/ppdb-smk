@@ -30,31 +30,66 @@ trait FilterOptions
             'search',
             'jurusan',
             'jalur',
-            'tanggal',
-            'bulan',
-            'tahun',
+            // 'tanggal',
+            // 'bulan',
+            // 'tahun',
+            'periode',
             'jenis_kelamin',
             'perPage',
             'page',
         ];
 	}
 
+    public static function getLaporanOptions(string $bigtype, string $type) :array
+    {
+        return [
+            [
+                ['type' => 'search', 'name' => 'search', 'placeholder' => 'Cari peserta...'],
+            ],
+            [
+                ['type' => 'select', 'name' => 'type', 'value' => $type, 'options' => static::getTypeOptions($bigtype)],
+                ['type' => 'select', 'name' => 'jurusan', 'options' => \App\Models\Jurusan::getOptions()],
+                ['type' => 'select', 'name' => 'jalur', 'options' => \App\Models\DataJalurPendaftaran::getAdvancedOptions()],
+            ],
+            [
+                ['type' => 'text', 'name' => 'periode', 'attr' => 'daterangepicker'],
+
+                ['type' => 'select', 'name' => 'perPage', 'options' => [
+                    ['label' => '-- Per Page --', 'value' => ''],
+                    5,10,15,20,25,50,100
+                ]],
+            ]
+        ];
+    }
+
+    public static function getVerifikasiOptions() :array
+    {
+        return [
+
+        ];
+    }
+
 	protected static function initFilters (array $usrfilter = []) :array
     {
         return static::$filters = array_replace_recursive([
-            'tahun' => [
+            // 'tahun' => [
+            //     'wheres' => [
+            //         'whereRelation' => ['pendaftaran', DB::raw('YEAR(created_at)')],
+            //     ]
+            // ],
+            // 'bulan' => [
+            //     'wheres' => [
+            //         'whereRelation' => ['pendaftaran', DB::raw('MONTH(created_at)')],
+            //     ]
+            // ],
+            // 'tanggal' => [
+            //     'wheres' => [
+            //         'whereRelation' => ['pendaftaran', DB::raw('DAY(created_at)')],
+            //     ]
+            // ],
+            'periode' => [
                 'wheres' => [
-                    'whereRelation' => ['pendaftaran', DB::raw('YEAR(created_at)')],
-                ]
-            ],
-            'bulan' => [
-                'wheres' => [
-                    'whereRelation' => ['pendaftaran', DB::raw('MONTH(created_at)')],
-                ]
-            ],
-            'tanggal' => [
-                'wheres' => [
-                    'whereRelation' => ['pendaftaran', DB::raw('DAY(created_at)')],
+                    'wherePeriode' => ['']
                 ]
             ],
             'jurusan' => [

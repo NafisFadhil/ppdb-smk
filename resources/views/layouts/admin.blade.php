@@ -59,41 +59,14 @@
 	<script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	@include('admin.components.alerts')
 	
-	{{-- <script src="/plugins/daterangepicker/daterangepicker.js"></script> --}}
+	<script src="/plugins/moment/moment.min.js"></script>
+	<script src="/plugins/daterangepicker/daterangepicker.js"></script>
 	<script src="/plugins/select2/js/select2.full.min.js"></script>
 	<script src="/plugins/datatables/jquery.dataTables.min.js"></script>
 	<script src="/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 	<script src="/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
 	<script src="/adminlte/js/adminlte.min.js"></script>
-	<script>
-		$(function () {
-			let inputs = document.getElementsByClassName('input-uppercase');
-			for (let input of inputs) {
-				input.onkeyup = function () {
-					input.value = input.value.toUpperCase();
-				}
-			}
-			$('#xtable, table.datatable').DataTable({
-				"paging": false,
-				// "pageLength": 10,
-				"lengthChange": false,
-				"searching": false,
-				"ordering": true,
-				"info": false,
-				"autoWidth": false,
-				"responsive": false,
-				"fixedHeader": false,
-			});
-			$('.select2').select2();
-		// 	$('#reservation').daterangepicker({
-    //   timePicker: true,
-    //   timePickerIncrement: 30,
-    //   locale: {
-    //     format: 'MM/DD/YYYY hh:mm A'
-    //   }
-    // });
-		})
-	</script>
+	<script src="/dist/js/admin.js"></script>
 	
 	@stack('scripts')
 </body>

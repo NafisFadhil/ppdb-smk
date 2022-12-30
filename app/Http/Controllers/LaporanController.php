@@ -28,7 +28,16 @@ class LaporanController extends Controller
         $model = Identitas::withTrashed()->with([
             'jurusan', 'jalur_pendaftaran', 'jenis_kelamin', 'tagihan',
             'verifikasi', 'status'
-        ]);
+        ])->select([
+            '*',
+            
+            // DB::raw('SUM(tagihans.bayar) AS total_bayar'),
+        ])
+        ;
+        
+        // dd($model->get());
+        // ->union(DB::query()->selectRaw('count(id) AS total_bayar')->from('tagihans')->get());
+        // DB::query()->selectRaw('SUM(tagihans.bayar) AS total_bayar')->from('tagihans')->get()
 
         if ($bigtype === 'pendaftaran') {
             return $model
@@ -53,40 +62,21 @@ class LaporanController extends Controller
     
     public function index(Request $req, $bigtype)
     {
+        if ($req->query) {
+            dd($req->all());
+        }
         $bigtype = Str::slug($bigtype, '_');
         $type = $req->query('type') ?? $bigtype;
         $data = Filter::filter($this->getModel($bigtype), $req);
         $title_type = $type == $bigtype ? '' : ' '.ucfirst($type);
         $title_bigtype = Str::title(str_replace('_', ' ', $bigtype));
         
-        
         return view('admin.pages.laporan',[
             'page' => ['title' => 'Laporan'.$title_type.' '.$title_bigtype],
             'type' => $type,
             'bigtype' => $bigtype,
             'laporan' => $data,
-            'filters' => [
-                [
-                    ['type' => 'search', 'name' => 'search', 'placeholder' => 'Cari peserta...'],
-                ],
-                [
-                    ['type' => 'select', 'name' => 'type', 'value' => $type, 'options' => Filter::getTypeOptions($bigtype)],
-                    ['type' => 'select', 'name' => 'jurusan', 'options' => Jurusan::getOptions()],
-                    ['type' => 'select', 'name' => 'jalur', 'options' => DataJalurPendaftaran::getAdvancedOptions()],
-                ],
-                [
-                    ['type' => 'select', 'name' => 'tanggal', 'options' => Filter::getTanggalOptions()],
-                    ['type' => 'select', 'name' => 'bulan', 'options' => Filter::getBulanOptions()],
-                    ['type' => 'select', 'name' => 'tahun', 'options' => Filter::getTahunOptions()],
-
-                    // ['type' => 'daterange', 'name' => 'periode'],
-
-                    ['type' => 'select', 'name' => 'perPage', 'options' => [
-                        ['label' => '-- Per Page --', 'value' => ''],
-                        5,10,15,20,25,50,100
-                    ]],
-                ]
-            ],
+            'filters' => Filter::getLaporanOptions($bigtype, $type),
         ]);
     }
 

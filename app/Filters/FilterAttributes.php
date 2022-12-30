@@ -22,6 +22,9 @@ trait FilterAttributes
 	public static string $pageName = 'page';
 	
 	public static int $page = 1;
-	
+
+	public static string $bigtype = '';
+
+	public static string $type = '';
 	
 }

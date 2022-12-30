@@ -128,7 +128,8 @@ class PendaftaranController extends Controller
             $bayar = $pembayaran_creden['bayar'];
             $kurang = $identitas->tagihan->tagihan_pendaftaran - $bayar;
             $lunas = $kurang <= 0;
-            
+            $lebih = $bayar > $kurang;
+
             // Mock Pembayaran
             $pembayaran_creden['type'] = 'pendaftaran';
             $pembayaran_creden['kurang'] = $kurang;

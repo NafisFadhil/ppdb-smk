@@ -4,15 +4,15 @@
 		'title' => 'Input Pembayaran',
 	])
 
-	<form action="/admin/verifikasi/pendaftaran/pembayaran/{{ $row->id }}" method="post">
+	<form action="/admin/verifikasi/pendaftaran/pembayaran/{{ $row->id }}" method="post"
+	data-form-lebih="pendaftaran">
 		@csrf
 
 		{{-- <div class="row"> --}}
 			{{-- @foreach ($subinputers as $subinputs) --}}
 			{{-- <div class="col-12 col-md-6"> --}}
 				@foreach ($subinputs as $input)
-				@include('admin.components.input', [
-				'input' => $input])
+					@include('admin.components.input', ['input' => $input])
 				@endforeach
 				{{-- </div> --}}
 			{{-- @endforeach --}}

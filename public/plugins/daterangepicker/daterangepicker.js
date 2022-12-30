@@ -291,24 +291,24 @@
 
         //if no start/end dates set, check if an input element contains initial values
         if (typeof options.startDate === 'undefined' && typeof options.endDate === 'undefined') {
-            if ($(this.element).is(':text')) {
-                var val = $(this.element).val(),
-                    split = val.split(this.locale.separator);
+            // if ($(this.element).is(':text')) {
+            //     var val = $(this.element).val(),
+            //         split = val.split(this.locale.separator);
 
-                start = end = null;
+            //     start = end = null;
 
-                if (split.length == 2) {
-                    start = moment(split[0], this.locale.format);
-                    end = moment(split[1], this.locale.format);
-                } else if (this.singleDatePicker && val !== "") {
-                    start = moment(val, this.locale.format);
-                    end = moment(val, this.locale.format);
-                }
-                if (start !== null && end !== null) {
-                    this.setStartDate(start);
-                    this.setEndDate(end);
-                }
-            }
+            //     if (split.length == 2) {
+            //         start = moment(split[0], this.locale.format);
+            //         end = moment(split[1], this.locale.format);
+            //     } else if (this.singleDatePicker && val !== "") {
+            //         start = moment(val, this.locale.format);
+            //         end = moment(val, this.locale.format);
+            //     }
+            //     if (start !== null && end !== null) {
+            //         this.setStartDate(start);
+            //         this.setEndDate(end);
+            //     }
+            // }
         }
 
         if (typeof options.ranges === 'object') {
@@ -442,7 +442,7 @@
         // if attached to a text input, set the initial value
         //
 
-        this.updateElement();
+        if (this.element.val()) this.updateElement();
 
     };
 
