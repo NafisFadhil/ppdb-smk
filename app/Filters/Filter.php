@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 class Filter
 {
-	use FilterAttributes, FilterOptions, FilterMethods;
+	use FilterAttributes;
 
 	/**
 	 * Create query builder instance query
@@ -22,13 +22,23 @@ class Filter
 	public static function filter (
 		Model|Builder $model,
 		Request $request,
-		array|null $names = null,
+		string $suptype,
+		string $bigtype = '',
+		string $type = '',
+		string $relation = '',
 		array $filters = [],
+		array $names = [],
 	) :LengthAwarePaginator
 	{
-		static::$filters = static::getFilters($filters, $names); // Replace recursive
+		static::$suptype = $suptype;
+		static::$bigtype = $bigtype;
+		static::$type = $type;
+		static::$relation = $relation ?? $bigtype;
 		static::$request = $request;
 		static::$model = $model;
+		static::$filters = $filters;
+		static::$names = $names;
+		static::$filters = FilterOptions::getFilters(); // Replace recursive
 		
 		foreach (static::$filters as $filter) {
 			$filter = static::initFilter($filter);
@@ -38,7 +48,11 @@ class Filter
 					continue;
 				};
 
+				// if ($filter['name'] === 'periode') {
+				// 	$filter['wheres'] = ['wherePeriode' => []];
+				// } else 
 				$filter['wheres'] = static::initWheres($filter);
+
 				static::getFilter($filter);
 			}
 		}
@@ -70,14 +84,20 @@ class Filter
 	 */
 	protected static function initWheres (array $filter) :array
 	{
-		$wheres = [];;
+		$wheres = $filter['wheres'];
 		foreach ($filter['wheres'] as $type => $conds) {
 			$value = $filter['value']; 
 			$variant = $filter['variant'];
 
 			if ($variant === 'midlike') $value = "%$value%";
+			if ($filter['name'] === 'periode') {
+				static::$periode = explode(' - ', $value);
+				// $wheres[$type] = [];
+				break;
+			}
 			$wheres[$type] = static::insertWhereValue($conds, $value);
 		}
+		// static::$wheres[] = $wheres;
 		return $wheres;
 	}
 
@@ -88,13 +108,9 @@ class Filter
 	 * @param string|null $value
 	 * @return array
 	 */
-	protected static function insertWhereValue (array $conds, string|null $value = null) :array
+	protected static function insertWhereValue (array $conds, mixed $value = null) :array
 	{
-		// if (count($conds) >= 3) {
-		// 	array_splice($conds, 2, 0, $value);
-		// } else 
 		$conds[] = $value;
-
 		return $conds;
 	}
 
@@ -104,8 +120,7 @@ class Filter
 	 * @param string $name
 	 * @return string|int|null
 	 */
-	public static function getValue (string $name)
-	{
+	public static function getValue (string $name) {
 		return static::$request->get($name);
 	}
 
@@ -121,8 +136,8 @@ class Filter
 		foreach ($filter['wheres'] as $type => $conds) {
 			$uctype = ucfirst($type);
 			$method = 'filter'.$uctype;
-			if (method_exists(static::class, $method)) {
-				static::$model = static::$method($conds);
+			if (method_exists(FilterMethods::class, $method)) {
+				static::$model = FilterMethods::$method($conds);
 			} else static::$model = static::globalFilter($type, $conds);
 		}
 	}

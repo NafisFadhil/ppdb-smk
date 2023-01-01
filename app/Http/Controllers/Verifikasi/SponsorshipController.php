@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Verifikasi;
 
 use App\Filters\Filter;
+use App\Filters\FilterOptions;
 use App\Http\Controllers\Controller;
 use App\Models\DataJalurPendaftaran;
 use App\Models\Identitas;
@@ -24,19 +25,21 @@ class SponsorshipController extends Controller
     public function index(Request $req)
     {
         session(['oldpath' => request()->path()]);
-        $data = Filter::filter($this->getModel(), $req, null, [
-            'search' => [
-                'wheres' => [
-                    'whereRelation' => ['sponsorship', 'nama', 'LIKE'],
-                    'orWhereRelation' => ['sponsorship', 'kelas', 'LIKE'],
-                    'orWhereRelation' => ['sponsorship', 'no_wa', 'LIKE'],
-                    'orWhereRelation' => ['pendaftaran', 'kode', 'LIKE'],
-                    'orWhereRelation' => ['jurusan', 'kode', 'LIKE'],
-                    'orWhere' => ['identitas', 'nama_lengkap', 'LIKE'],
-                    'orWhere' => ['identitas', 'asal_sekolah', 'LIKE'],
+        $data = Filter::filter($this->getModel(), $req, 'verifikasi', 'sponsorship', 
+            filters: [
+                'search' => [
+                    'wheres' => [
+                        'whereRelation' => ['sponsorship', 'nama', 'LIKE'],
+                        'orWhereRelation' => ['sponsorship', 'kelas', 'LIKE'],
+                        'orWhereRelation' => ['sponsorship', 'no_wa', 'LIKE'],
+                        'orWhereRelation' => ['pendaftaran', 'kode', 'LIKE'],
+                        'orWhereRelation' => ['jurusan', 'kode', 'LIKE'],
+                        'orWhere' => ['identitas', 'nama_lengkap', 'LIKE'],
+                        'orWhere' => ['identitas', 'asal_sekolah', 'LIKE'],
+                    ]
                 ]
             ]
-        ]);
+        );
         
         return view('admin.pages.table', [
             'page' => ['title' => 'Verifikasi Sponsorship'],
@@ -51,9 +54,9 @@ class SponsorshipController extends Controller
                     ['type' => 'select', 'name' => 'jalur', 'options' => DataJalurPendaftaran::getAdvancedOptions()],
                 ],
                 [
-                    ['type' => 'select', 'name' => 'tanggal', 'options' => Filter::getTanggalOptions()],
-                    ['type' => 'select', 'name' => 'bulan', 'options' => Filter::getBulanOptions()],
-                    ['type' => 'select', 'name' => 'tahun', 'options' => Filter::getTahunOptions()],
+                    ['type' => 'select', 'name' => 'tanggal', 'options' => FilterOptions::getTanggalOptions()],
+                    ['type' => 'select', 'name' => 'bulan', 'options' => FilterOptions::getBulanOptions()],
+                    ['type' => 'select', 'name' => 'tahun', 'options' => FilterOptions::getTahunOptions()],
 
                     ['type' => 'select', 'name' => 'perPage', 'options' => [
                         ['label' => '-- Per Page --', 'value' => ''],

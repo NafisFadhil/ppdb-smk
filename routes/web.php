@@ -63,7 +63,9 @@ Route::get('/test', function () {
     // dd($model->nomor + 1);
     // dd(Jurusan::getKode('tsm'));
     // dd([...request()->query->all()]);
-    dd(request()->fullUrlWithQuery([...request()->query->all(), 'page' => 2]));
+    // dd(request()->fullUrlWithQuery([...request()->query->all(), 'page' => 2]));
+    // $strain = new \App\Strainer\Strain();
+    // dd($strain->model);
 });
 
 

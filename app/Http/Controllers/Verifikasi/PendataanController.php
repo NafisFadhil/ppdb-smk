@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Verifikasi;
 
 use App\Filters\Filter;
+use App\Filters\FilterOptions;
 use App\Http\Controllers\Controller;
 use App\Models\DataJalurPendaftaran;
 use App\Models\Identitas;
@@ -23,31 +24,13 @@ class PendataanController extends Controller
 	public function index(Request $req)
 	{
 		session(['oldpath' => request()->path()]);
-        $data = Filter::filter($this->getModel(), $req);
+        $data = Filter::filter($this->getModel(), $req, 'verifikasi', 'pendataan', relation: '-');
         
         return view('admin.pages.table', [
             'page' => ['title' => 'Verifikasi Pendataan'],
             'table' => 'verifikasi-pendataan',
             'peserta' => $data,
-            'filters' => [
-                [
-                    ['type' => 'search', 'name' => 'search', 'placeholder' => 'Cari peserta...'],
-                ],
-                [
-                    ['type' => 'select', 'name' => 'jurusan', 'options' => Jurusan::getOptions()],
-                    ['type' => 'select', 'name' => 'jalur', 'options' => DataJalurPendaftaran::getAdvancedOptions()],
-                ],
-                [
-                    ['type' => 'select', 'name' => 'tanggal', 'options' => Filter::getTanggalOptions()],
-                    ['type' => 'select', 'name' => 'bulan', 'options' => Filter::getBulanOptions()],
-                    ['type' => 'select', 'name' => 'tahun', 'options' => Filter::getTahunOptions()],
-
-                    ['type' => 'select', 'name' => 'perPage', 'options' => [
-                        ['label' => '-- Per Page --', 'value' => ''],
-                        5,10,15,20,25,50,100
-                    ]],
-                ]
-            ]
+            'filters' => FilterOptions::getVerifikasiFormOptions('pendataan')
         ]);
 	}
 

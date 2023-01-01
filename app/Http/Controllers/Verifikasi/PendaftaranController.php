@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Verifikasi;
 
 use App\Filters\Filter;
+use App\Filters\FilterOptions;
 use App\Helpers\ModelHelper;
 use App\Http\Controllers\Controller;
 use App\Models\DataJalurPendaftaran;
@@ -26,31 +27,13 @@ class PendaftaranController extends Controller
     public function index (Request $req)
     {
         session(['oldpath' => request()->path()]);
-        $data = Filter::filter($this->getModel(), $req);
+        $data = Filter::filter($this->getModel(), $req, 'verifikasi', 'pendaftaran');
         
         return view('admin.pages.table', [
             'page' => ['title' => 'Verifikasi Pendaftaran'],
             'table' => 'verifikasi-pendaftaran',
             'peserta' => $data,
-            'filters' => [
-                [
-                    ['type' => 'search', 'name' => 'search', 'placeholder' => 'Cari peserta...'],
-                ],
-                [
-                    ['type' => 'select', 'name' => 'jurusan', 'options' => Jurusan::getOptions()],
-                    ['type' => 'select', 'name' => 'jalur', 'options' => DataJalurPendaftaran::getAdvancedOptions()],
-                ],
-                [
-                    ['type' => 'select', 'name' => 'tanggal', 'options' => Filter::getTanggalOptions()],
-                    ['type' => 'select', 'name' => 'bulan', 'options' => Filter::getBulanOptions()],
-                    ['type' => 'select', 'name' => 'tahun', 'options' => Filter::getTahunOptions()],
-
-                    ['type' => 'select', 'name' => 'perPage', 'options' => [
-                        ['label' => '-- Per Page --', 'value' => ''],
-                        5,10,15,20,25,50,100
-                    ]],
-                ]
-            ]
+            'filters' => FilterOptions::getVerifikasiFormOptions('pendaftaran')
         ]);
     }
 

@@ -6,41 +6,25 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
-trait FilterOptions
+class FilterOptions
 {
-	use FilterAttributes;
+	// use FilterAttributes;
 
-	public static function getFilters (array $filters, array|null $names = null) :array
-    {
-		$names = is_null($names) ? static::getDefaultFilterNames() : $names;
-        static::initFilters($filters); // Replace recursive
+	public static function getFilters () :array {
+        FilterParser::parseNames();
+        FilterParser::parseFilters();
+        static::initFilters();
+
         $newfilters = [];
-		
-        foreach ($names as $name) {
-            if (array_key_exists($name, static::$filters)) {
-                $newfilters[] = ['name' => $name, ...static::$filters[$name]];
+        foreach (Filter::$names as $name) {
+            if (array_key_exists($name, Filter::$filters)) {
+                $newfilters[] = ['name' => $name, ...Filter::$filters[$name]];
             }
         }
         return $newfilters;
     }
 
-	public static function getDefaultFilterNames () :array
-	{
-		return [
-            'search',
-            'jurusan',
-            'jalur',
-            // 'tanggal',
-            // 'bulan',
-            // 'tahun',
-            'periode',
-            'jenis_kelamin',
-            'perPage',
-            'page',
-        ];
-	}
-
-    public static function getLaporanOptions(string $bigtype, string $type) :array
+    public static function getLaporanFormOptions(string $bigtype, string $type) :array
     {
         return [
             [
@@ -52,7 +36,7 @@ trait FilterOptions
                 ['type' => 'select', 'name' => 'jalur', 'options' => \App\Models\DataJalurPendaftaran::getAdvancedOptions()],
             ],
             [
-                ['type' => 'text', 'name' => 'periode', 'attr' => 'daterangepicker'],
+                ['type' => 'text', 'name' => 'periode', 'placeholder' => '-- Pilih Periode --', 'attr' => 'daterangepicker'],
 
                 ['type' => 'select', 'name' => 'perPage', 'options' => [
                     ['label' => '-- Per Page --', 'value' => ''],
@@ -62,36 +46,32 @@ trait FilterOptions
         ];
     }
 
-    public static function getVerifikasiOptions() :array
+    public static function getVerifikasiFormOptions(string $bigtype) :array
     {
         return [
+            [
+                ['type' => 'search', 'name' => 'search', 'placeholder' => 'Cari peserta...'],
+            ],
+            [
+                // ['type' => 'select', 'name' => 'type', 'value' => $type, 'options' => static::getTypeOptions($bigtype)],
+                ['type' => 'text', 'name' => 'periode', 'placeholder' => '-- Pilih Periode --', 'attr' => 'daterangepicker'],
+                ['type' => 'select', 'name' => 'jurusan', 'options' => \App\Models\Jurusan::getOptions()],
+                ['type' => 'select', 'name' => 'jalur', 'options' => \App\Models\DataJalurPendaftaran::getAdvancedOptions()],
+            // ],
+            // [
 
+                ['type' => 'select', 'name' => 'perPage', 'options' => [
+                    ['label' => '-- Per Page --', 'value' => ''],
+                    5,10,15,20,25,50,100
+                ]],
+            ]
         ];
     }
 
-	protected static function initFilters (array $usrfilter = []) :array
+	protected static function initFilters () :array
     {
-        return static::$filters = array_replace_recursive([
-            // 'tahun' => [
-            //     'wheres' => [
-            //         'whereRelation' => ['pendaftaran', DB::raw('YEAR(created_at)')],
-            //     ]
-            // ],
-            // 'bulan' => [
-            //     'wheres' => [
-            //         'whereRelation' => ['pendaftaran', DB::raw('MONTH(created_at)')],
-            //     ]
-            // ],
-            // 'tanggal' => [
-            //     'wheres' => [
-            //         'whereRelation' => ['pendaftaran', DB::raw('DAY(created_at)')],
-            //     ]
-            // ],
-            'periode' => [
-                'wheres' => [
-                    'wherePeriode' => ['']
-                ]
-            ],
+        return Filter::$filters = array_replace([
+            'periode' => ['wheres' => ['periode' => []]],
             'jurusan' => [
                 'wheres' => [
                     'whereRelation' => ['jurusan', 'singkatan'],
@@ -118,7 +98,7 @@ trait FilterOptions
             ],
             'perPage' => ['wheres' => ['perPage' => []]],
             'page' => ['wheres' => ['page' => []]],
-        ], $usrfilter);
+        ], Filter::$filters);
     }
 	
 	public static function getTahunOptions () :array

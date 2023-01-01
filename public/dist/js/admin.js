@@ -34,11 +34,26 @@ $(function () {
 
 
 
-	$('input[daterangepicker]').daterangepicker();
-	// $('input[daterangepicker]').map((i,elem) => {
-	// 	elem = $(elem);
-	// 	if (!elem.val()) {
-	// 		elem.attr('placeholder')
-	// 	}
-	// });
+	$('input[daterangepicker]').each(function (i, elem) {
+		elem = $(elem);
+		let value = elem.val(), opt = [];
+		let parsedValue = value.split(' - ') || [];
+		console.log(value);
+		console.log(parsedValue);
+
+		if (parsedValue.length > 1) {
+			opt = {
+				startDate: parsedValue[0] || '',
+				endDate: parsedValue[1] || '',
+			}
+		}
+
+		$(elem).daterangepicker({
+			...opt,
+			locale: {
+				format: 'YYYY-MM-DD',
+				separator: ' - '
+			}
+		});
+	})
 })
