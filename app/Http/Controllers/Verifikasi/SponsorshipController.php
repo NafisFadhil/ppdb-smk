@@ -64,11 +64,7 @@ class SponsorshipController extends Controller
             $sponsorship_creden['identitas_id'] = $identitas->id;
 
             // Queue Database Transaction
-            dispatch_sync(function () use (
-                $sponsorship_creden, $identitas
-            ) {
-                $identitas->sponsorship()->create($sponsorship_creden);
-            });
+            $identitas->sponsorship()->create($sponsorship_creden);
 
             $alerts['success'] = 'Sponsorship berhasil ditambahkan.';
             

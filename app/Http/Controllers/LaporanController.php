@@ -97,13 +97,17 @@ class LaporanController extends Controller
             $this->getModel($bigtype),
             $req, 'laporan', $bigtype, $type
         );
+
+        $form_options = in_array($bigtype, ['pendaftaran', 'daftar_ulang', 'seragam']) ?
+        FilterOptions::getLaporanFormOptions($bigtype, $type) :
+        FilterOptions::getVerifikasiFormOptions($bigtype);
         
         return view('admin.pages.laporan',[
             'page' => ['title' => 'Laporan'.$title_type.' '.$title_bigtype],
             'type' => $type,
             'bigtype' => $bigtype,
             'laporan' => $data,
-            'filters' => FilterOptions::getLaporanFormOptions($bigtype, $type),
+            'filters' => $form_options,
         ]);
     }
 

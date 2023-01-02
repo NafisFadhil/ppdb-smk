@@ -42,6 +42,7 @@ class SiswaController extends Controller
 
     public function index()
     {
+        session(['oldpath' => '/'.request()->path()]);
         return view('siswa.pages.index', [
             'page' => ['title' => 'Beranda - Halaman Siswa', 'subtitle' => 'Beranda'],
             'xstatus' => Status::all()
@@ -50,6 +51,8 @@ class SiswaController extends Controller
 
     public function daftar_ulang()
     {
+        session(['oldpath' => '/'.request()->path()]);
+        
         if (auth()->user()->identitas->verifikasi->identitas) {
             return redirect('/siswa')->withErrors([
                 'alerts' => ['warning' => 'Maaf, identitas sudah diverifikasi oleh admin dan tidak dapat diubah.']

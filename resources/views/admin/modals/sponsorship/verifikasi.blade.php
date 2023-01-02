@@ -46,7 +46,7 @@ $inputs = [
 		'title' => 'Verifikasi Sponsorship'
 	])
 
-		<form action="/admin/verifikasi/sponsorship/{{ $row->id }}" method="post">
+		<form action="/admin/verifikasi/sponsorship/verifikasi/{{ $row->id }}" method="post">
 			@csrf
 
 			@foreach ($inputs as $input)

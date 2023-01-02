@@ -53,6 +53,27 @@ class FormulirController extends Controller
         'nama_jurusan', 
     ];
 
+    private $validation_siswanames = [
+        'no_wa_siswa',
+        'no_wa_ortu',
+        'tempat_lahir',
+        'alamat_desa',
+        'alamat_kec',
+        'alamat_kota_kab',
+        'alamat_rt',
+        'alamat_rw',
+        'alamat_gg',
+        'nama_ayah',
+        'tahun_lahir_ayah',
+        'nama_ibu',
+        'tahun_lahir_ibu',
+        'jumlah_saudara_kandung',
+        'nik',
+        'nisn',
+        'no_ujian_nasional',
+        'no_ijazah',
+    ];
+
     private $validation_admnames = [
         'jalur_pendaftaran_id', 
         'sub_jalur_pendaftaran_id', 
@@ -407,6 +428,7 @@ class FormulirController extends Controller
 
     public function edit(Identitas $identitas)
     {
+        session(['oldpath', '/'.request()->path()]);
         return view('admin.pages.forms', [
             'page' => ['title' => 'Edit Data Pendaftaran'],
             'data' => $identitas,
@@ -426,11 +448,15 @@ class FormulirController extends Controller
     // protected $identitas;
     public function update(Request $req, Identitas $identitas)
     {
+        $isadmin = $req->user()->level->name !== 'siswa';
+
         // Initiation Credentials
-        $identitas_creden = $req->validate(IdentitasValidation::getValidations($this->validation_admnames));
-        $seragam_creden = $req->validate(SeragamValidation::getValidations([
-            'ukuran_olahraga', 'ukuran_wearpack', 'ukuran_almamater'
-        ]));
+        $identitas_creden = $req->validate(IdentitasValidation::getValidations(
+            $isadmin ? $this->validation_admnames : $this->validation_siswanames
+        ));
+        $seragam_creden = $req->validate(SeragamValidation::getValidations(
+            $isadmin ? ['ukuran_olahraga', 'ukuran_wearpack', 'ukuran_almamater'] : []
+        ));
         $tagihan_creden = [];
         $verifikasi_creden = [];
         $jurusan_creden = [];
@@ -438,57 +464,60 @@ class FormulirController extends Controller
 
         try {
 
-            // Alur Logika Jalur Pendaftaran
-            $identitas_creden = Identitas::getSubPrestasi($identitas_creden);
-            
-            // Parse Nama Jurusan
-            $jurusan = Jurusan::getJurusan($identitas_creden['nama_jurusan']);
-            unset($identitas_creden['nama_jurusan']);
-            
-            // Checking State
-            $pindah_jalur = (int) $identitas_creden['jalur_pendaftaran_id'] !== (int) $identitas->jalur_pendaftaran_id;
-            $pindah_jurusan = strtolower($jurusan->singkatan) !== strtolower($identitas->jurusan->singkatan);
+            if ($isadmin) {
 
-            // Get Jalur Pendaftaran
-            $jalur = DataJalurPendaftaran::getJalurPendaftaran(
-                $identitas_creden['jalur_pendaftaran_id']
-            );
-
-            // Handle Pindah Jalur
-            if ($pindah_jalur || $pindah_jurusan) {
+                // Alur Logika Jalur Pendaftaran
+                $identitas_creden = Identitas::getSubPrestasi($identitas_creden);
                 
-                // Dispatch Job Reset Tagihan
-                ResetTagihan::dispatchSync($identitas, $jalur);
-
-                // Dispatch Job Reset Verifikasi
-                ResetVerifikasi::dispatchSync($identitas);
-
-                // Jurusan Mocking
-                if ($pindah_jurusan) {
-                    $jurusan_creden = [
-                        'nama' => $jurusan->nama,
-                        'slug' => $jurusan->slug,
-                        'singkatan' => $jurusan->singkatan,
-                    ];
+                // Parse Nama Jurusan
+                $jurusan = Jurusan::getJurusan($identitas_creden['nama_jurusan']);
+                unset($identitas_creden['nama_jurusan']);
+                
+                // Checking State
+                $pindah_jalur = (int) $identitas_creden['jalur_pendaftaran_id'] !== (int) $identitas->jalur_pendaftaran_id;
+                $pindah_jurusan = strtolower($jurusan->singkatan) !== strtolower($identitas->jurusan->singkatan);
+    
+                // Get Jalur Pendaftaran
+                $jalur = DataJalurPendaftaran::getJalurPendaftaran(
+                    $identitas_creden['jalur_pendaftaran_id']
+                );
+    
+                // Handle Pindah Jalur
+                if ($pindah_jalur || $pindah_jurusan) {
+                    
+                    // Dispatch Job Reset Tagihan
+                    ResetTagihan::dispatchSync($identitas, $jalur);
+    
+                    // Dispatch Job Reset Verifikasi
+                    ResetVerifikasi::dispatchSync($identitas);
+    
+                    // Jurusan Mocking
+                    if ($pindah_jurusan) {
+                        $jurusan_creden = [
+                            'nama' => $jurusan->nama,
+                            'slug' => $jurusan->slug,
+                            'singkatan' => $jurusan->singkatan,
+                        ];
+                    }
+    
+                    // Identitas Mocking
+                    $identitas_creden['status_id'] = 1;
                 }
+    
+                // Database Transaction
+                if (!empty($jurusan_creden)) $identitas->jurusan->update($jurusan_creden);
+                if (!empty($tagihan_creden)) $identitas->tagihan->update($tagihan_creden);
+                if (!empty($verifikasi_creden)) $identitas->verifikasi->update($verifikasi_creden);
+                if (!empty($seragam_creden)) $identitas->seragam->update($seragam_creden);
 
-                // Identitas Mocking
-                $identitas_creden['status_id'] = 1;
             }
-
-            // Database Transaction
-            if (!empty($jurusan_creden)) $identitas->jurusan->update($jurusan_creden);
-            if (!empty($tagihan_creden)) $identitas->tagihan->update($tagihan_creden);
-            if (!empty($verifikasi_creden)) $identitas->verifikasi->update($verifikasi_creden);
-            $identitas->seragam->update($seragam_creden);
+            
             $identitas->update($identitas_creden);
 
             $alerts['success'] = ' Berhasil mengubah data.';
             $redir_path = session('oldpath', '/admin/peserta');
-            
-            return redirect()->intended($redir_path)->withErrors([
-                'alerts' => $alerts
-            ]);
+
+            return redirect($redir_path)->withErrors([ 'alerts' => $alerts ]);
             
         } catch (\Throwable $th) {
             throw $th;

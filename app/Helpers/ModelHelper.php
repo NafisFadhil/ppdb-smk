@@ -105,7 +105,7 @@ class ModelHelper
 	public static function formatTanggal($tanggal = null)
 	{
 		$date = new DateTime($tanggal);
-		return date_format($date, 'd-m-Y');
+		return date_format($date, 'd/m/Y');
 	}
 
 	public static function formatFullTanggal($tanggal = null)

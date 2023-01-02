@@ -101,10 +101,10 @@ Route::middleware('auth')->group(function () {
             Route::get('/daftar-ulang', 'daftar_ulang');
         });
     
-        Route::controller(DUSeragamController::class)->group(function () {
-            // Route::get('/duseragam', 'index');
-            // Route::post('/duseragam', 'store');
-        });
+        // Route::controller(DUSeragamController::class)->group(function () {
+        //     // Route::get('/duseragam', 'index');
+        //     // Route::post('/duseragam', 'store');
+        // });
 
         Route::controller(FormulirController::class)->group(function () {
             Route::post('/duseragam/{identitas:id}', 'update');
@@ -163,7 +163,7 @@ Route::middleware('auth')->group(function () {
             ->group(function () {
                 Route::get('/', 'index');
                 Route::post('/{identitas:id}', 'store');
-                Route::post('/{identitas:id}', 'verifikasi');
+                Route::post('/verifikasi/{identitas:id}', 'verifikasi');
                 Route::post('/edit/{sponsorship:id}', 'update');
                 Route::get('/hapus/{sponsorship:id}', 'hapus')->middleware('superadmin');
             });

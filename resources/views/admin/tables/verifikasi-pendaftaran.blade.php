@@ -122,6 +122,7 @@ $inputs = [
 			<th>Jalur</th>
 			<th>Jenis Kelamin</th>
 			<th>Asal Sekolah</th>
+			<th>Tanggal Lahir</th>
 			<th>Jurusan</th>
 			<th>Status</th>
 			<th>Tindakan</th>
@@ -136,6 +137,7 @@ $inputs = [
 				<td>{{ ModelHelper::getJalur($row->jalur_pendaftaran) }}</td>
 				<td>{{ ModelHelper::getJenisKelamin($row->jenis_kelamin_id) }}</td>
 				<td>{{ $row->asal_sekolah }}</td>
+				<td>{{ ModelHelper::formatTanggal($row->tanggal_lahir) }}</td>
 				<td>{{ StringHelper::toCapital($row->jurusan->singkatan) }}</td>
 				<td class="text-success" title="{{ $row->status->desc }}">
 					{{ $row->status->sublevel }}

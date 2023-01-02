@@ -25,35 +25,36 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return 'OK';
 // });
 
-Route::get('/remigrate', function() {
-    Artisan::call('migrate:fresh --seed');
-    return 'OK';
-});
+// Route::get('/remigrate', function() {
+//     Artisan::call('migrate:fresh --seed');
+//     return 'OK';
+// });
 
 // Route::get('/remigrate', function() {
 //     Artisan::call('migrate:fresh --seed');
 //     return 'OK';
 // });
 
-Route::get('/optimize', function() {
-    Artisan::call('optimize:clear');
-    Artisan::call('optimize');
-    Artisan::call('view:cache');
-    return 'SUCCESS';
-});
+// Route::get('/optimize', function() {
+//     Artisan::call('optimize:clear');
+//     Artisan::call('optimize');
+//     Artisan::call('view:cache');
+//     return 'SUCCESS';
+// });
 
-Route::get('/repull', function() {
-    $path = base_path();
-    exec('cd '.$path.' && git pull');
-    return 'SUCCESS';
-});
+// Route::get('/repull', function() {
+//     $path = base_path();
+//     exec('cd '.$path.' && git pull');
+//     return 'SUCCESS';
+// });
 
 Route::get('/renew', function() {
     $path = base_path();
-    exec('cd '.$path.' && git pull');
+    Artisan::call('down');
+    exec('cd '.$path.' && git stash && git pull && rm -f .env && cp ../ppdb-smk-backup/.env .env');
     Artisan::call('optimize:clear');
     Artisan::call('optimize');
-    Artisan::call('view:cache');
+    Artisan::call('up');
     return 'SUCCESS';
 });
 

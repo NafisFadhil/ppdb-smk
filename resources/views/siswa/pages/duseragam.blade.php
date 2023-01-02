@@ -14,6 +14,7 @@ $forms = [
 				['name' => 'jenis_kelamin', 'value' => ModelHelper::getJenisKelamin($identitas->jenis_kelamin_id), 'attr'=> 'disabled'],
 				['name' => 'tanggal_lahir', 'value' => $identitas->tanggal_lahir, 'attr'=> 'disabled'],
 				['name' => 'asal_sekolah', 'value' => $identitas->asal_sekolah, 'attr'=> 'disabled'],
+				['name' => 'nama_jurusan', 'value' => $identitas->jurusan->singkatan, 'attr'=> 'disabled'],
 			]
 		],
 		[
@@ -67,7 +68,7 @@ $forms = [
 
 @section('main')
 	{{-- <div class="row"> --}}
-		<form action="/duseragam/{{ auth()->user()->id }}" method="POST" class="row">
+		<form action="/siswa/duseragam/{{ auth()->user()->identitas->id }}" method="POST" class="row">
 		@csrf
 
 		@foreach ($forms as $form)
@@ -83,24 +84,7 @@ $forms = [
 							<div class="card-body">
 								
 								@foreach ($subform['inputs'] as $input)
-									<?php //$input = FormHelper::initInput($input) ?>
-									@include('siswa.components.input', [
-										'input' => $input
-									])
-									
-									{{-- <div class="form-group">
-										<label for="{{ $input['id'] }}" class="form-label">
-											{{ $input['label'] }}
-										</label>
-
-										<input type="{{ $input['type'] }}"
-											name="{{ $input['name'] }}"
-											id="{{ $input['id'] }}"
-											value="{{ old($input['name']) ?? $identitas[$input['name']] ?? $input['value'] ?? '' }}"
-											class="form-control form-control-sm"
-											{!! $input['attr'] !!}
-										/>
-									</div> --}}
+									@include('siswa.components.input', ['input' => $input])
 								@endforeach
 
 							</div>
