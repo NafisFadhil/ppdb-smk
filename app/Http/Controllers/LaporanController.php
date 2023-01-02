@@ -27,7 +27,7 @@ class LaporanController extends Controller
 
     protected function getModel ($bigtype) {
         $model = Identitas::withTrashed()
-        ->withSum('pembayarans as total_pembayaran', 'bayar')
+        // ->withSum('pembayarans as total_pembayaran', 'bayar')
         ->with([
             'jurusan', 'jalur_pendaftaran', 'jenis_kelamin',
             'tagihan', 'verifikasi', 'status'
