@@ -119,6 +119,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/peserta', 'peserta');
             Route::get('/tagihan/{identitas:id}', 'tagihan');
             Route::get('/pembayaran/{identitas:id}', 'pembayaran');
+            Route::get('/pembayaran/edit/{identitas:id}', 'edit_pembayaran');
+            Route::post('/pembayaran/edit/{identitas:id}', 'update_pembayaran');
             Route::get('/hapus/{identitas:id}', 'hapus')->middleware('superadmin');
         });
         

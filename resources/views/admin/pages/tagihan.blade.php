@@ -73,13 +73,28 @@ $data = $data ?? $row ?? $siswa ?? $peserta ?? $identitas ?? collect([]);
 						
 					</div>
 					@if($type !== 'identitas')
-						<div class="card-footer p-0">
-							<a href="/admin/pembayaran/{{ $data->id }}?type={{ $type }}" class="btn btn-dark btn-sm btn-block"
-							style="border-top-left-radius: 0; border-top-right-radius:0">
+						@if(auth()->user()->level->name === 'super-admin')
+						<div class="card-footer btn-group mb-0 p-0">
+							<a href="/admin/pembayaran/{{ $data->id }}?type={{ $type }}" class="btn btn-dark btn-sm"
+							style="border-top-left-radius: 0; border-right-radius:0; flex: 1;">
 								Detail Pembayaran
 								<i class="fa fa-arrow-right" style="margin-bottom: -.1rem"></i>
 							</a>
+							<a href="/admin/pembayaran/edit/{{ $data->id }}?type={{ $type }}" class="btn btn-warning btn-sm"
+							style="border-top-right-radius: 0; border-left-radius:0; flex: 1;">
+								Edit Pembayaran
+								<i class="fa fa-edit" style="margin-bottom: -.1rem"></i>
+							</a>
 						</div>
+						@else
+							<div class="card-footer p-0">
+								<a href="/admin/pembayaran/{{ $data->id }}?type={{ $type }}" class="btn btn-dark btn-sm btn-block"
+								style="border-top-left-radius: 0; border-top-right-radius:0">
+									Detail Pembayaran
+									<i class="fa fa-arrow-right" style="margin-bottom: -.1rem"></i>
+								</a>
+							</div>
+						@endif
 					@endif
 				</div>
 			</div>

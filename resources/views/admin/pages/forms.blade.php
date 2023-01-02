@@ -19,10 +19,12 @@ function htmlButtonOnly($button) { ?>
 	style="max-width: max-content">
 		<i class="fa fa-arrow-left"></i> Kembali
 	</a>
-	<button type="submit" class="btn btn-sm btn-{{ $button['variant'] }} mx-auto"
-	style="max-width: max-content">
-		{!! $button['content'] !!}
-	</button>
+	@if(count($button))
+		<button type="submit" class="btn btn-sm btn-{{ $button['variant'] }} mx-auto"
+		style="max-width: max-content">
+			{!! $button['content'] !!}
+		</button>
+	@endif
 <?php } ?>
 
 @section('content')

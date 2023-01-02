@@ -35,8 +35,8 @@ class SponsorshipController extends Controller
                         'orWhereRelation' => ['sponsorship', 'no_wa', 'LIKE'],
                         'orWhereRelation' => ['pendaftaran', 'kode', 'LIKE'],
                         'orWhereRelation' => ['jurusan', 'kode', 'LIKE'],
-                        'orWhere' => ['identitas', 'nama_lengkap', 'LIKE'],
-                        'orWhere' => ['identitas', 'asal_sekolah', 'LIKE'],
+                        'orWhere' => ['nama_lengkap', 'LIKE'],
+                        'orWhere' => ['asal_sekolah', 'LIKE'],
                     ]
                 ]
             ]
