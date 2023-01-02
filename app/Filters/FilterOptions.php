@@ -53,13 +53,9 @@ class FilterOptions
                 ['type' => 'search', 'name' => 'search', 'placeholder' => 'Cari peserta...'],
             ],
             [
-                // ['type' => 'select', 'name' => 'type', 'value' => $type, 'options' => static::getTypeOptions($bigtype)],
                 ['type' => 'text', 'name' => 'periode', 'placeholder' => '-- Pilih Periode --', 'attr' => 'daterangepicker'],
                 ['type' => 'select', 'name' => 'jurusan', 'options' => \App\Models\Jurusan::getOptions()],
                 ['type' => 'select', 'name' => 'jalur', 'options' => \App\Models\DataJalurPendaftaran::getAdvancedOptions()],
-            // ],
-            // [
-
                 ['type' => 'select', 'name' => 'perPage', 'options' => [
                     ['label' => '-- Per Page --', 'value' => ''],
                     5,10,15,20,25,50,100

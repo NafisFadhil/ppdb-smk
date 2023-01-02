@@ -26,7 +26,9 @@ class LaporanController extends Controller
     protected array $filters;
 
     protected function getModel ($bigtype) {
-        $model = Identitas::withTrashed()->withSum('pembayarans', 'bayar')->with([
+        $model = Identitas::withTrashed()
+        ->withSum('pembayarans as total_pembayaran', 'bayar')
+        ->with([
             'jurusan', 'jalur_pendaftaran', 'jenis_kelamin',
             'tagihan', 'verifikasi', 'status'
         ]);
@@ -95,7 +97,6 @@ class LaporanController extends Controller
             $this->getModel($bigtype),
             $req, 'laporan', $bigtype, $type
         );
-        // dd(Filter::$periode);
         
         return view('admin.pages.laporan',[
             'page' => ['title' => 'Laporan'.$title_type.' '.$title_bigtype],
