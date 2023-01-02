@@ -31,15 +31,16 @@ class FilterMethods
 
 	public static function filterPeriode () {
 		$periode = Filter::$periode;
-		if (Filter::$relation !== '-') {
-			return Filter::$model
-			->whereRelation(Filter::$relation, DB::raw('DATE(updated_at)'), '>', DB::raw('DATE("'.$periode[0].'")'))
-			->whereRelation(Filter::$relation, DB::raw('DATE(updated_at)'), '<', DB::raw('DATE("'.$periode[1].'")'));
-		} else {
+		// return Filter::$model;
+		// if (Filter::$relation !== '-') {
+		// 	return Filter::$model
+		// 	->whereRelation(Filter::$relation, DB::raw('DATE(created_at)'), '>', DB::raw('DATE("'.$periode[0].'")'))
+		// 	->whereRelation(Filter::$relation, DB::raw('DATE(created_at)'), '<', DB::raw('DATE("'.$periode[1].'")'));
+		// } else {
 			return Filter::$model
 			->where(DB::raw('DATE(created_at)'), '>', DB::raw('DATE("'.$periode[0].'")'))
 			->where(DB::raw('DATE(created_at)'), '<', DB::raw('DATE("'.$periode[1].'")'));
-		}
+		// }
 	}
 
 }
