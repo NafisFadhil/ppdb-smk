@@ -8,7 +8,7 @@
 	<header class="w-full bg-primary text-white">
 		<div class="max-w-screen-lg mx-auto px-4 sm:px-8 py-8 md:py-14 lg:py-20 text-center md:text-left">
 			<h1 class="text-xl xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black mb-4 md:mb-7">
-				Penerimaan Peserta Didik Baru <br> Tahun Pelajaran 2022 / 2023
+				Penerimaan Peserta Didik Baru <br> Tahun Pelajaran 2023 / 2024
 			</h1>
 			<p class="max-w-screen-sm mb-5 md:mb-7 text-sm sm:text-base">
 				SMK Muhammadiyah Bligo membuka pendaftaran peserta didik baru (PPDB)

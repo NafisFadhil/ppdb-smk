@@ -16,8 +16,11 @@
         <div class="col-12 d-flex justify-content-center">
             <img src="/pdf/img/kop.png" alt="kop surat" width="90%">
         </div>
-        <div class="col-12 d-flex justify-content-center font-weight-bold h5 mt-3 mb-3 underline big">
+        <div class="col-12 d-flex justify-content-center font-weight-bolder h5 mt-3 mb-0 underline big">
             KEPUTUSAN PANITIA PPDB
+        </div>
+        <div class="col-12 d-flex justify-content-center font-weight-bold h5 mt-0 mb-3 big">
+            606/IV.4.AU/F/2022
         </div>
         <div class="col-12 d-flex justify-content-center font-weight-bold h5 mt-2 big">
             PANITIA PPDB SMK MUHAMMADIYAH BLIGO
@@ -130,9 +133,9 @@
                 <div class="w-100 d-flex justify-content-end">
                     <img src="/pdf/img/kepsek.png" alt="tanda tangan" width="25%">
                 </div>
-                <div class="w-100 d-flex justify-content-center">
+                {{-- <div class="w-100 d-flex justify-content-center">
                     <img src="/pdf/img/footer.png" alt="footer surat" width="100%">
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>

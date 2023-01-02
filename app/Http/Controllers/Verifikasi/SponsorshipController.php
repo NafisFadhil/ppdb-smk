@@ -28,6 +28,7 @@ class SponsorshipController extends Controller
         $data = Filter::filter($this->getModel(), $req, 'verifikasi', 'sponsorship', 
             filters: [
                 'search' => [
+                    'variant' => 'midlike',
                     'wheres' => [
                         'whereRelation' => ['sponsorship', 'nama', 'LIKE'],
                         'orWhereRelation' => ['sponsorship', 'kelas', 'LIKE'],
@@ -45,25 +46,7 @@ class SponsorshipController extends Controller
             'page' => ['title' => 'Verifikasi Sponsorship'],
             'table' => 'verifikasi-sponsorship',
             'data' => $data,
-            'filters' => [
-                [
-                    ['type' => 'search', 'name' => 'search', 'placeholder' => 'Cari peserta...'],
-                ],
-                [
-                    ['type' => 'select', 'name' => 'jurusan', 'options' => Jurusan::getOptions()],
-                    ['type' => 'select', 'name' => 'jalur', 'options' => DataJalurPendaftaran::getAdvancedOptions()],
-                ],
-                [
-                    ['type' => 'select', 'name' => 'tanggal', 'options' => FilterOptions::getTanggalOptions()],
-                    ['type' => 'select', 'name' => 'bulan', 'options' => FilterOptions::getBulanOptions()],
-                    ['type' => 'select', 'name' => 'tahun', 'options' => FilterOptions::getTahunOptions()],
-
-                    ['type' => 'select', 'name' => 'perPage', 'options' => [
-                        ['label' => '-- Per Page --', 'value' => ''],
-                        5,10,15,20,25,50,100
-                    ]],
-                ]
-            ]
+            'filters' => FilterOptions::getVerifikasiFormOptions('sponsorship')
         ]);
     }
 

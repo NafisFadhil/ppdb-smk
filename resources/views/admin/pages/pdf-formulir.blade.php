@@ -22,7 +22,7 @@
 					<tr>
 						<td rowspan="2" style="vertical-align:center">lampiran a</td>
 						<th>FORMULIR PENDAFTARAN MASUK KELAS X</th>
-						<td rowspan="2">F/7.2/WKS2/001</td>
+						<td rowspan="2">606/IV.4.AU/F/2022</td>
 					</tr>
 					<tr>
 						<th>TAHUN PELAJARAN 2023/2024</th>
