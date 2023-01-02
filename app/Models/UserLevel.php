@@ -19,10 +19,10 @@ class UserLevel extends Model
     public static function getOptions ()
     {
         $levels = Cache::rememberForever('user_levels', fn() => UserLevel::all());
-        $opts = [];
+        $opts = [['label' => '-- Pilih Level --', 'value' => '']];
         foreach ($levels as $level) {
             $opts[] = [
-                'label' => $level->level,
+                'label' => $level->label,
                 'value' => $level->id
             ];
         } return $opts;
