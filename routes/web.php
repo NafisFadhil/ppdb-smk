@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\ConfigHelper;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CetakController;
 // use App\Http\Controllers\DaftarUlangController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\Verifikasi\DuseragamController as VerifikasiDuseragamCo
 use App\Http\Controllers\Verifikasi\PendaftaranController as VerifikasiPendaftaranController;
 use App\Http\Controllers\Verifikasi\SponsorshipController as VerifikasiSponsorshipController;
 use App\Http\Controllers\Verifikasi\PendataanController as VerifikasiPendataanController;
+use App\Models\Config;
 use App\Models\DataJurusan;
 use App\Models\Jurusan;
 use App\Models\Pendaftaran;
@@ -66,6 +68,7 @@ Route::get('/test', function () {
     // dd(request()->fullUrlWithQuery([...request()->query->all(), 'page' => 2]));
     // $strain = new \App\Strainer\Strain();
     // dd($strain->model);
+    // dd(ConfigHelper::get('nama_sekolah'));
 });
 
 

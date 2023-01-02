@@ -9,9 +9,8 @@ use Illuminate\Support\Facades\Cache;
 class ConfigHelper
 {
 
-	public static function getConfigs ()
-	{
-		return Cache::rememberForever('configs', fn() => ConfigModel::all());
+	public static function getConfigs () {
+		return Cache::rememberForever('configs', fn() => ConfigModel::all()->groupBy('key'));
 	}
 
 	public static function parse(mixed $configs)
@@ -26,7 +25,7 @@ class ConfigHelper
 	public static function get(string $key)
 	{
 		$configs = static::getConfigs();
-		return $configs->get($key) ?? null;
+		return $configs->get($key)->first()->value ?? null;
 	}
 
 	public static function update(string $key, $value)

@@ -65,7 +65,10 @@ class Identitas extends Model
         return $this->hasOne(Jurusan::class);
     }
     public function sponsorship () {
-        return $this->hasONe(Sponsorship::class);
+        return $this->hasOne(Sponsorship::class);
+    }
+    public function identitas () {
+        return $this->hasManyThrough(Pembayaran::class, Tagihan::class);
     }
     public function jenis_kelamin () {
         return $this->belongsTo(DataJenisKelamin::class);
