@@ -74,6 +74,15 @@ class DuseragamController extends Controller
             $tagihan_creden['admin_daftar_ulang_id'] = $req->user()->id;
 
             if ($lunas_du) {
+                $pembayaran_creden = [
+                    'type' => 'daftar_ulang',
+                    'bayar' => 0,
+                    'kurang' => 0,
+                    'admin_id' => $req->user()->id,
+                    'tagihan_id' => $identitas->tagihan->id,
+                    'identitas_id' => $identitas->id
+                ];
+                $identitas->tagihan->pembayarans()->create($pembayaran_creden);
                 $tagihan_creden['tanggal_lunas_daftar_ulang'] = now();
                 $alerts['info'] = 'Pembayaran daftar ulang lunas.';
             }
@@ -91,13 +100,22 @@ class DuseragamController extends Controller
             $tagihan_creden['admin_seragam_id'] = $req->user()->id;
 
             if ($lunas_seragam) {
+                $pembayaran_creden = [
+                    'type' => 'seragam',
+                    'bayar' => 0,
+                    'kurang' => 0,
+                    'admin_id' => $req->user()->id,
+                    'tagihan_id' => $identitas->tagihan->id,
+                    'identitas_id' => $identitas->id
+                ];
+                $identitas->tagihan->pembayarans()->create($pembayaran_creden);
                 $tagihan_creden['tanggal_lunas_seragam'] = now();
                 $alerts['info'] = 'Pembayaran seragam lunas.';
             }
 
             // Mock Identitas
             $lunas = $lunas_du && $lunas_seragam;
-            $identitas_creden['status_id'] = $identitas->status_id + ($lunas ? 2 : 1);
+            $identitas_creden['status_id'] = $identitas->status_id + 1;
             if ($lunas) {
                 $alerts['info'] = 'Pembayaran daftar ulang dan seragam lunas.';
             }
@@ -107,17 +125,12 @@ class DuseragamController extends Controller
             $seragam_creden['keterangan'] = $keterangan_creden['keterangan'];
 
             // Queue Database Transaction
-            dispatch_sync(function () use (
-                $tagihan_creden, $seragam_creden, $daftar_ulang_creden,
-                $identitas_creden, $identitas
-            ) {
-                $identitas->tagihan->update($tagihan_creden);
-                $identitas->daftar_ulang->update($daftar_ulang_creden);
-                $identitas->seragam->update($seragam_creden);
-                if (!empty($identitas_creden)) {
-                    $identitas->update($identitas_creden);
-                }
-            });
+            $identitas->tagihan->update($tagihan_creden);
+            $identitas->daftar_ulang->update($daftar_ulang_creden);
+            $identitas->seragam->update($seragam_creden);
+            if (!empty($identitas_creden)) {
+                $identitas->update($identitas_creden);
+            }
 
             $alerts['success'] = 'Input tagihan biaya du & seragam berhasil.';
             
@@ -157,6 +170,7 @@ class DuseragamController extends Controller
             $pembayaran_creden['kurang'] = $kurang;
             $pembayaran_creden['admin_id'] = $req->user()->id;
             $pembayaran_creden['tagihan_id'] = $identitas->tagihan->id;
+            $pembayaran_creden['identitas_id'] = $identitas->id;
             
             // Mock Tagihan
             $tagihan_creden['lunas_'.$type] = $lunas;
@@ -168,16 +182,11 @@ class DuseragamController extends Controller
             }
 
             // Queue Database Transaction
-            dispatch_sync(function () use (
-                $pembayaran_creden, $tagihan_creden, $identitas_creden,
-                $identitas
-            ) {
-                $identitas->tagihan->pembayarans()->create($pembayaran_creden);
-                $identitas->tagihan->update($tagihan_creden);
-                if (!empty($identitas_creden)) {
-                    $identitas->update($identitas_creden);
-                }
-            });
+            $identitas->tagihan->pembayarans()->create($pembayaran_creden);
+            $identitas->tagihan->update($tagihan_creden);
+            if (!empty($identitas_creden)) {
+                $identitas->update($identitas_creden);
+            }
             
             $alerts['success'] = 'Input pembayaran berhasil.';
 
@@ -227,14 +236,10 @@ class DuseragamController extends Controller
             }
 
             // Queue Database Transaction
-            dispatch_sync(function () use (
-                $verifikasi_creden, $identitas_creden, $identitas
-            ) {
-                $identitas->verifikasi->update($verifikasi_creden);
-                if (!empty($identitas_creden)) {
-                    $identitas->update($identitas_creden);
-                }
-            });
+            $identitas->verifikasi->update($verifikasi_creden);
+            if (!empty($identitas_creden)) {
+                $identitas->update($identitas_creden);
+            }
 
             $alerts['success'] = 'Verifikasi berhasil.';
 

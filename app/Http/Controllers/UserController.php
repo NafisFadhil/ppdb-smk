@@ -56,8 +56,10 @@ class UserController extends Controller
             ['id', '!=', auth()->user()->id],
             ['level_id', '!=', 1]
         ])->with(['level'])->paginate();
+        // array_splice(,)
         
         return view('admin.pages.users', [
+            'bigtype' => 'admin',
             'page' => ['title' => 'Kelola User Admin'],
             'users' => $model
         ]);
@@ -78,6 +80,7 @@ class UserController extends Controller
         ])->with(['level'])->paginate();
 
         return view('admin.pages.users', [
+            'bigtype' => 'siswa',
             'page' => ['title' => 'Kelola User Siswa'],
             'users' => $model
         ]);

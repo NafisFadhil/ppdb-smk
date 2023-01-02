@@ -48,15 +48,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return 'SUCCESS';
 // });
 
-Route::get('/renew', function() {
-    $path = base_path();
-    Artisan::call('down');
-    exec('cd '.$path.' && git stash && git pull && rm -f .env && cp ../ppdb-smk-backup/.env .env');
-    Artisan::call('optimize:clear');
-    Artisan::call('optimize');
-    Artisan::call('up');
-    return 'SUCCESS';
-});
+// Route::get('/renew', function() {
+    
+// });
 
 // Route::get('/run-production', function() {
 //     Artisan::call('config:clear');

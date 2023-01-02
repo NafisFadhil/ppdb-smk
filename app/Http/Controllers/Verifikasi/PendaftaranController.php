@@ -66,19 +66,23 @@ class PendaftaranController extends Controller
             $tagihan_creden['admin_pendaftaran_id'] = $req->user()->id;
 
             if ($lunas) {
+                $pembayaran_creden = [
+                    'type' => 'pendaftaran',
+                    'bayar' => 0,
+                    'kurang' => 0,
+                    'admin_id' => $req->user()->id,
+                    'tagihan_id' => $identitas->tagihan->id,
+                    'identitas_id' => $identitas->id
+                ];
+                $identitas->tagihan->pembayarans()->create($pembayaran_creden);
                 $tagihan_creden['tanggal_lunas_pendaftaran'] = now();
                 $alerts['info'] = 'Pembayaran lunas.';
             }
             
             // Queue Database Transaction
-            dispatch_sync(function () use (
-                $tagihan_creden, $pendaftaran_creden, $identitas_creden,
-                $identitas
-            ) {
-                $identitas->tagihan->update($tagihan_creden);
-                $identitas->pendaftaran->update($pendaftaran_creden);
-                $identitas->update($identitas_creden);
-            });
+            $identitas->tagihan->update($tagihan_creden);
+            $identitas->pendaftaran->update($pendaftaran_creden);
+            $identitas->update($identitas_creden);
 
             $alerts['success'] = 'Verifikasi tagihan biaya pendaftaran berhasil.';
 
@@ -118,6 +122,7 @@ class PendaftaranController extends Controller
             $pembayaran_creden['kurang'] = $kurang;
             $pembayaran_creden['admin_id'] = $req->user()->id;
             $pembayaran_creden['tagihan_id'] = $identitas->tagihan->id;
+            $pembayaran_creden['identitas_id'] = $identitas->tagihan->id;
             
             // Mock Tagihan
             $tagihan_creden['lunas_pendaftaran'] = $lunas;
@@ -130,16 +135,12 @@ class PendaftaranController extends Controller
             }
 
             // Queue Database Transaction
-            dispatch_sync(function () use (
-                $pembayaran_creden, $tagihan_creden, $identitas_creden,
-                $identitas
-            ) {
-                $identitas->tagihan->pembayarans()->create($pembayaran_creden);
-                $identitas->tagihan->update($tagihan_creden);
-                if (!empty($identitas_creden)) {
-                    $identitas->update($identitas_creden);
-                }
-            });
+            $identitas->tagihan->pembayarans()->create($pembayaran_creden);
+            $identitas->tagihan->update($tagihan_creden);
+            if (!empty($identitas_creden)) {
+                $identitas->update($identitas_creden);
+            }
+            
             
             $alerts['success'] = 'Input pembayaran berhasil.';
 
@@ -185,15 +186,11 @@ class PendaftaranController extends Controller
             $identitas_creden['status_id'] = $identitas->status_id + 1;
 
             // Queue Database Transaction
-            dispatch_sync(function () use (
-                $verifikasi_creden, $daftar_ulang_creden, $seragam_creden,
-                $identitas_creden, $identitas
-            ) {
-                $identitas->verifikasi->update($verifikasi_creden);
-                $identitas->daftar_ulang()->create($daftar_ulang_creden);
-                $identitas->seragam()->create($seragam_creden);
-                $identitas->update($identitas_creden);
-            });
+            $identitas->verifikasi->update($verifikasi_creden);
+            $identitas->daftar_ulang()->create($daftar_ulang_creden);
+            $identitas->seragam()->create($seragam_creden);
+            $identitas->update($identitas_creden);
+            
             dispatch(function () use ($identitas, $user_creden) {
                 $model = Jurusan::withTrashed()->select('nomor')->whereNotNull('nomor')
                 ->where('singkatan', $identitas->jurusan->singkatan)->orderBy('nomor', 'DESC')->limit(1)->get()->first();

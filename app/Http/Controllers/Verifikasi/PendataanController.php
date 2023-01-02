@@ -54,12 +54,8 @@ class PendataanController extends Controller
             $addlevel = strtolower($identitas->status->level) === 'pendataan' ? 1 : 0;
             $identitas_creden['status_id'] = $identitas->status_id + $addlevel;
 
-            dispatch_sync(function () use (
-                $identitas, $verifikasi_creden, $identitas_creden
-            ) {
-                $identitas->verifikasi->update($verifikasi_creden);
-                $identitas->update($identitas_creden);
-            });
+            $identitas->verifikasi->update($verifikasi_creden);
+            $identitas->update($identitas_creden);
 
             $alerts['success'] = 'Berhasil memverifikasi siswa.';
 

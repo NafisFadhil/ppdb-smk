@@ -89,11 +89,7 @@ class SponsorshipController extends Controller
         try {
             
             // Queue Database Transaction
-            dispatch_sync(function () use (
-                $sponsorship_creden, $sponsorship
-            ) {
-                $sponsorship->update($sponsorship_creden);
-            });
+            $sponsorship->update($sponsorship_creden);
 
             $alerts['success'] = 'Berhasil mengubah data sponsorship.';
             
@@ -122,11 +118,7 @@ class SponsorshipController extends Controller
                 'tanggal_sponsorship' => now(),
             ];
 
-            dispatch_sync(function () use (
-                $verifikasi_creden, $identitas
-            ) {
-                $identitas->verifikasi->update($verifikasi_creden);
-            });
+            $identitas->verifikasi->update($verifikasi_creden);
 
             $alerts['success'] = 'Sponsorship berhasil diverifikasi.';
             

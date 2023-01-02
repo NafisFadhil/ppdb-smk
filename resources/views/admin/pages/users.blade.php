@@ -30,15 +30,25 @@
 					</a>
 				</div>
 				<div class="card-body">
-					@include('admin.components.table', [
-						'data' => $users,
-						'th' => ['Nama', 'Username', 'Level', 'Action'],
-						'td' => [
+					<?php
+						$isadmin = $bigtype === 'admin';
+						$ths = ['Nama', 'Username', 'Level', 'Action'];
+						$tds = [
 							fn($row) => $row->name,
 							fn($row) => $row->username,
 							fn($row) => StringHelper::toTitle($row->level->name),
 							fn($row) => htmlAction($row),
-						],
+						];
+
+						if (!$isadmin) {
+							$ths[2] = 'Tanggal Lahir';
+							$tds[2] = fn($row) => ModelHelper::formatTanggal($row->identitas->tanggal_lahir);
+						}
+					?>
+					@include('admin.components.table', [
+						'data' => $users,
+						'th' => $ths,
+						'td' => $tds,
 					])
 				</div>
 			</div>
