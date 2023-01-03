@@ -18,11 +18,14 @@
 			@endif
 
 			@if($type === 'pembayaran')
-			<th>Biaya</th>
-			<th>Nominal <br> Pembayaran</th>
-			<th>Tanggal <br> Pembayaran</th>
-			<th>Admin <br> Pembayaran</th>
-			<th>Status <br> Pembayaran</th>
+				<th>Biaya</th>
+				<th>Nominal <br> Pembayaran</th>
+				<th>Tanggal <br> Pembayaran</th>
+				<th>Admin <br> Pembayaran</th>
+				<th>Status <br> Pembayaran</th>
+			@else
+				<th>No WA Siswa</th>
+				<th>No WA Ortu</th>
 			@endif
 			
 			<th>Keterangan</th>
@@ -57,6 +60,9 @@
 					<td>{!! ModelHelper::getTanggalBayar($row->tagihan->pembayarans, $bigtype) !!}</td>
 					<td>{!! ModelHelper::getAdminBayar($row->tagihan->pembayarans, $bigtype) !!}</td>
 					<td>{!! ModelHelper::getStatusBayar($row->tagihan, $bigtype) !!}</td>
+				@else
+					<td>{{ $row->no_wa_siswa }}</td>
+					<td>{{ $row->no_wa_ortu }}</td>
 				@endif
 				
 				{{-- <td>{{ $row->pendaftaran->admin_verifikasi }}</td> --}}

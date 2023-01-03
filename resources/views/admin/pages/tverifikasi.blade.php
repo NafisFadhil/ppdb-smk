@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-<?php $data = $peserta ?? $data ?>
+<?php $data = $peserta ?? $data; $type ??= $table ?? '' ?>
 
 @section('content')
 <div class="row">

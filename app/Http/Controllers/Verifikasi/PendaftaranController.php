@@ -31,7 +31,6 @@ class PendaftaranController extends Controller
         
         return view('admin.pages.tverifikasi', [
             'page' => ['title' => 'Verifikasi Pendaftaran'],
-            'type' => 'pendaftaran',
             'table' => 'pendaftaran',
             'peserta' => $data,
             'filters' => FilterOptions::getVerifikasiFormOptions('pendaftaran')

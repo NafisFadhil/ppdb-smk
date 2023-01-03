@@ -9,7 +9,8 @@
 			<th>Asal Sekolah</th>
 			<th>Jurusan</th>
 			<th>Tanggal Lahir</th>
-			<th>Wa Siswa</th>
+			<th>No WA Siswa</th>
+			<th>No WA Ortu</th>
 			<th>Status</th>
 			<th>Tindakan</th>
 		</tr>
@@ -31,6 +32,7 @@
 				<td>{{ $row->jurusan->singkatan }}</td>
 				<td>{{ ModelHelper::formatTanggal($row->tanggal_lahir) }}</td>
 				<td>{{ $row->no_wa_siswa }}</td>
+				<td>{{ $row->no_wa_ortu }}</td>
 				<td class="text-success" title="{{ $row->status->desc }}">
 					{{ $row->status->level }} ({{ $row->status->sublevel }})
 				</td>

@@ -27,10 +27,9 @@ class LaporanController extends Controller
 
     protected function getModel ($bigtype) {
         $model = Identitas::withTrashed()
-        // ->withSum('pembayarans as total_pembayaran', 'bayar')
         ->with([
             'jurusan', 'jalur_pendaftaran', 'jenis_kelamin',
-            'tagihan', 'verifikasi', 'status'
+            'tagihan', 'verifikasi', 'status', 'sponsorship'
         ]);
         
         if ($bigtype === 'pendaftaran') {
@@ -46,11 +45,13 @@ class LaporanController extends Controller
             ->whereRelation('verifikasi', 'seragam', true);
         } elseif ($bigtype === 'pendataan') {
             return $model
+            ->whereRelation('verifikasi', 'pendaftaran', true)
             ->whereRelation('verifikasi', 'identitas', true);
         } elseif ($bigtype === 'sponsorship') {
             return $model
-            ->whereRelation('verifikasi', 'pendaftaran', true)
+            ->whereRelation('verifikasi', 'sponsorship', true)
             ->has('sponsorship');
+            // ->whereRelation('verifikasi', 'pendaftaran', true)
         }
     }
 
@@ -58,7 +59,7 @@ class LaporanController extends Controller
         $model = Identitas::withTrashed()
         ->with([
             'jurusan', 'jalur_pendaftaran', 'jenis_kelamin',
-            'tagihan', 'verifikasi', 'status'
+            'tagihan', 'verifikasi', 'status', 'sponsorship'
         ]);
         
         if ($bigtype === 'pendaftaran') {
