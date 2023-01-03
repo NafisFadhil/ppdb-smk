@@ -16,6 +16,10 @@
 				<th>Tanggal <br> Pembayaran</th>
 				<th>Admin <br> Pembayaran</th>
 				<th>Status <br> Pembayaran</th>
+				@else
+				<th>No WA Siswa</th>
+				<th>No WA Ortu</th>
+				<th>Status <br> Pembayaran</th>
 			@endif
 			
 			<th>Verifikasi Pendataan</th>
@@ -47,6 +51,10 @@
 					<td>{!! ModelHelper::getNominalBayar($row->tagihan->pembayarans, $bigtype) !!}</td>
 					<td>{!! ModelHelper::getTanggalBayar($row->tagihan->pembayarans, $bigtype) !!}</td>
 					<td>{!! ModelHelper::getAdminBayar($row->tagihan->pembayarans, $bigtype) !!}</td>
+					<td>{!! ModelHelper::getStatusBayar($row->tagihan, $bigtype) !!}</td>
+				@else
+					<td>{{ $row->no_wa_siswa }}</td>
+					<td>{{ $row->no_wa_ortu }}</td>
 					<td>{!! ModelHelper::getStatusBayar($row->tagihan, $bigtype) !!}</td>
 				@endif
 				

@@ -61,7 +61,8 @@ class ModelHelper
 
 	public static function getStatusBayar($tagihan, $type)
 	{
-		$bayar = static::getBayar($tagihan->pembayarans, $type);
+		if (!$tagihan || !$tagihan->pembayarans) return '-';
+		$bayar = static::getBayar($tagihan->pembayarans ?? [], $type);
 		$selisih = $tagihan['tagihan_'.$type] - $bayar;
 		$lunas = $selisih <= 0;
 		$kurang = $lunas ? 0 : $selisih;

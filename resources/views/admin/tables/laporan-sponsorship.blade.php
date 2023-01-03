@@ -1,4 +1,4 @@
-<?php $data = $data ?? $data ?? $peserta ?? collect() ?>
+<?php $data = $data ?? $data ?? $peserta ?? $laporan ?? collect() ?>
 
 <table id="xtable" class="table table-sm table-bordered table-hover table-responsive">
 	<thead>

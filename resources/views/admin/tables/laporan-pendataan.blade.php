@@ -8,7 +8,8 @@
 			<th>Nama</th>
 			<th>Jalur Pendaftaran</th>
 			<th>Asal Sekolah</th>
-			<th>No Wa Siswa</th>
+			<th>No WA Siswa</th>
+			<th>No WA Ortu</th>
 			<th>Status</th>
 		</tr>
 	</thead>
@@ -21,6 +22,7 @@
 				<td>{{ ModelHelper::getJalur($row->jalur_pendaftaran) }}</td>
 				<td>{{ $row->asal_sekolah }}</td>
 				<td>{{ $row->no_wa_siswa }}</td>
+				<td>{{ $row->no_wa_ortu }}</td>
 				<td>{{ $row->verifikasi->identitas ? 'Sudah' : 'Belum' }}</td>
 			</tr>
 			@endforeach

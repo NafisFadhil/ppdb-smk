@@ -31,9 +31,9 @@ class DuseragamController extends Controller
         session(['oldpath' => request()->path()]);
         $data = Filter::filter($this->getModel(), $req, 'verifikasi', 'duseragam', relation: '-');
 
-        return view('admin.pages.table', [
+        return view('admin.pages.tverifikasi', [
             'page' => ['title' => 'Verifikasi DU & Seragam'],
-            'table' => 'verifikasi-duseragam',
+            'table' => 'duseragam',
             'peserta' => $data,
             'options' => [
                 'seragam_olahraga' => Seragam::getOptions('olahraga'),

@@ -29,9 +29,9 @@ class PendaftaranController extends Controller
         session(['oldpath' => request()->path()]);
         $data = Filter::filter($this->getModel(), $req, 'verifikasi', 'pendaftaran');
         
-        return view('admin.pages.table', [
+        return view('admin.pages.tverifikasi', [
             'page' => ['title' => 'Verifikasi Pendaftaran'],
-            'table' => 'verifikasi-pendaftaran',
+            'table' => 'pendaftaran',
             'peserta' => $data,
             'filters' => FilterOptions::getVerifikasiFormOptions('pendaftaran')
         ]);

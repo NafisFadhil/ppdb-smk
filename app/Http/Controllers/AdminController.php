@@ -226,6 +226,7 @@ class AdminController extends Controller
             } if ($identitas->verifikasi) {
                 $identitas->verifikasi->delete();
             }
+            
             $identitas->delete();
             return back()->withErrors([
                 'alerts' => ['success' => 'Berhasil menghapus peserta.']

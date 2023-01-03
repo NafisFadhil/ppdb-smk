@@ -26,9 +26,9 @@ class PendataanController extends Controller
 		session(['oldpath' => request()->path()]);
         $data = Filter::filter($this->getModel(), $req, 'verifikasi', 'pendataan', relation: '-');
         
-        return view('admin.pages.table', [
+        return view('admin.pages.tverifikasi', [
             'page' => ['title' => 'Verifikasi Pendataan'],
-            'table' => 'verifikasi-pendataan',
+            'table' => 'pendataan',
             'peserta' => $data,
             'filters' => FilterOptions::getVerifikasiFormOptions('pendataan')
         ]);
