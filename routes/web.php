@@ -188,6 +188,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix('/laporan')->controller(LaporanController::class)->group(function () {
             Route::get('/{bigtype}', 'index');
             Route::get('/{bigtype}/cetak', 'cetak');
+            Route::get('/{prebigtype}/precetak', 'precetak');
         });
 
         Route::controller(CetakController::class)->group(function () {

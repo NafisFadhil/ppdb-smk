@@ -46,10 +46,38 @@ class LaporanController extends Controller
             ->whereRelation('verifikasi', 'seragam', true);
         } elseif ($bigtype === 'pendataan') {
             return $model
-            ->whereRelation('verifikasi', 'pendaftaran', true);
+            ->whereRelation('verifikasi', 'identitas', true);
         } elseif ($bigtype === 'sponsorship') {
             return $model
             ->whereRelation('verifikasi', 'pendaftaran', true)
+            ->has('sponsorship');
+        }
+    }
+
+    protected function getPreModel ($bigtype) {
+        $model = Identitas::withTrashed()
+        ->with([
+            'jurusan', 'jalur_pendaftaran', 'jenis_kelamin',
+            'tagihan', 'verifikasi', 'status'
+        ]);
+        
+        if ($bigtype === 'pendaftaran') {
+            return $model;
+            // ->whereRelation('verifikasi', 'pendaftaran', true);
+        } elseif ($bigtype === 'daftar_ulang') {
+            return $model
+            ->whereRelation('verifikasi', 'pendaftaran', true);
+            // ->whereRelation('verifikasi', 'daftar_ulang', true);
+        } elseif ($bigtype === 'seragam') {
+            return $model
+            ->whereRelation('verifikasi', 'pendaftaran', true);
+            // ->whereRelation('verifikasi', 'seragam', true);
+        } elseif ($bigtype === 'pendataan') {
+            return $model
+            ->whereRelation('verifikasi', 'pendaftaran', true);
+        } elseif ($bigtype === 'sponsorship') {
+            return $model
+            // ->whereRelation('verifikasi', 'pendaftaran', true)
             ->has('sponsorship');
         }
     }
@@ -87,7 +115,7 @@ class LaporanController extends Controller
     
     public function index(Request $req, $bigtype)
     {
-        // if ($req->query->all()) dd($req->query->all());
+        // if ($req->query->all()) dd($req->segments());
         $bigtype = Str::slug($bigtype, '_');
         $type = $req->query('type') ?? $bigtype;
         $title_type = $type == $bigtype ? '' : ' '.ucfirst($type);
@@ -127,6 +155,25 @@ class LaporanController extends Controller
             'type' => $type,
             'bigtype' => $bigtype,
             'laporan' => $this->getModel($bigtype, $type)->get()
+        ]);
+    }
+
+    public function precetak(Request $req, $prebigtype) {
+        $bigtype = $prebigtype;
+        $bigtype = Str::slug($bigtype, '_');
+        $type = $req->query('type') ?? $bigtype;
+        $title_type = $type == $bigtype ? '' : ' '.ucfirst($type);
+        $title_bigtype = Str::title(str_replace('_', ' ', $bigtype));
+        
+        if (!$type) return back()->withErrors([
+            'alerts' => ['danger' => 'Invalid request.']
+        ]);
+
+        return view('admin.pages.cetak', [
+            'title' => 'Laporan Lengkap'.$title_type.' '.$title_bigtype,
+            'type' => $type,
+            'bigtype' => $bigtype,
+            'laporan' => $this->getPreModel($bigtype, $type)->get()
         ]);
     }
 

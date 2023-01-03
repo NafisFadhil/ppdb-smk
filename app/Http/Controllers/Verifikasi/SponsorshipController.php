@@ -42,9 +42,9 @@ class SponsorshipController extends Controller
             ]
         );
         
-        return view('admin.pages.table', [
+        return view('admin.pages.tverifikasi', [
             'page' => ['title' => 'Verifikasi Sponsorship'],
-            'table' => 'verifikasi-sponsorship',
+            'table' => 'sponsorship',
             'data' => $data,
             'filters' => FilterOptions::getVerifikasiFormOptions('sponsorship')
         ]);
