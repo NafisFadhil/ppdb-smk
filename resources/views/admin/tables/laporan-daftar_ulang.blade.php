@@ -54,6 +54,7 @@
 				@else
 					<td>{{ $row->no_wa_siswa }}</td>
 					<td>{{ $row->no_wa_ortu }}</td>
+					<td>{!! ModelHelper::getStatusBayar($row->tagihan, $bigtype) !!}</td>
 				@endif
 				
 				<td>{{ $row->verifikasi->identitas ? 'Sudah' : 'Belum' }}</td>

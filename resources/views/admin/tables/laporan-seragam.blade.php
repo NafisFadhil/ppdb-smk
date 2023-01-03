@@ -60,9 +60,10 @@
 					<td>{!! ModelHelper::getTanggalBayar($row->tagihan->pembayarans, $bigtype) !!}</td>
 					<td>{!! ModelHelper::getAdminBayar($row->tagihan->pembayarans, $bigtype) !!}</td>
 					<td>{!! ModelHelper::getStatusBayar($row->tagihan, $bigtype) !!}</td>
-				@else
+					@else
 					<td>{{ $row->no_wa_siswa }}</td>
 					<td>{{ $row->no_wa_ortu }}</td>
+					<td>{!! ModelHelper::getStatusBayar($row->tagihan, $bigtype) !!}</td>
 				@endif
 				
 				{{-- <td>{{ $row->pendaftaran->admin_verifikasi }}</td> --}}
