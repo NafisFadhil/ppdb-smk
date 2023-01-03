@@ -16,9 +16,10 @@
 				<th>Tanggal <br> Pembayaran</th>
 				<th>Admin <br> Pembayaran</th>
 				<th>Status <br> Pembayaran</th>
-			@else
+				@else
 				<th>No WA Siswa</th>
 				<th>No WA Ortu</th>
+				<th>Status <br> Pembayaran</th>
 			@endif
 			
 			<th>Verifikasi Pendataan</th>
