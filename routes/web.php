@@ -28,6 +28,7 @@ use App\Http\Controllers\Verifikasi\SponsorshipController as VerifikasiSponsorsh
 use App\Http\Controllers\Verifikasi\PendataanController as VerifikasiPendataanController;
 use App\Models\Config;
 use App\Models\DataJurusan;
+use App\Models\Identitas;
 use App\Models\Jurusan;
 use App\Models\Pendaftaran;
 use App\Models\Tagihan;
@@ -69,6 +70,10 @@ Route::get('/test', function () {
     // $strain = new \App\Strainer\Strain();
     // dd($strain->model);
     // dd(ConfigHelper::get('nama_sekolah'));
+    $test = new \App\Strainer\Strain(Identitas::select('*'), request(), [
+        'suptype' => 'laporan', 'type' => 'pendaftaran'
+    ]);
+    dd($test);
 });
 
 

@@ -8,6 +8,7 @@
 						style="grid-gap: .5rem">
 							@foreach($row as $input)
 								<?php
+								if (empty($input) || is_null($input) || !count($input)) continue;
 								$input = FormHelper::initInput($input);
 								$error = $errors->has($input['name']);
 								$input['size'] ??= 'sm';

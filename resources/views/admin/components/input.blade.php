@@ -1,4 +1,5 @@
 <?php
+if (empty($input) || is_null($input) || !count($input)) dd($input);
 $input = FormHelper::initInput($input);
 $error = isset($errors) && $errors->has($input['name']);
 ?>

@@ -8,11 +8,6 @@ interface TypeInterface
 	/**
 	 * 
 	 */
-	public function strain ();
-
-	/**
-	 * 
-	 */
 	public function options ();
 
 	/**
@@ -23,6 +18,6 @@ interface TypeInterface
 	/**
 	 * 
 	 */
-	public function mockup ();
+	// public function mockup ();
 	
 }

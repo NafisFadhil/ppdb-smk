@@ -2,18 +2,20 @@
 
 namespace App\Strainer;
 
-trait StrainHelper
-{
-	
-	/**
-	 * Get class name of filter type
-	 * 
-	 * @return string
-	 */
-	protected function getTypeInstanceName() {
-		return ucfirst($this->type);
+class StrainHelper {
+
+	public static function groupTypes (
+		string $suptype, string $type, string $subtype
+	) {
+		return [
+			'suptype' => $suptype,
+			'type' => $type,
+			'subtype' => $subtype,
+		];
 	}
 
-	// protected function asd() {}
+	// public static function getType(string $type, array $types) {
+		
+	// }
 	
 }
