@@ -8,6 +8,8 @@
 			<th>Jenis Kelamin</th>
 			<th>Asal Sekolah</th>
 			<th>Jurusan</th>
+			<th>Tanggal Lahir</th>
+			<th>Wa Siswa</th>
 			<th>Status</th>
 			<th>Tindakan</th>
 		</tr>
@@ -27,6 +29,8 @@
 				<td>{{ ModelHelper::getJenisKelamin($row->jenis_kelamin_id) }}</td>
 				<td>{{ $row->asal_sekolah }}</td>
 				<td>{{ $row->jurusan->singkatan }}</td>
+				<td>{{ ModelHelper::formatTanggal($row->tanggal_lahir) }}</td>
+				<td>{{ $row->no_wa_siswa }}</td>
 				<td class="text-success" title="{{ $row->status->desc }}">
 					{{ $row->status->level }} ({{ $row->status->sublevel }})
 				</td>

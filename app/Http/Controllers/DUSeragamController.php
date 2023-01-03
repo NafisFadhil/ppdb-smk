@@ -52,7 +52,7 @@ class DUSeragamController extends Controller
                 'label' => null, 'placeholder' => null, 'opts' => ['required'], 'attr' => 'disabled'], 
             ['type' => 'text', 'name' => 'tempat_lahir', 'value' => $data->tempat_lahir??null,
                 'label' => null, 'placeholder' => null],
-            ['type' => 'date', 'name' => 'tanggal_lahir', 'value' => $data->tanggal_lahir??null,
+            ['type' => 'singledate', 'name' => 'tanggal_lahir', 'value' => $data->tanggal_lahir??null,
                 'label' => null, 'placeholder' => null, 'opts' => ['required'], 'attr' => 'disabled'], 
             ['type' => 'radio', 'name' => 'jenis_kelamin', 'value' => $data->jenis_kelamin??null,
                 'label' => null, 'placeholder' => null, 'values' => $kelamins, 'opts' => ['required'], 'attr' => 'disabled'],

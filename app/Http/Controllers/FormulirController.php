@@ -159,7 +159,7 @@ class FormulirController extends Controller
                 'label' => null, 'placeholder' => null, 'opts' => ['uppercase']
             ],
             [
-                'type' => 'date', 'name' => 'tanggal_lahir', 'value' => $data->tanggal_lahir??null,
+                'type' => 'singledate', 'name' => 'tanggal_lahir', 'value' => $data->tanggal_lahir??null,
                 'label' => null, 'placeholder' => null, 'opts' => ['required']
             ],
             [
@@ -257,7 +257,7 @@ class FormulirController extends Controller
                     'label' => null, 'placeholder' => null, 'opts' => ['uppercase']
                 ],
                 [
-                    'type' => 'date', 'name' => 'tanggal_lahir', 'value' => $data->tanggal_lahir??null,
+                    'type' => 'singledate', 'name' => 'tanggal_lahir', 'value' => $data->tanggal_lahir??null,
                     'label' => null, 'placeholder' => null, 'opts' => ['required']
                 ], 
                 [

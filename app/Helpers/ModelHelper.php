@@ -108,6 +108,12 @@ class ModelHelper
 		return date_format($date, 'd/m/Y');
 	}
 
+	public static function formatTanggalToDaterange($tanggal = null)
+	{
+		$date = new DateTime($tanggal);
+		return date_format($date, 'd/m/Y');
+	}
+
 	public static function formatFullTanggal($tanggal = null)
 	{
 		$date = new DateTime($tanggal);

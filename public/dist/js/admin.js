@@ -31,7 +31,37 @@ $(function () {
 		})
 	});
 
+	// $("input").on("change load", function() {
+	// 	this.setAttribute(
+	// 		"data-date",
+	// 		moment(this.value, "YYYY-MM-DD")
+	// 		.format( this.getAttribute("data-date-format") )
+	// 	)
+	// }).trigger("change")
 
+	$('input[type=singledate]').each(function (i,elem) {
+		elem = $(elem);
+		let value = elem.val(), opt = [];
+		// Don't know but bellow linked to elem.val() -_-
+		value = value.split('/').reverse().join('-');
+
+		if (value) {
+			opt = {
+				startDate: value,
+				endDate: value,
+			}
+		}
+
+		elem.daterangepicker({
+			...opt,
+			autoUpdateInput: true,
+			singleDatePicker: true,
+			autoApply: true,
+			locale: {
+				format: 'YYYY-MM-DD',
+			}
+		});
+	});
 
 
 	$('input[daterangepicker]').each(function (i, elem) {

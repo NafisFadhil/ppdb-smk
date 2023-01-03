@@ -213,15 +213,20 @@ class AdminController extends Controller
                 $identitas->tagihan->delete();
             } if ($identitas->pendaftaran) {
                 $identitas->pendaftaran->delete();
-            } if ($identitas->duseragam) {
-                $identitas->duseragam->delete();
+            } if ($identitas->daftar_ulang) {
+                $identitas->daftar_ulang->delete();
+            } if ($identitas->seragam) {
+                $identitas->seragam->delete();
             } if ($identitas->duseragam) {
                 $identitas->duseragam->delete();
             } if ($identitas->sponsorship) {
                 $identitas->sponsorship->delete();
             } if ($identitas->user) {
                 $identitas->user->delete();
-            } $identitas->delete();
+            } if ($identitas->verifikasi) {
+                $identitas->verifikasi->delete();
+            }
+            $identitas->delete();
             return back()->withErrors([
                 'alerts' => ['success' => 'Berhasil menghapus peserta.']
             ]);

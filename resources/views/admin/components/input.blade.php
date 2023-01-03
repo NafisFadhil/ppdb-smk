@@ -180,6 +180,17 @@ $error = isset($errors) && $errors->has($input['name']);
 					@endforeach	
 				</select>
 
+			@elseif($input['type'] === 'singledate')
+				<input type="{{ $input['type'] }}"
+					name="{{ $input['name'] }}"
+					id="{{ $input['id'] }}"
+					placeholder="{{ $input['placeholder'] }}"
+					<?php $value = old($input['name']) ?? $input['value'] ?? null ?>
+					value="{{ ModelHelper::formatTanggalToDaterange($value) }}"
+					class="form-control form-control-sm {{ $error?'is-invalid':'' }} 
+					{{ in_array('uppercase', $input['opts']) ? 'input-uppercase' : '' }}"
+					{!! $input['attr'] !!}
+				/>
 			@else
 
 				<input type="{{ $input['type'] }}"
