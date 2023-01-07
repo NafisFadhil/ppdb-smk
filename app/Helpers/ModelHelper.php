@@ -49,6 +49,14 @@ class ModelHelper
 		return strtoupper($str);
 	}
 
+	public static function implodeJalur(array $jalurs)
+	{
+		// $str = $jalur->jalur;
+		// if (isset($jalur->subjalur)) $str .= ' ' . $jalur->subjalur;
+		// if (isset($jalur->subjalur2)) $str .= ' ' . $jalur->subjalur2;
+		return strtoupper(implode(' ', $jalurs));
+	}
+
 	public static function getJurusan(string $value, string|null $key = 'singkatan')
 	{
 		return Jurusan::getJurusan($value, $key);
@@ -84,6 +92,12 @@ class ModelHelper
 	public static function getStatus (mixed $value, string $key = 'id')
 	{
 		return Status::getStatus($value, $key);
+	}
+
+	public static function getState(bool $bool) {
+		$color = $bool ? 'success' : 'warning';
+		$label = $bool ? 'Sudah' : 'Belum';
+		return "<span class='text-$color'> $label </span>";
 	}
 
 	public static function getTanggalTerakhirBayar($pembayarans, $type)

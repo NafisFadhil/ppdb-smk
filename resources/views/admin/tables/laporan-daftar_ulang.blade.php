@@ -22,7 +22,11 @@
 				<th>Status <br> Pembayaran</th>
 			@endif
 			
-			<th>Verifikasi Pendataan</th>
+			@if($precetak ?? $prelaporan ?? false)
+				<th>Verifikasi <br> Daftar Ulang</th>
+			@endif
+			
+			<th>Verifikasi <br> Pendataan</th>
 			<th>Keterangan</th>
 
 			{{-- @if(!$cetak)
@@ -57,8 +61,12 @@
 					<td>{{ $row->no_wa_ortu }}</td>
 					<td>{!! ModelHelper::getStatusBayar($row->tagihan, $bigtype) !!}</td>
 				@endif
+
+				@if($precetak ?? $prelaporan ?? false)
+						<td>{!! ModelHelper::getState($row->verifikasi->daftar_ulang) !!}</td>
+					@endif
 				
-				<td>{{ $row->verifikasi->identitas ? 'Sudah' : 'Belum' }}</td>
+				<td>{!! ModelHelper::getState($row->verifikasi->identitas) !!}</td>
 				<td>{{ $row->daftar_ulang->keterangan }}</td>
 
 				{{-- @if(!$cetak)
@@ -82,13 +90,19 @@
 			@endforeach
 	</tbody>
 
-	{{-- @if($type === 'pembayaran')
-	<tfoot>
-		<tr>
-			<td colspan="4">Total Pembayaran</td>
-			<td colspan="3">{{ "Rp " . number_format($jml, 2, ",", ".") }}</td>
-		</tr>
-	</tfoot>
-	@endif --}}
+	@if($type === 'pembayaran')
+		<tfoot>
+			<tr>
+				<th colspan="6">Total</th>
+				<th>{{ NumberHelper::toRupiah($subquery['total_biaya']) }}</th>
+				<th>{{ NumberHelper::toRupiah($subquery['total_bayar']) }}</th>
+				@if(!$cetak)
+					<th colspan="5"></th>
+				@else
+					<th colspan="4"></th>
+				@endif
+			</tr>
+		</tfoot>
+	@endif
 
 </table>

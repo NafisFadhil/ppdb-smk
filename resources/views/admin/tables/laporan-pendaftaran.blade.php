@@ -28,6 +28,10 @@ $counters = [
 				<th>No WA Ortu</th>
 				<th>Status <br> Pembayaran</th>
 			@endif
+
+			@if($precetak ?? $prelaporan ?? false)
+				<th>Verifikasi <br> Pendaftaran</th>
+			@endif
 			
 			<th>Keterangan</th>
 
@@ -65,6 +69,10 @@ $counters = [
 						<td>{{$row->no_wa_ortu }}</td>
 						<td>{!! ModelHelper::getStatusBayar($row->tagihan, 'pendaftaran') !!}</td>
 					@endif
+
+					@if($precetak ?? $prelaporan ?? false)
+						<td>{!! ModelHelper::getState($row->verifikasi->pendaftaran) !!}</td>
+					@endif
 					
 					<td>{{ $row->pendaftaran->keterangan ?? '-' }}</td>
 					
@@ -90,13 +98,18 @@ $counters = [
 	</tbody>
 
 	@if($type === 'pembayaran')
-		{{-- <tfoot>
+		<tfoot>
 			<tr>
-				<td colspan="2">Total Tagihan</td>
-				<td>{{ NumberHelper::toRupiah($xlaporan['total_tagihan']) }}</td>
-				<td colspan="3"></td>
+				<th colspan="6">Total</th>
+				<th>{{ NumberHelper::toRupiah($subquery['total_biaya']) }}</th>
+				<th>{{ NumberHelper::toRupiah($subquery['total_bayar']) }}</th>
+				@if(!$cetak)
+					<th colspan="5"></th>
+				@else
+					<th colspan="4"></th>
+				@endif
 			</tr>
-		</tfoot> --}}
+		</tfoot>
 	@endif
 
 	{{-- @if($type === 'pembayaran')

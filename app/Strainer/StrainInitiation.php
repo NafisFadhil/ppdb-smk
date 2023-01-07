@@ -25,9 +25,9 @@ class StrainInitiation {
 	/**
 	 * Html filters inputs form
 	 * 
-	 * @var array $options
+	 * @var array $form_options
 	 */
-	public array $options = [];
+	public array $form_options = [];
 
 	/**
 	 * Filter queries array collection
@@ -42,25 +42,57 @@ class StrainInitiation {
 	 * @var array $names
 	 */
 	public array $names = [];
+
+	/**
+	 * Rules of available all types variant
+	 * 
+	 * @var array $rules
+	 */
+	public array $rules = [];
+
+	/**
+	 * Initiation options
+	 * 
+	 * @var array $options
+	 */
+	public array $options = [];
+
+	/**
+	 * With second query to get totals
+	 * 
+	 * @var boolean $with_total
+	 */
+	protected bool $with_total = false;
 	
 	/**
 	 * Init required vars before filtering
 	 */
-	public function __construct(array $types) {
+	public function __construct(array $types, array $rules = [], array $options = []) {
 		$this->types = $types;
+		$this->rules = $rules;
 		$this->suptype = $types['suptype'];
 		$this->type = $types['type'];
 		$this->subtype = $types['subtype'];
 
-		$this->options = $this->initOptions();
+		$this->form_options = $this->initOptions();
 		$this->queries = $this->initQueries();
 		$this->names = $this->initNames();
 
 		return [
-			'options' => $this->options,
+			'form_options' => $this->form_options,
 			'queries' => $this->queries,
 			'names' => $this->names,
 		];
+	}
+
+	/**
+	 * Parse options params
+	 * 
+	 * @return void
+	 */
+	protected function parseOptions () {
+		$options = $this->options;
+		$this->with_total = $options['with_total'] ?? $this->with_total;
 	}
 
 	/**
@@ -69,7 +101,7 @@ class StrainInitiation {
 	 * @return array
 	 */
 	private function initOptions () {
-		$options = new StrainOptions($this->types);
+		$options = new StrainOptions($this->types, $this->rules);
 		return $options->options;
 	}
 
@@ -79,7 +111,7 @@ class StrainInitiation {
 	 * @return array
 	 */
 	private function initQueries () {
-		$queries = new StrainQueries($this->types);
+		$queries = new StrainQueries($this->types, $this->rules);
 		return $queries->queries;
 	}
 
@@ -89,7 +121,7 @@ class StrainInitiation {
 	 * @return array
 	 */
 	private function initNames () {
-		$names = new StrainNames($this->types);
+		$names = new StrainNames($this->types, $this->rules);
 		return $names->names;
 	}
 	

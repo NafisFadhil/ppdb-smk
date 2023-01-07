@@ -10,43 +10,28 @@ use App\Models\Identitas;
 use App\Models\Jurusan;
 use App\Models\Pendaftaran;
 use App\Models\Sponsorship;
+use App\Strainer\Strain;
 use App\Validations\SponsorshipValidation;
 use Illuminate\Http\Request;
 
-class SponsorshipController extends Controller
+class SponsorshipController extends Verifikasi
 {
 
-    private function getModel() {
-        return Identitas::with([
-            'sponsorship', 'jenis_kelamin', 'jalur_pendaftaran', 'jurusan', 'verifikasi'
-        ])->has('sponsorship');
-    }
-    
     public function index(Request $req)
     {
         session(['oldpath' => request()->path()]);
-        $data = Filter::filter($this->getModel(), $req, 'verifikasi', 'sponsorship', 
-            filters: [
-                'search' => [
-                    'variant' => 'midlike',
-                    'wheres' => [
-                        'whereRelation' => ['sponsorship', 'nama', 'LIKE'],
-                        'orWhereRelation' => ['sponsorship', 'kelas', 'LIKE'],
-                        'orWhereRelation' => ['sponsorship', 'no_wa', 'LIKE'],
-                        'orWhereRelation' => ['pendaftaran', 'kode', 'LIKE'],
-                        'orWhereRelation' => ['jurusan', 'kode', 'LIKE'],
-                        'orWhere' => ['nama_lengkap', 'LIKE'],
-                        'orWhere' => ['asal_sekolah', 'LIKE'],
-                    ]
-                ]
-            ]
-        );
+        
+        $strain = $this->strain = new Strain($this->getModel('sponsorship'), $req, [
+            'suptype' => 'verifikasi',
+            'type' => 'sponsorship',
+            'with_subquery' => false
+        ]);
         
         return view('admin.pages.tverifikasi', [
             'page' => ['title' => 'Verifikasi Sponsorship'],
             'table' => 'sponsorship',
-            'data' => $data,
-            'filters' => FilterOptions::getVerifikasiFormOptions('sponsorship')
+            'data' => $strain->query,
+            'filters' => $strain->form_options
         ]);
     }
 

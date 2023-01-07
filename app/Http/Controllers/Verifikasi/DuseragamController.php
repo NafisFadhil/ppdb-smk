@@ -11,36 +11,35 @@ use App\Models\Identitas;
 use App\Models\Jurusan;
 use App\Models\Pembayaran;
 use App\Models\Seragam;
+use App\Strainer\Strain;
 use App\Validations\PembayaranValidation;
 use App\Validations\SeragamValidation;
 use App\Validations\TagihanValidation;
 use Illuminate\Http\Request;
 
-class DuseragamController extends Controller
+class DuseragamController extends Verifikasi
 {
-    private function getModel() {
-        return Identitas::with([
-            'daftar_ulang', 'status', 'jenis_kelamin', 'jurusan', 'tagihan', 'verifikasi'
-        ])
-        ->whereRelation('verifikasi', 'pendaftaran', true)
-        ->whereRelation('status', 'level', 'daftar ulang & seragam');
-    }
     
     public function index(Request $req)
 	{
         session(['oldpath' => request()->path()]);
-        $data = Filter::filter($this->getModel(), $req, 'verifikasi', 'duseragam', relation: '-');
+        
+        $strain = $this->strain = new Strain($this->getModel('duseragam'), $req, [
+            'suptype' => 'verifikasi',
+            'type' => 'duseragam',
+            'with_subquery' => false
+        ]);
 
         return view('admin.pages.tverifikasi', [
             'page' => ['title' => 'Verifikasi DU & Seragam'],
             'table' => 'duseragam',
-            'peserta' => $data,
+            'peserta' => $strain->query,
             'options' => [
                 'seragam_olahraga' => Seragam::getOptions('olahraga'),
                 'seragam_wearpack' => Seragam::getOptions('wearpack'),
                 'seragam_almamater' => Seragam::getOptions('almamater'),
             ],
-            'filters' => FilterOptions::getVerifikasiFormOptions('duseragam')
+            'filters' => $strain->form_options
         ]);
 	}
 

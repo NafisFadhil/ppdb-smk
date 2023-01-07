@@ -8,29 +8,27 @@ use App\Http\Controllers\Controller;
 use App\Models\DataJalurPendaftaran;
 use App\Models\Identitas;
 use App\Models\Jurusan;
+use App\Strainer\Strain;
 use Illuminate\Http\Request;
 
-class PendataanController extends Controller
+class PendataanController extends Verifikasi
 {
 	
-    private function getModel() {
-        return Identitas::with([
-            'daftar_ulang', 'status', 'jenis_kelamin', 'jurusan', 'tagihan', 'verifikasi'
-        ])
-        ->whereRelation('verifikasi', 'pendaftaran', true)
-        ->whereRelation('verifikasi', 'identitas', false);
-    }
-    
 	public function index(Request $req)
 	{
 		session(['oldpath' => request()->path()]);
-        $data = Filter::filter($this->getModel(), $req, 'verifikasi', 'pendataan', relation: '-');
+        
+        $strain = $this->strain = new Strain($this->getModel('pendataan'), $req, [
+            'suptype' => 'verifikasi',
+            'type' => 'pendataan',
+            'with_subquery' => false
+        ]);
         
         return view('admin.pages.tverifikasi', [
             'page' => ['title' => 'Verifikasi Pendataan'],
             'table' => 'pendataan',
-            'peserta' => $data,
-            'filters' => FilterOptions::getVerifikasiFormOptions('pendataan')
+            'peserta' => $strain->query,
+            'filters' => $strain->form_options
         ]);
 	}
 

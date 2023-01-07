@@ -28,12 +28,20 @@ class StrainQueries {
 	 * @var array $queries
 	 */
 	public array $queries = [];
+
+	/**
+	 * Available all types variant
+	 * 
+	 * @var array $queries
+	 */
+	public array $rules = [];
 	
 	/**
 	 * Get wheres collection filter pre-query
 	 */
-	public function __construct(array $types) {
+	public function __construct(array $types, array $rules) {
 		$this->types = $types;
+		$this->rules = $rules;
 		$this->suptype = $types['suptype'];
 		$this->type = $types['type'];
 		$this->subtype = $types['subtype'];
@@ -45,21 +53,36 @@ class StrainQueries {
 	 * Checking type and return wheres collection
 	 */
 	private function resolve () {
-		$type = $this->type;
 		$queries = $this->default();
 
 		// Array replacing
-		// if ()
+		$method = $this->suptype;
+		if (method_exists($this, $method)) {
+			// $queries = $this->$method();
+			$queries = array_replace($queries, $this->$method());
+		}
+
+		$method = $this->type;
+		if (method_exists($this, $method)) {
+			// $queries = $this->$method();
+			$queries = array_replace($queries, $this->$method());
+		}
 		
 		return $queries;
 	}
 
 	/**
 	 * General wheres filter pre-query
+	 * 
+	 * @return array
 	 */
 	private function default () {
 		return [
-            'periode' => ['wheres' => ['periode' => []]],
+            'periode' => [
+				'wheres' => [
+					'periode' => []
+				]
+			],
             'jurusan' => [
                 'wheres' => [
                     'whereRelation' => ['jurusan', 'singkatan'],
@@ -88,5 +111,22 @@ class StrainQueries {
             'page' => ['wheres' => ['page' => []]],
         ];
 	}
-	
+
+	private function sponsorship () {
+		return [
+			'search' => [
+				'variant' => 'midlike',
+				'wheres' => [
+					'whereRelation' => ['sponsorship', 'nama', 'LIKE'],
+					'orWhereRelation' => ['sponsorship', 'kelas', 'LIKE'],
+					'orWhereRelation' => ['sponsorship', 'no_wa', 'LIKE'],
+					'orWhereRelation' => ['pendaftaran', 'kode', 'LIKE'],
+					'orWhereRelation' => ['jurusan', 'kode', 'LIKE'],
+					'orWhere' => ['nama_lengkap', 'LIKE'],
+					'orWhere' => ['asal_sekolah', 'LIKE'],
+				]
+			]
+		];
+	}
+
 }

@@ -10,30 +10,31 @@ use App\Models\DataJalurPendaftaran;
 use App\Models\Identitas;
 use App\Models\Jurusan;
 use App\Models\User;
+use App\Strainer\Strain;
 use App\Validations\PembayaranValidation;
 use App\Validations\PendaftaranValidation;
 use App\Validations\TagihanValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class PendaftaranController extends Controller
+class PendaftaranController extends Verifikasi
 {
-    private function getModel() {
-        return Identitas::with([
-            'pendaftaran', 'status', 'jenis_kelamin', 'jurusan', 'tagihan', 'verifikasi', 'sponsorship'
-        ])->whereRelation('verifikasi', 'pendaftaran', false);
-    }
 
     public function index (Request $req)
     {
         session(['oldpath' => request()->path()]);
-        $data = Filter::filter($this->getModel(), $req, 'verifikasi', 'pendaftaran');
+
+        $strain = $this->strain = new Strain($this->getModel('pendaftaran'), $req, [
+            'suptype' => 'verifikasi',
+            'type' => 'pendaftaran',
+            'with_subquery' => false
+        ]);
         
         return view('admin.pages.tverifikasi', [
             'page' => ['title' => 'Verifikasi Pendaftaran'],
             'table' => 'pendaftaran',
-            'peserta' => $data,
-            'filters' => FilterOptions::getVerifikasiFormOptions('pendaftaran')
+            'peserta' => $strain->query,
+            'filters' => $strain->form_options
         ]);
     }
 

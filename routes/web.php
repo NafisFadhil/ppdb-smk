@@ -33,6 +33,7 @@ use App\Models\Jurusan;
 use App\Models\Pendaftaran;
 use App\Models\Tagihan;
 use App\Models\UserLevel;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -70,7 +71,8 @@ Route::get('/test', function () {
     // $strain = new \App\Strainer\Strain();
     // dd($strain->model);
     // dd(ConfigHelper::get('nama_sekolah'));
-    $test = new \App\Strainer\Strain(Identitas::select('*'), request(), [
+    // dd(request()->query('periode'));
+    $test = new \App\Strainer\Strain(null, request(), [
         'suptype' => 'laporan', 'type' => 'pendaftaran'
     ]);
     dd($test);

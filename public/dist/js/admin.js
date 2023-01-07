@@ -22,8 +22,9 @@ $(function () {
 	$('form[data-form-lebih]').map((i, elem) => {
 		elem = $(elem);
 		let type = elem.data('form-lebih');
-		elem.submit((v) => {
-			let tagihanInput = elem.find('input[name=tagihan_'+type+']').val().replace('Rp','').replace(',','');
+		elem.submit(v => {
+			let tagihanInput = 0+elem.find('input[name=tagihan_'+type+']').val()
+				.replace('Rp','').replace(',','').replace('.','');
 			let bayarInput = elem.find('input[name=bayar]').val();
 			if (parseInt(bayarInput) > (parseInt(tagihanInput) / 100)) {
 				return confirm('Nominal bayar melebihi tagihan, lanjut??');

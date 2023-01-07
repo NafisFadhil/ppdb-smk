@@ -47,11 +47,11 @@ class StrainOptions {
 	 * @return array
 	 */
 	private function resolve() {
-		$type = $this->type;
-		
-		if (in_array($type, ['pendaftaran', 'seragam', 'daftar_ulang'])) {
+
+		if (in_array($this->type, ['pendaftaran', 'seragam', 'daftar_ulang']) && $this->suptype === 'laporan') {
 			return $this->generalOptions();
 		} else return $this->nontypeOptions();
+
 	}
 
 	/**

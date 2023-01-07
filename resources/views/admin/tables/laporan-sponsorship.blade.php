@@ -11,7 +11,11 @@
 			<th>Nama Siswa</th>
 			<th>Asal Sekolah</th>
 			<th>Jurusan</th>
-			<th>Verifikasi</th>
+			
+			@if($precetak ?? $prelaporan ?? false)
+				<th>Verifikasi <br> Sponsorship</th>
+			@endif
+			
 		</tr>
 	</thead>
 	<tbody>
@@ -30,7 +34,9 @@
 				<td>{{ $row->nama_lengkap }}</td>
 				<td>{{ $row->asal_sekolah }}</td>
 				<td>{{ $row->jurusan->singkatan }}</td>
-				<td>{{ $row->verifikasi->sponsorship ? 'Sudah' : 'Belum' }}</td>
+				@if($precetak ?? $prelaporan ?? false)
+					<td>{!! ModelHelper::getState($row->verifikasi->sponsorship) !!}</td>
+				@endif
 			</tr>
 		@endforeach
 	</tbody>

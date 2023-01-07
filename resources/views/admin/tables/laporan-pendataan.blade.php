@@ -11,6 +11,10 @@
 			<th>No WA Siswa</th>
 			<th>No WA Ortu</th>
 			<th>Status</th>
+
+			@if($precetak ?? $prelaporan ?? false)
+			<td>Verifikasi <br> Pendataan</td>
+			@endif
 		</tr>
 	</thead>
 	<tbody>
@@ -23,7 +27,7 @@
 				<td>{{ $row->asal_sekolah }}</td>
 				<td>{{ $row->no_wa_siswa }}</td>
 				<td>{{ $row->no_wa_ortu }}</td>
-				<td>{{ $row->verifikasi->identitas ? 'Sudah' : 'Belum' }}</td>
+				<td>{!! ModelHelper::getState($row->verifikasi->identitas) !!}</td>
 			</tr>
 			@endforeach
 	</tbody>
