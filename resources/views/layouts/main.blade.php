@@ -21,7 +21,18 @@
 			font-size: 15px;
 		}
 		.big-marker { padding-left: 1.5rem }
-		.big-marker li::marker { font-size: 1.5rem }
+		.big-marker > li::marker { font-size: 1.5rem }
+
+		.small-marker { padding-left: 1.1rem }
+		.small-marker > li::marker { font-size: 1.1rem }
+
+		.dash-marker > li::marker {
+			content: ' - ';
+			display: inline-block;
+			font-size: 1.4rem;
+			line-height: 1rem;
+			/* font-weight: 600; */
+		}
 	</style>
 	@stack('styles')
 

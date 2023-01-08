@@ -12,6 +12,10 @@ $user->level->name === 'admin-pendaftaran' || $issupadm ? [
 	['href' => '/admin/tambah-peserta', 'label' => 'Tambah Peserta', 'icon' => 'fa fa-user-plus'],
 ] : [],
 
+$issupadm ? [
+	['href' => '/admin/sponsorship/create', 'label' => 'Tambah Sponsorship', 'icon' => 'fa fa-user-plus'],
+] : [],
+
 $issupadm ? [[
 	'variant' => 'dropdown', 'href' => '/admin/verifikasi', 'label' => 'Verifikasi', 'icon' => 'fa fa-user-check', 'dropdown' => [
 		['href' => '/admin/verifikasi/pendaftaran', 'label' => 'Pendaftaran'],

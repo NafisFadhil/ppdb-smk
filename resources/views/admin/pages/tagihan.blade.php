@@ -64,7 +64,7 @@ $data = $data ?? $row ?? $siswa ?? $peserta ?? $identitas ?? collect([]);
 									<tr>
 										<td>Status Pembayaran</td>
 										<td>:</td>
-										<th> {{ ModelHelper::getStatusBayar($data->tagihan, $type) }} </th>
+										<th> {!! ModelHelper::getBayarState($data->tagihan['lunas_'.$type]) !!} </th>
 									</tr>
 								@endif
 
@@ -75,12 +75,12 @@ $data = $data ?? $row ?? $siswa ?? $peserta ?? $identitas ?? collect([]);
 					@if($type !== 'identitas')
 						@if(auth()->user()->level->name === 'super-admin')
 						<div class="card-footer btn-group mb-0 p-0">
-							<a href="/admin/pembayaran/{{ $data->id }}?type={{ $type }}" class="btn btn-dark btn-sm"
+							<a target="_blank" href="/admin/pembayaran/{{ $data->id }}?type={{ $type }}" class="btn btn-dark btn-sm"
 							style="border-top-left-radius: 0; border-right-radius:0; flex: 1;">
 								Detail Pembayaran
 								<i class="fa fa-arrow-right" style="margin-bottom: -.1rem"></i>
 							</a>
-							<a href="/admin/pembayaran/edit/{{ $data->id }}?type={{ $type }}" class="btn btn-warning btn-sm"
+							<a target="_blank" href="/admin/pembayaran/edit/{{ $data->id }}?type={{ $type }}" class="btn btn-warning btn-sm"
 							style="border-top-right-radius: 0; border-left-radius:0; flex: 1;">
 								Edit Pembayaran
 								<i class="fa fa-edit" style="margin-bottom: -.1rem"></i>
@@ -88,7 +88,7 @@ $data = $data ?? $row ?? $siswa ?? $peserta ?? $identitas ?? collect([]);
 						</div>
 						@else
 							<div class="card-footer p-0">
-								<a href="/admin/pembayaran/{{ $data->id }}?type={{ $type }}" class="btn btn-dark btn-sm btn-block"
+								<a target="_blank" href="/admin/pembayaran/{{ $data->id }}?type={{ $type }}" class="btn btn-dark btn-sm btn-block"
 								style="border-top-left-radius: 0; border-top-right-radius:0">
 									Detail Pembayaran
 									<i class="fa fa-arrow-right" style="margin-bottom: -.1rem"></i>

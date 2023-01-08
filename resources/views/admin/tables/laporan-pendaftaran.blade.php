@@ -1,8 +1,9 @@
 <?php
-$cetak = $variant??null === 'cetak';
+$cetak ??= $variant??null === 'cetak';
 $counters = [
 	'total_tagihan' => 0,
 	'total_bayar' => 0,
+	'total_biaya' => 0,
 ];
 ?>
 
@@ -45,6 +46,13 @@ $counters = [
 	<tbody>
 
 			@foreach($laporan as $row)
+			<?php if ($type === 'pembayaran' && $cetak) {
+				$counters['total_biaya'] += $row->tagihan->biaya_pendaftaran;
+				$counters['total_tagihan'] += $row->tagihan->tagihan_pendaftaran;
+				foreach ($row->pembayarans as $pembayaran) {
+					if ($pembayaran->type === 'pendaftaran') $counters['total_bayar'] += $pembayaran->bayar;
+				}
+			} ?>
 
 				<tr>
 					<td>
@@ -97,28 +105,14 @@ $counters = [
 			@endforeach
 	</tbody>
 
-	@if($type === 'pembayaran')
+	@if($type === 'pembayaran' && $cetak)
 		<tfoot>
 			<tr>
 				<th colspan="6">Total</th>
-				<th>{{ NumberHelper::toRupiah($subquery['total_biaya']) }}</th>
-				<th>{{ NumberHelper::toRupiah($subquery['total_bayar']) }}</th>
-				@if(!$cetak)
-					<th colspan="5"></th>
-				@else
-					<th colspan="4"></th>
-				@endif
+				<th>{{ NumberHelper::toRupiah($counters['total_biaya']) }}</th>
+				<th>{{ NumberHelper::toRupiah($counters['total_bayar']) }}</th>
 			</tr>
 		</tfoot>
 	@endif
-
-	{{-- @if($type === 'pembayaran')
-	<tfoot>
-		<tr>
-			<td colspan="4">Total Pembayaran</td>
-			<td colspan="3">{{ "Rp " . number_format($jml, 2, ",", ".") }}</td>
-		</tr>
-	</tfoot>
-	@endif --}}
 
 </table>

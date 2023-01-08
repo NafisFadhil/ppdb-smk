@@ -86,42 +86,48 @@ class LaporanController extends Controller
         }
     }
 
-    protected function getSubQuery (\Illuminate\Database\Query\Builder $subquery, string $bigtype) {
-        $subquery = $subquery->whereNull('identitas.deleted_at');
+    // protected function getSubQuery ($subquery, string $bigtype) {
+    //     // $subquery = $subquery->whereNull('identitas.deleted_at');
+    //     // dd($subquery->get());
         
-        if ($bigtype === 'pendaftaran') {
-            return $subquery->where('verifikasi.pendaftaran', true);
-        } elseif ($bigtype === 'daftar_ulang') {
-            return $subquery;
-            // ->whereRelation('verifikasi', 'pendaftaran', true);
-        } elseif ($bigtype === 'seragam') {
-            return $subquery;
-            // ->whereRelation('verifikasi', 'pendaftaran', true);
-        } elseif ($bigtype === 'pendataan') {
-            return $subquery;
-            // ->whereRelation('verifikasi', 'pendaftaran', true);
-        } elseif ($bigtype === 'sponsorship') {
-            return $subquery;
-            // ->has('sponsorship');
-        }
-    }
+    //     if ($bigtype === 'pendaftaran') {
+    //         return $subquery
+    //         ->where('verifikasi.pendaftaran', true);
+    //     } elseif ($bigtype === 'daftar_ulang') {
+    //         return $subquery
+    //         ->where('verifikasi.pendaftaran', true)
+    //         ->where('verifikasi.daftar_ulang', true);
+    //     } elseif ($bigtype === 'seragam') {
+    //         return $subquery
+    //         ->where('verifikasi.pendaftaran', true)
+    //         ->where('verifikasi.seragam', true);
+    //     } elseif ($bigtype === 'pendataan') {
+    //         return $subquery
+    //         ->where('verifikasi.pendaftaran', true)
+    //         ->where('verifikasi.identitas', true);
+    //     } elseif ($bigtype === 'sponsorship') {
+    //         return $subquery
+    //         ->where('verifikasi.sponsorship', true)
+    //         ->whereColumn('sponsorship.identitas_id', 'identitas.id');
+    //     }
+    // }
 
-    protected function getPreSubQuery (\Illuminate\Database\Query\Builder $subquery, string $bigtype) {
-        if ($bigtype === 'pendaftaran') {
-            return $subquery->where('verifikasi.pendaftaran', true);
-        } elseif ($bigtype === 'daftar_ulang') {
-            return $subquery->where('verifikasi.pendaftaran', true);
-        } elseif ($bigtype === 'seragam') {
-            return $subquery->where('verifikasi.pendaftaran', true);
-        } elseif ($bigtype === 'pendataan') {
-            return $subquery->where('verifikasi.pendaftaran', true);
-        } elseif ($bigtype === 'sponsorship') {
-            return $subquery->whereExists(function ($query) {
-                $query->select(DB::raw(1))->from('sponsorship')
-                    ->whereColumn('sponsorship.identitas_id', 'identitas.id');
-            });
-        }
-    }
+    // protected function getPreSubQuery ($subquery, string $bigtype) {
+    //     if ($bigtype === 'pendaftaran') {
+    //         return $subquery->where('verifikasi.pendaftaran', true);
+    //     } elseif ($bigtype === 'daftar_ulang') {
+    //         return $subquery->where('verifikasi.pendaftaran', true);
+    //     } elseif ($bigtype === 'seragam') {
+    //         return $subquery->where('verifikasi.pendaftaran', true);
+    //     } elseif ($bigtype === 'pendataan') {
+    //         return $subquery->where('verifikasi.pendaftaran', true);
+    //     } elseif ($bigtype === 'sponsorship') {
+    //         return $subquery->whereExists(function ($query) {
+    //             $query->select(DB::raw(1))->from('sponsorship')
+    //                 ->whereColumn('sponsorship.identitas_id', 'identitas.id');
+    //         });
+    //     }
+    // }
 
     public function index(Request $req, $bigtype)
     {
@@ -130,26 +136,26 @@ class LaporanController extends Controller
         $title_type = $type == $bigtype ? '' : ' '.ucfirst($type);
         $title_bigtype = Str::title(str_replace('_', ' ', $bigtype));
 
-        $with_subquery = in_array($bigtype, ['pendaftaran', 'seragam', 'daftar_ulang']);
+        // $with_subquery = in_array($bigtype, ['pendaftaran', 'seragam', 'daftar_ulang']);
 
         // $data = $this->getModel($bigtype);
         $strain = $this->strain = new Strain($this->getModel($bigtype), $req, [
             'suptype' => 'laporan',
             'type' => $bigtype,
             'subtype' => $type,
-            'with_subquery' => $with_subquery
+            // 'with_subquery' => $with_subquery
         ]);
 
-        if ($with_subquery) {
-            $strain->subquery = $this->getSubQuery($strain->subquery, $bigtype);
-        }
+        // if ($with_subquery) {
+        //     $strain->subquery = $this->getSubQuery($strain->subquery, $bigtype);
+        // }
 
         return view('admin.pages.laporan',[
             'page' => ['title' => 'Laporan'.$title_type.' '.$title_bigtype],
             'type' => $type,
             'bigtype' => $bigtype,
             'laporan' => $strain->query,
-            'subquery' => $with_subquery ? Strain::parseAssociate($strain->subquery->get()->first()) : null,
+            // 'subquery' => Strain::parseAssociate($strain->subquery->get()->first()),
             'filters' => $strain->form_options,
         ]);
     }
@@ -161,25 +167,27 @@ class LaporanController extends Controller
         $title_type = $type == $bigtype ? '' : ' '.ucfirst($type);
         $title_bigtype = Str::title(str_replace('_', ' ', $bigtype));
         
-        $with_subquery = in_array($bigtype, ['pendaftaran', 'seragam', 'daftar_ulang']);
+        // $with_subquery = in_array($bigtype, ['pendaftaran', 'seragam', 'daftar_ulang']);
         
-        $strain = $this->strain = new Strain($this->getPreModel($bigtype), $req, [
+        $strain = $this->strain = new Strain($this->getModel($bigtype), $req, [
             'suptype' => 'laporan',
             'type' => $bigtype,
             'subtype' => $type,
-            'with_subquery' => $with_subquery
+            'with_paginate' => false,
+            // 'with_subquery' => $with_subquery
         ]);
 
-        if ($with_subquery) {
-            $strain->subquery = $this->getPreSubQuery($strain->subquery, $bigtype);
-        }
+        // if ($with_subquery) {
+        //     $strain->subquery = $this->getSubQuery($strain->subquery, $bigtype);
+        // }
 
         return view('admin.pages.cetak', [
             'title' => 'Laporan'.$title_type.' '.$title_bigtype,
+            'cetak' => true,
             'type' => $type,
             'bigtype' => $bigtype,
-            'laporan' => $this->getModel($bigtype, $type)->get(),
-            'subquery' => $with_subquery ? Strain::parseAssociate($strain->subquery->get()->first()) : null,
+            'laporan' => $strain->query,
+            // 'subquery' => $with_subquery ? Strain::parseAssociate($strain->subquery->get()->first()) : null,
         ]);
     }
 
@@ -190,18 +198,19 @@ class LaporanController extends Controller
         $title_type = $type == $bigtype ? '' : ' '.ucfirst($type);
         $title_bigtype = Str::title(str_replace('_', ' ', $bigtype));
         
-        $with_subquery = in_array($bigtype, ['pendaftaran', 'seragam', 'daftar_ulang']);
+        // $with_subquery = in_array($bigtype, ['pendaftaran', 'seragam', 'daftar_ulang']);
         
         $strain = $this->strain = new Strain($this->getPreModel($bigtype), $req, [
             'suptype' => 'laporan',
             'type' => $bigtype,
             'subtype' => $type,
-            'with_subquery' => $with_subquery
+            'with_paginate' => false,
+            // 'with_subquery' => $with_subquery
         ]);
 
-        if ($with_subquery) {
-            $strain->subquery = $this->getPreSubQuery($strain->subquery, $bigtype);
-        }
+        // if ($with_subquery) {
+        //     $strain->subquery = $this->getPreSubQuery($strain->subquery, $bigtype);
+        // }
 
         return view('admin.pages.cetak', [
             'title' => 'Laporan Lengkap'.$title_type.' '.$title_bigtype,
@@ -209,7 +218,7 @@ class LaporanController extends Controller
             'precetak' => true,
             'bigtype' => $bigtype,
             'laporan' => $strain->query,
-            'subquery' => $with_subquery ? Strain::parseAssociate($strain->subquery->get()->first()) : null,
+            // 'subquery' => $with_subquery ? Strain::parseAssociate($strain->subquery->get()->first()) : null,
         ]);
     }
 

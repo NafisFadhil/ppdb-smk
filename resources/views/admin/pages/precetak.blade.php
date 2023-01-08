@@ -24,6 +24,12 @@
 	</div>
 	<script defer>
 		window.onload = () => window.print()
+		document.querySelectorAll('table').forEach(elem => {
+			let tbody = elem.children[0];
+			if (tbody.clientWidth < elem.clientWidth) {
+			elem.style.display = 'table';
+		} else elem.style.display = 'block';
+		})
 	</script>
 </body>
 </html>

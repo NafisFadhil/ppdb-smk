@@ -87,4 +87,26 @@ $(function () {
 			}
 		});
 	})
+
+	$('form [sponsorship-siswa-selector]').each(function (i, elem) {
+		elem = $(elem);
+		elem.change(function () {
+			elem.closest('form').attr('action', elem.attr('sponsorship-siswa-selector')+'/'+elem.val());
+		})
+	});
+
+	$('table').each(function (i, elem) {
+		let table = $(elem);
+
+		if (!table.get(0).classList.contains('table-responsive')) {
+			table.get(0).classList.add('table-responsive');
+		}
+
+		let tbody = table.children()[0];
+		table = table.get(0);
+		
+		if (tbody.clientWidth < table.clientWidth) {
+			table.style.display = 'table';
+		} else table.style.display = 'block';
+	})
 })

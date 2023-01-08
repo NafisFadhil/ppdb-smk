@@ -87,68 +87,42 @@
 			<article class="max-w-screen-md mx-auto">
 				<ol class="list-decimal pl-2 big-marker">
 					<li class="mb-1.5">
-						Siswa mengisi <a href="/formulir" class="text-primary">formulir pendaftaran</a>
-						dan simpan kode pendaftaran yang muncul dengan screenshot atau lainnya.
+						Pendaftaran On-line
+						<ul class="mb-1.5 sm:pl-3 pl-1 dash-marker">
+							<li>Link : <a href="/" class="text-primary">http://ppdb.smkmuhbligo.sch.id</a></li>
+							<li>Simpan kode pendaftaran yang muncul dengan screenshot atau lainnya.</li>
+						</ul>
 					</li>
 					<li class="mb-1.5">
-						Siswa datang ke <a href="https://goo.gl/maps/zeZEoYMoG66fbGVg8" target="_blank" class="text-primary">smk muhammadiyah bligo</a> dengan membawa 
-						uang pendaftaran dan dokumen persyaratan sebagaimana tertera dalam
-						<a href="" class="text-primary">dokumen persyaratan jalur pendaftaran</a>.
+						Verifikasi Berkas
+						<ul class="mb-1.5 sm:pl-3 pl-1 dash-marker">
+							<li>Datang Ke SMK dengan membawa Dokumen
+								<ol class="sm:pl-4 pl-2 mb-1" style="list-style:decimal">
+									<li>Fotokopi Akta Kelahiran (4 lembar)</li>
+									<li>Fotokopi Kartu Keluarga (4 lembar)</li>
+									<li>Fotokopi Hitam Putih 3X4 (4 lembar)</li>
+									<li>Fotokopi Ijazah SMP/MTs/Sederajat (Bagi Yang Sudah Punya - 4 lembar)</li>
+									<li>Fotokopi Rapor SMP/MTs/Sederajat Semester 1-5 (Disertai Halaman Identitas Siswa - 1 lembar)</li>
+									<li>Fotokopi KIP / KKC (Bagi Yang Punya - 1 lembar)</li>
+									<li>Surat Keterangan NISN dari SMP/MTs (1 lembar)</li>
+									<li>Persyaratan Tambahan (Khusus Jalur Prestasi dan Afiliasi)</li>
+								</ol>
+							</li>
+							<li>Biaya Pendaftaran Rp. 50.000,- Semua Jurusan</li>
+						</ul>
 					</li>
 					<li class="mb-1.5">
-						Setelah melakukan pembayaran, siswa akan mendapatkan kode jurusan yang bisa digunakan
-						untuk <a href="/login" class="text-primary">login</a> dan memantau proses pendaftaran.
+						Verifikasi Administrasi
+						<ul class="mb-1.5 sm:pl-3 pl-1 dash-marker">
+							<li>Melakukan Daftar Ulang dan Administrasi Seragam dilakukan di SMK Muhammadiyah Bligo.</li>
+						</ul>
 					</li>
 					<li class="mb-1.5">
-						Siswa sudah diperbolehkan melakukan daftar ulang dan melakukan pembayaran seragam.
-					</li>
-					<li class="mb-1.5">
-						Daftar ulang dilakukan dengan <a href="/login" class="text-primary">login</a> dan
-						melengkapi identitas, melakukan pembayaran daftar ulang, dan melakukan pembayaran seragam.
-					</li>
-					<li class="mb-1.5">
-						Untuk pembayaran daftar ulang dan seragam dilakukan dengan datang ke smk muhammadiyah bligo,
-						dan menemui panitia bagian pembayaran.
-					</li>
-					<li class="mb-1.5">
-						Panitia akan memverifikasi pelunasan biaya daftar ulang dan seragam, dan memverifikasi kelengkapan
-						identitas siswa.
-					</li>
-					<li class="mb-1.5">
-						Setelah diverifikasi, siswa sudah selesai melakukan tahapan
-						<a href="/" class="text-primary">PPDB Online 2023</a>.
-					</li>
-					<li class="mb-1.5">
-						Harap pantau <a href="http://www.instagram.com/smkmuhbligo_ig" class="text-secondary">instagram</a>
-						dan <a href="https://www.facebook.com/profile.php?id=100015024096175" class="text-secondary">facebook</a>
-						untuk informasi tahapan selanjutnya.
-					</li>
-					<li class="mb-1.5">
-						Selanjutnya siswa akan melakukan ujian fisik dan wawancara di
-						<a href="https://goo.gl/maps/zeZEoYMoG66fbGVg8" target="_blank"
-						class="text-primary" >smk muhammadiyah bligo</a>,
-						dan akan diterima jika lulus di semua ujian masuk.
-					</li>
-				</ol>
-			</article>
-
-			<p class="text-center font-semibold text-lg mt-8 mb-3">Pendaftaran Semi-Online</p>
-			<article class="max-w-screen-md mx-auto">
-				<ol class="list-decimal pl-2">
-					<li class="mb-1.5">
-						Bagi yang memiliki kendala untuk mengikuti ppdb online, bisa melakukan pendaftaran semi-online.
-					</li>
-					<li class="mb-1.5">
-						Pendaftaran semi-online dilakukan dengan datang ke
-						<a href="https://goo.gl/maps/zeZEoYMoG66fbGVg8" target="_blank"
-						class="text-primary" >smk muhammadiyah bligo</a>
-						dan meminta panitia untuk mengisikan formulirnya.
-					</li>
-					<li class="mb-1.5">
-						Untuk pembayaran sama, yaitu datang ke
-						<a href="https://goo.gl/maps/zeZEoYMoG66fbGVg8" target="_blank"
-						class="text-primary" >smk muhammadiyah bligo</a> dan melakukan pembayaran
-						pada panitia bagian pembayaran.
+						Test Fisik dan Wawancara
+						<ul class="mb-1.5 sm:pl-3 pl-1 dash-marker">
+							<li>Sehat jasmani, tidak bertindik, tidak bertato, rambut tidak diwarnai</li>
+							<li>Tidak buta warna untuk jurusan Teknik (TSM, TKJ, TKR)</li>
+						</ul>
 					</li>
 				</ol>
 			</article>

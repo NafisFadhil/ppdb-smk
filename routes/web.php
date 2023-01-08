@@ -21,7 +21,7 @@ use App\Http\Controllers\UserProfilController;
 use App\Http\Controllers\Laporan\DuseragamController as LaporanDuseragamController;
 use App\Http\Controllers\Laporan\PendaftaranController as LaporanPendaftaranController;
 use App\Http\Controllers\Laporan\SponsorshipController as LaporanSponsorshipController;
-
+use App\Http\Controllers\SponsorshipController;
 use App\Http\Controllers\Verifikasi\DuseragamController as VerifikasiDuseragamController;
 use App\Http\Controllers\Verifikasi\PendaftaranController as VerifikasiPendaftaranController;
 use App\Http\Controllers\Verifikasi\SponsorshipController as VerifikasiSponsorshipController;
@@ -54,28 +54,7 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', })
 
 Route::get('/test', function () {
-    // dd(auth()->user()->count());
-    // dd(get_defined_vars());
-    // new \App\Filters\TanggalFilter(['tanggal']);
-    // return view('layouts.landingpage', [
-    //     'page' => ['title' => 'Test']
-    // ]);
-    // dd(Tagihan::with('admin_pendaftaran')->get()->first()->admin_pendaftaran);
-    // dd(Pendaftaran::getKode());
-    // $model = Jurusan::withTrashed()->select('nomor')->whereNotNull('nomor')
-    // ->where('singkatan', 'tsm')->orderBy('nomor', 'DESC')->limit(1)->get()->first();
-    // dd($model->nomor + 1);
-    // dd(Jurusan::getKode('tsm'));
-    // dd([...request()->query->all()]);
-    // dd(request()->fullUrlWithQuery([...request()->query->all(), 'page' => 2]));
-    // $strain = new \App\Strainer\Strain();
-    // dd($strain->model);
-    // dd(ConfigHelper::get('nama_sekolah'));
-    // dd(request()->query('periode'));
-    $test = new \App\Strainer\Strain(null, request(), [
-        'suptype' => 'laporan', 'type' => 'pendaftaran'
-    ]);
-    dd($test);
+    dd(back()->getRequest()->path());
 });
 
 
@@ -202,6 +181,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/cetak/pendaftaran/{identitas:id}', 'cetakPendaftaran');
             Route::get('/cetak/formulir/{identitas:id}', 'cetakFormulir');
         });
+
+        Route::resource('/sponsorship', SponsorshipController::class)->only(['create', 'store']);
         
     });
 

@@ -3,6 +3,7 @@
 namespace App\Strainer;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
@@ -15,16 +16,16 @@ class Strain
 	/**
 	 * The query builder instance
 	 * 
-	 * @var \Illuminate\Database\Eloquent\Builder|\Illuminate\Contracts\Pagination\LengthAwarePaginator $query
+	 * @var \Illuminate\Database\Eloquent\Builder|\Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Database\Eloquent\Collection $query
 	 */
-	public EloquentBuilder|LengthAwarePaginator $query;
+	public mixed $query;
 	
 	/**
 	 * The query builder instance
 	 * 
 	 * @var \Illuminate\Database\Query\Builder|null $subquery
 	 */
-	public Builder|null $subquery;
+	public mixed $subquery;
 
 	/**
 	 * The request instance
@@ -173,7 +174,7 @@ class Strain
 	 * @param \Illuminate\Http\Request $request
 	 * @param array $options
 	 */
-	public function __construct(EloquentBuilder $query, Request $request, array $options) {
+	public function __construct(mixed $query, Request $request, array $options) {
 		// Saving param value to class properties
 		$this->query = $query;
 		$this->request = $request;
@@ -204,6 +205,8 @@ class Strain
 		// Paginate
 		if ($this->with_paginate) {
 			$this->query = static::paginate($this->query, $this->perPage, $this->page);
+		} else {
+			$this->query = $this->query->get();
 		}
 	}
 
@@ -213,13 +216,16 @@ class Strain
 	 * @return void
 	 */
 	protected function parseOptions () {
-		$this->perPage = $this->getOption('perPage', $this->perPage);
-		$this->page = $this->getOption('page', $this->page);
-		$this->suptype = $this->getOption('suptype', $this->suptype);
-		$this->type = $this->getOption('type', $this->type);
-		$this->subtype = $this->getOption('subtype', $this->type);
-		$this->with_paginate = $this->getOption('with_paginate', $this->with_paginate);
-		$this->with_subquery = $this->getOption('with_subquery', $this->with_subquery);
+		$this->perPage = $this->getOption('perPage', 15);
+		$this->page = $this->getOption('page', 1);
+		$this->suptype = $this->getOption('suptype', '');
+		$this->type = $this->getOption('type', '');
+		$this->subtype = $this->getOption('subtype', '');
+		$this->with_paginate = $this->getOption('with_paginate', true);
+		
+		// Fore disable subquery
+		$this->with_subquery = false;
+		// $this->with_subquery = $this->getOption('with_subquery', true);
 	}
 
 	/**
@@ -303,8 +309,9 @@ class Strain
 		    ->join('tagihans as tagihan', 'tagihan.identitas_id', 'identitas.id')
 		    ->join('verifikasis as verifikasi', 'verifikasi.identitas_id', 'identitas.id')
 		    ->join('statuses as status', 'identitas.status_id', 'status.id')
-			->leftJoin('pembayarans', function ($join) use ($type) {
-				$join->on('pembayarans.identitas_id', 'identitas.id')
+			->join('pembayarans', function ($join) use ($type) {
+				$join->select('bayar')
+					->on('pembayarans.identitas_id', 'identitas.id')
 					->where('pembayarans.type', $type);
 			})
 			->select([
@@ -312,6 +319,22 @@ class Strain
 				DB::raw('SUM(tagihan.biaya_'.$type.') as total_biaya'),
 				DB::raw('SUM(tagihan.tagihan_'.$type.') as total_tagihan'),
 			]);
+		// $this->subquery = DB::query()->raw(<<<QUERY
+		// SELECT
+		// 	SUM(pembayarans.bayar) as total_bayar,
+		// 	SUM(tagihan.biaya_$type) as total_biaya,
+		// 	SUM(tagihan.tagihan_$type) as total_tagihan,
+		// FROM identitas
+		// INNER JOIN jurusans as jurusan ON jurusan.identitas_id = identitas.id'
+		// INNER JOIN data_jalur_pendaftarans as jalur_pendaftaran ON identitas.jalur_pendaftaran_id = jalur_pendaftaran.id'
+		// INNER JOIN data_jenis_kelamins as jenis_kelamin ON identitas.jenis_kelamin_id = jenis_kelamin.id'
+		// INNER JOIN tagihans as tagihan ON tagihan.identitas_id = identitas.id'
+		// INNER JOIN verifikasis as verifikasi ON verifikasi.identitas_id = identitas.id'
+		// INNER JOIN statuses as status ON identitas.status_id = status.id'
+		// INNER JOIN (
+		// 	SELECT * FROM pembayarans WHERE type = "$type"
+		// ) as pembayarans ON pembayarans.identitas_id = identitas.id
+		// QUERY);
 	}
 
 	/**

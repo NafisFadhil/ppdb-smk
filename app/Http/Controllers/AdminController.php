@@ -165,6 +165,17 @@ class AdminController extends Controller
             ]);
         }
 
+        // if lunas before and kurang after :)))))
+        // if ($newtagihan > 0 && $identitas->tagihan['lunas_'.$type]) {
+        //     $identitas->verifikasi->update([ $type => false ]);
+
+        //     if ($type === 'pendaftaran') {
+        //         $identitas->update([ 'status_id' => 2 ]);
+        //     } else {
+        //         $identitas->update([ 'status_id' => 5 ]);
+        //     }
+        // }
+
         $identitas->tagihan->update([
             'tagihan_'.$type => $newtagihan,
             'lunas_'.$type => $newtagihan <= 0,

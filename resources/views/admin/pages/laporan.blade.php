@@ -7,7 +7,11 @@
 	<div class="col-12">
 		<div class="card">
 			<div class="card-header p-1">
-				<a href="/{{ request()->path() }}/cetak?type={{ $type }}" target="_blank" class="btn bg-none text-primary btn-sm">
+				<?php 
+						$queries = request()->getQueryString();
+						$queries = is_null($queries) ? null : '?'.$queries.'&type='.$type;
+					?>
+				<a href="/{{ request()->path() }}/cetak{{ $queries }}" target="_blank" class="btn bg-none text-primary btn-sm">
 					<i class="fa fa-print"></i> Cetak Laporan
 				</a>
 			</div>

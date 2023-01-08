@@ -1,4 +1,11 @@
-<?php $cetak = $variant??null === 'cetak' ?>
+<?php
+$cetak ??= $variant??null === 'cetak';
+$counters = [
+	'total_tagihan' => 0,
+	'total_bayar' => 0,
+	'total_biaya' => 0,
+];
+?>
 
 <table id="xtable" class="table table-striped table-bordered table-sm">
 	<thead>
@@ -29,16 +36,20 @@
 			<th>Verifikasi <br> Pendataan</th>
 			<th>Keterangan</th>
 
-			{{-- @if(!$cetak)
-				<th>Cetak</th>
-			@endif --}}
-			
 		</tr>
 	</thead>
 
 	<tbody>
 
-			@foreach($laporan as $row)
+		@foreach($laporan as $row)
+			<?php if ($type === 'pembayaran' && $cetak) {
+				$counters['total_biaya'] += $row->tagihan->biaya_daftar_ulang;
+				$counters['total_tagihan'] += $row->tagihan->tagihan_daftar_ulang;
+				foreach ($row->pembayarans as $pembayaran) {
+					if ($pembayaran->type === 'daftar_ulang') $counters['total_bayar'] += $pembayaran->bayar;
+				}
+			} ?>
+			
 			<tr>
 				<td>
 					@if($row->deleted_at) <i class="fa fa-times text-danger"></i>
@@ -68,39 +79,16 @@
 				
 				<td>{!! ModelHelper::getState($row->verifikasi->identitas) !!}</td>
 				<td>{{ $row->daftar_ulang->keterangan }}</td>
-
-				{{-- @if(!$cetak)
-					<td>
-						<div class="btn-group btn-group-sm">
-							<a href="/admin/cetak/pendaftaran/{{ $row->id }}"
-								title="Cetak Surat DU"
-								target="_blank" class="btn btn-secondary">
-								<i class="fa fa-print">P</i>
-							</a>
-							<a href="/admin/cetak/formulir/{{ $row->id }}"
-								title="Cetak Formulir DU"
-								target="_blank" class="btn btn-secondary">
-								<i class="fa fa-print">F</i>
-							</a>
-						</div>
-					</td>
-				@endif --}}
-
 			</tr>
 			@endforeach
 	</tbody>
 
-	@if($type === 'pembayaran')
+	@if($type === 'pembayaran' && $cetak)
 		<tfoot>
 			<tr>
 				<th colspan="6">Total</th>
-				<th>{{ NumberHelper::toRupiah($subquery['total_biaya']) }}</th>
-				<th>{{ NumberHelper::toRupiah($subquery['total_bayar']) }}</th>
-				@if(!$cetak)
-					<th colspan="5"></th>
-				@else
-					<th colspan="4"></th>
-				@endif
+				<th>{{ NumberHelper::toRupiah($counters['total_biaya']) }}</th>
+				<th>{{ NumberHelper::toRupiah($counters['total_bayar']) }}</th>
 			</tr>
 		</tfoot>
 	@endif

@@ -52,8 +52,9 @@ class SponsorshipController extends Verifikasi
             $identitas->sponsorship()->create($sponsorship_creden);
 
             $alerts['success'] = 'Sponsorship berhasil ditambahkan.';
+            $redir = session('oldpath', '/admin/verifikasi/sponsorship');
             
-            return back()->withErrors([ 'alerts' => $alerts ]);
+            return redirect($redir)->withErrors([ 'alerts' => $alerts ]);
             
         } catch (\Throwable $th) {
             throw $th;
@@ -77,8 +78,9 @@ class SponsorshipController extends Verifikasi
             $sponsorship->update($sponsorship_creden);
 
             $alerts['success'] = 'Berhasil mengubah data sponsorship.';
+            $redir = session('oldpath', '/admin/verifikasi/sponsorship');
             
-            return back()->withErrors([ 'alerts' => $alerts ]);
+            return redirect($redir)->withErrors([ 'alerts' => $alerts ]);
             
         } catch (\Throwable $th) {
             throw $th;
@@ -106,8 +108,9 @@ class SponsorshipController extends Verifikasi
             $identitas->verifikasi->update($verifikasi_creden);
 
             $alerts['success'] = 'Sponsorship berhasil diverifikasi.';
+            $redir = session('oldpath', '/admin/verifikasi/sponsorship');
             
-            return back()->withErrors([ 'alerts' => $alerts ]);
+            return redirect($redir)->withErrors([ 'alerts' => $alerts ]);
             
         } catch (\Throwable $th) {
             throw $th;
@@ -120,8 +123,11 @@ class SponsorshipController extends Verifikasi
     public function hapus (Sponsorship $sponsorship)
     {
         try {
+
             $sponsorship->delete();
-            return back()->withErrors([
+            $redir = session('oldpath', '/admin/verifikasi/sponsorship');
+
+            return redirect($redir)->withErrors([
                 'alerts' => ['success' => 'Berhasil menghapus sponsorship.']
             ]);
         } catch (\Throwable $th) {

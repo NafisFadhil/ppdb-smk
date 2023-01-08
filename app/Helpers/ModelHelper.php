@@ -100,6 +100,12 @@ class ModelHelper
 		return "<span class='text-$color'> $label </span>";
 	}
 
+	public static function getBayarState(bool $bool) {
+		$color = $bool ? 'success' : 'warning';
+		$label = $bool ? 'Lunas' : 'Belum';
+		return "<span class='text-$color'> $label </span>";
+	}
+
 	public static function getTanggalTerakhirBayar($pembayarans, $type)
 	{
 		$tanggal = '';$last = null;
