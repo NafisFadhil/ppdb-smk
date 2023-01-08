@@ -22,7 +22,7 @@ class LandingPageController extends Controller
         $data_jurusan = Jurusan::getJurusans();
         
         return view('pages.index', [
-            'page' => ['title' => 'PPDB SMK Muhammadiyah Bligo'],
+            'page' => ['title' => 'PPDB 2023 | SMK Muhammadiyah Bligo'],
             'data_jurusan' => $data_jurusan,
             'siswa' => $siswa
         ]);
