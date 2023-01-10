@@ -33,7 +33,8 @@ class LaporanController extends Controller
         $model = Identitas::withTrashed()
         ->with([
             'jurusan', 'jalur_pendaftaran', 'jenis_kelamin',
-            'tagihan', 'verifikasi', 'status', 'sponsorship'
+            'tagihan', 'verifikasi', 'status', 'sponsorship',
+            'pendaftaran'
         ]);
         
         if ($bigtype === 'pendaftaran') {
@@ -62,7 +63,8 @@ class LaporanController extends Controller
         $model = Identitas::withTrashed()
         ->with([
             'jurusan', 'jalur_pendaftaran', 'jenis_kelamin',
-            'tagihan', 'verifikasi', 'status', 'sponsorship'
+            'tagihan', 'verifikasi', 'status', 'sponsorship',
+            'pendaftaran'
         ]);
         
         if ($bigtype === 'pendaftaran') {
