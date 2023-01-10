@@ -61,7 +61,7 @@
             {{-- Next Page Link --}}
             @if ($paginator->hasMorePages())
                 <li class="page-item">
-                    <a class="page-link" href="{{ ModelHelper::getPaginateUrl($paginator->currentPage()-1) }}" rel="next">@lang('pagination.next')</a>
+                    <a class="page-link" href="{{ ModelHelper::getPaginateUrl($paginator->currentPage()+1) }}" rel="next">@lang('pagination.next')</a>
                 </li>
             @else
                 <li class="page-item disabled" aria-disabled="true">

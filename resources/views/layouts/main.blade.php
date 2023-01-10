@@ -2,8 +2,6 @@
 <html lang="en">
 <head>
 
-	@stack('metadata')
-	
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="author" content="SMK Muhammadiyah Bligo" />
@@ -22,14 +20,16 @@
 	<meta name="msapplication-tilecolor" content="#FFFFFF" />
 	<meta name="msapplication-tileimage" content="/dist/img/logo-smk-kotak.png" />
 	<meta name="theme-color" content="#FFF" />
-
+	
 	<title>{{ $page['title'] ?? $title ?? '' }}</title>
 	<meta name="keywords" content="ppdb, ppdb 2023, ppdb smk, smk, smkmuhbligo,
-		smuhblig, muhammadiyah, bligo, pendaftaran, smk muhammadiyah bligo" />
+	smuhblig, muhammadiyah, bligo, pendaftaran, smk muhammadiyah bligo" />
 	<meta name="description" content="Website Pendaftaran PPDB Online Tahun Ajaran 2023/2024 SMK Muhammadiyah Bligo." />
+	
 	@isset($page['deskripsi']) <meta name="description" content="{{ $page['deskripsi'] }}" /> @endisset
 	@isset($page['keywords']) <meta name="keywords" content="{{ $page['keywords'] }}" /> @endisset
-
+	@stack('metadata')
+	
 	{{-- Alternate --}}
 	<link rel="alternate" href="/rss.xml" type="application/rss+xml" title="RSS" />
 

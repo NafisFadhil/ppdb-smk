@@ -1,0 +1,36 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<rss version="2.0">
+	<channel>
+		<title> PPDB 2023 | SMK Muhammadiyah Bligo </title>
+		<link>https://ppdb.smkmuhbligo.sch.id</link>
+		<description>
+			Website pendaftaran ppdb online tahun ajaran 2023/2024 SMK Muhammadiyah Bligo.
+		</description>
+
+		<item>
+			<title>Formulir Pendaftaran</title>
+			<link>https://ppdb.smkmuhbligo.sch.id/formulir</link>
+			<description>
+				Formulir pendaftaran bagi siswa yang ingin mengikuti program
+				ppdb online tahun ajaran 2023/2024 SMK Muhammadiyah Bligo.
+			</description>
+		</item>
+
+		<item>
+			<title>Login</title>
+			<link>https://ppdb.smkmuhbligo.sch.id/login</link>
+			<description>
+				Login untuk memantau perkembangan atau progress ppdb online setelah
+				pendaftaran diverifikasi oleh panitia.
+			</description>
+		</item>
+
+		<item>
+			<title>Kontak</title>
+			<link>https://ppdb.smkmuhbligo.sch.id/login</link>
+			<description>
+				Informasi penyedia layanan ppdb online tahun ajaran 2023/2024 SMK Muhammadiyah Bligo.
+			</description>
+		</item>
+	</channel>
+</rss>
