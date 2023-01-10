@@ -74,7 +74,7 @@ $counters = [
 				@endif
 
 				@if($precetak ?? $prelaporan ?? false)
-					<td>{!! ModelHelper::getState($row->verifikasi->daftar_ulang) !!}</td>
+					<td>{!! ModelHelper::getState($row->verifikasi->daftar_ulang ?? false) !!}</td>
 				@endif
 				
 				<td>{!! ModelHelper::getState($row->verifikasi->identitas) !!}</td>

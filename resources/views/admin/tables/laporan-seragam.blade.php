@@ -87,7 +87,7 @@ $counters = [
 				@endif
 
 				@if($precetak ?? $prelaporan ?? false)
-					<td>{!! ModelHelper::getState($row->verifikasi->seragam) !!}</td>
+					<td>{!! ModelHelper::getState($row->verifikasi->seragam ?? false) !!}</td>
 				@endif
 				
 				{{-- <td>{{ $row->pendaftaran->admin_verifikasi }}</td> --}}
