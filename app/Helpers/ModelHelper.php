@@ -94,11 +94,9 @@ class ModelHelper
 		return Status::getStatus($value, $key);
 	}
 
-	public static function getState(bool $bool = null) {
-		if ($bool === null) {
-			$color = $bool ? 'success' : 'warning';
-			$label = $bool ? 'Sudah' : 'Belum';
-		} else $color = $label = '';
+	public static function getState(bool $bool = false) {
+		$color = $bool ? 'success' : 'warning';
+		$label = $bool ? 'Sudah' : 'Belum';
 		return "<span class='text-$color'> $label </span>";
 	}
 

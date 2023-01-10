@@ -79,7 +79,7 @@ $counters = [
 					@endif
 
 					@if($precetak ?? $prelaporan ?? false)
-						<td>{!! ModelHelper::getState($row->verifikasi->pendaftaran ?? null) !!}</td>
+						<td>{!! ModelHelper::getState($row->verifikasi->pendaftaran ?? false) !!}</td>
 					@endif
 					
 					<td>{{ $row->pendaftaran->keterangan ?? '-' }}</td>
