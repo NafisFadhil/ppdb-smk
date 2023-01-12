@@ -60,21 +60,21 @@ $counters = [
 						@else {{ $loop->iteration }} @endif
 					</td>
 					<td>{{ $row->jurusan->kode ?? '-' }}</td>
-					<td>{{ $row->nama_lengkap }}</td>
-					<td>{{ $row->jurusan->singkatan }}</td>
-					<td>{{ $row->asal_sekolah }}</td>
-					<td>{{ ModelHelper::getJalur($row->jalur_pendaftaran) }}</td>
+					<td>{{ $row->nama_lengkap ?? '-' }}</td>
+					<td>{{ $row->jurusan->singkatan ?? '-' }}</td>
+					<td>{{ $row->asal_sekolah ?? '-' }}</td>
+					<td>{{ ModelHelper::getJalur($row->jalur_pendaftaran) ?? '-' }}</td>
 					
 					@if($type === 'pembayaran')
-						<td>{{ NumberHelper::toRupiah($row->tagihan->biaya_pendaftaran) }}</td>
+						<td>{{ NumberHelper::toRupiah($row->tagihan->biaya_pendaftaran) ?? '-' }}</td>
 						<td>{!! ModelHelper::getNominalBayar($row->tagihan->pembayarans, 'pendaftaran') !!}</td>
 						<td>{!! ModelHelper::getTanggalBayar($row->tagihan->pembayarans, 'pendaftaran') !!}</td>
 						<td>{!! ModelHelper::getAdminBayar($row->tagihan->pembayarans, 'pendaftaran') !!}</td>
 						<td>{!! ModelHelper::getStatusBayar($row->tagihan, 'pendaftaran') !!}</td>
 					@else
-						<td>{{ ModelHelper::formatTanggal($row->tanggal_lahir) }}</td>
-						<td>{{$row->no_wa_siswa }}</td>
-						<td>{{$row->no_wa_ortu }}</td>
+						<td>{{ ModelHelper::formatTanggal($row->tanggal_lahir) ?? '-' }}</td>
+						<td>{{$row->no_wa_siswa ?? '-' }}</td>
+						<td>{{$row->no_wa_ortu ?? '-' }}</td>
 						<td>{!! ModelHelper::getStatusBayar($row->tagihan, 'pendaftaran') !!}</td>
 					@endif
 
