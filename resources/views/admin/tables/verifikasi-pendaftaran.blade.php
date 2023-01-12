@@ -146,7 +146,7 @@ $inputs = [
 					<?php 
 							$xpembayaran = isset($row->tagihan->biaya_pendaftaran);
 							$xpembayaransiswa = isset($row->pendaftaran->pembayaran_siswa);
-							$xverifikasi = $row->pendaftaran->verifikasi_pendaftaran;
+							$xverifikasi = $row->pendaftaran->verifikasi_pendaftaran ?? false;
 							
 						?>
 
