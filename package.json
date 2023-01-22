@@ -2,6 +2,7 @@
 	"scripts": {
 		"tw:watch": "npx tailwind -c tailwind.config.js -o public/dist/css/tailwind.css -w",
 		"dev": "start php artisan serve && start npm run tw:watch",
-		"git:push": "git add . && git commit -m \"auto commit\" && git push -u origin main"
+		"git:push": "git add . && git commit -m \"auto commit\" && git push -u origin main",
+		"remigration": "php artisan migrate:fresh --seed && start php artisan queue:work && php artisan db:seed --class=PesertaSeeder"
 	}
 }

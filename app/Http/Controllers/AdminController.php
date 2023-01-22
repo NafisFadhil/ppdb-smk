@@ -13,6 +13,7 @@ use App\Models\Identitas;
 use App\Models\Jurusan;
 use App\Models\Pembayaran;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
@@ -56,48 +57,6 @@ class AdminController extends Controller
         return view('admin.pages.tagihan', [
             'page' => ['title' => 'Detail Data Tagihan'],
             'data' => $identitas
-            // 'forms' => [
-            //     [
-            //         [
-            //             'title' => 'Data Siswa',
-            //             'inputs' => [
-            //                 ['attr' => 'disabled', 'name' => 'nama_lengkap', 'value' => $identitas->nama_lengkap],
-            //                 ['attr' => 'disabled', 'name' => 'kode', 'value' => $identitas->jurusan->kode ?? $identitas->pendaftaran->kode ?? '-'],
-            //                 ['attr' => 'disabled', 'name' => 'jalur_pendaftaran', 'value' => \App\Helpers\ModelHelper::getJalur($identitas->jalur_pendaftaran)],
-            //                 ['attr' => 'disabled', 'name' => 'status', 'value' => strtoupper($identitas->status->level)],
-            //             ]
-            //         ],
-            //         [
-            //             'title' => 'Pendaftaran',
-            //             'inputs' => [
-            //                 ['attr' => 'disabled', 'name' => 'biaya_pendaftaran', 'value' => NumberHelper::toRupiah($tagihan->biaya_pendaftaran)],
-            //                 ['attr' => 'disabled', 'name' => 'tagihan_pendaftaran', 'value' => NumberHelper::toRupiah($tagihan->tagihan_pendaftaran)],
-            //                 ['attr' => 'disabled', 'name' => 'admin_pendaftaran', 'value' => $tagihan->admin_pendaftaran->name ?? $tagihan->admin_pendaftaran->username ?? '-'],
-            //                 ['attr' => 'disabled', 'name' => 'status_pendaftaran', 'value' => ModelHelper::getStatusBayar($identitas->tagihan, 'pendaftaran')],
-            //             ]
-            //         ],
-            //     ],
-            //     [
-            //         [
-            //             'title' => 'Daftar Ulang',
-            //             'inputs' => [
-            //                 ['attr' => 'disabled', 'name' => 'biaya_daftar_ulang', 'value' => NumberHelper::toRupiah($tagihan->biaya_daftar_ulang)],
-            //                 ['attr' => 'disabled', 'name' => 'tagihan_daftar_ulang', 'value' => NumberHelper::toRupiah($tagihan->tagihan_daftar_ulang)],
-            //                 ['attr' => 'disabled', 'name' => 'admin_daftar_ulang', 'value' => $tagihan->admin_daftar_ulang->name ?? $tagihan->admin_daftar_ulang->username ?? '-'],
-            //                 ['attr' => 'disabled', 'name' => 'status_daftar_ulang', 'value' => ModelHelper::getStatusBayar($identitas->tagihan, 'daftar_ulang')],
-            //             ]
-            //         ],
-            //         [
-            //             'title' => 'Seragam',
-            //             'inputs' => [
-            //                 ['attr' => 'disabled', 'name' => 'biaya_seragam', 'value' => NumberHelper::toRupiah($tagihan->biaya_seragam)],
-            //                 ['attr' => 'disabled', 'name' => 'tagihan_seragam', 'value' => NumberHelper::toRupiah($tagihan->tagihan_seragam)],
-            //                 ['attr' => 'disabled', 'name' => 'admin_seragam', 'value' => $tagihan->admin_seragam->name ?? $tagihan->admin_seragam->username ?? '-'],
-            //                 ['attr' => 'disabled', 'name' => 'status_seragam', 'value' => ModelHelper::getStatusBayar($identitas->tagihan, 'seragam')],
-            //             ]
-            //         ],
-            //     ],
-            // ],
         ]);
     }
 
@@ -165,17 +124,6 @@ class AdminController extends Controller
             ]);
         }
 
-        // if lunas before and kurang after :)))))
-        // if ($newtagihan > 0 && $identitas->tagihan['lunas_'.$type]) {
-        //     $identitas->verifikasi->update([ $type => false ]);
-
-        //     if ($type === 'pendaftaran') {
-        //         $identitas->update([ 'status_id' => 2 ]);
-        //     } else {
-        //         $identitas->update([ 'status_id' => 5 ]);
-        //     }
-        // }
-
         $identitas->tagihan->update([
             'tagihan_'.$type => $newtagihan,
             'lunas_'.$type => $newtagihan <= 0,
@@ -197,6 +145,7 @@ class AdminController extends Controller
             ['name' => 'jalur_pendaftaran', 'value' => ModelHelper::getJalur($identitas->jalur_pendaftaran), 'attr' => 'disabled'],
             ['name' => 'asal_sekolah', 'value' => $identitas->asal_sekolah, 'attr' => 'disabled'],
         ]]];
+
         foreach ($identitas->tagihan->pembayarans as $pembayaran) {
             if ($pembayaran->type == $type) {
                 $i++;
@@ -217,31 +166,58 @@ class AdminController extends Controller
         return $inputs;
     }
 
-    public function hapus(Identitas $identitas)
-    {
+    public function hapus(Identitas $identitas) {
         try {
-            if ($identitas->tagihan) {
-                $identitas->tagihan->delete();
-            } if ($identitas->pendaftaran) {
-                $identitas->pendaftaran->delete();
-            } if ($identitas->daftar_ulang) {
-                $identitas->daftar_ulang->delete();
-            } if ($identitas->seragam) {
-                $identitas->seragam->delete();
-            } if ($identitas->duseragam) {
-                $identitas->duseragam->delete();
-            } if ($identitas->sponsorship) {
-                $identitas->sponsorship->delete();
-            } if ($identitas->user) {
-                $identitas->user->delete();
-            } if ($identitas->verifikasi) {
-                $identitas->verifikasi->delete();
-            }
-            
-            $identitas->delete();
+            Bus::chain([
+                function () use ($identitas) {
+                    if ($identitas->has('tagihan')) { 
+                        $identitas->tagihan()->delete();
+                    }
+                },
+                function () use ($identitas) {
+                    if ($identitas->has('pendaftaran')) { 
+                        $identitas->pendaftaran()->delete();
+                    }
+                },
+                function () use ($identitas) {
+                    if ($identitas->has('daftar_ulang')) { 
+                        $identitas->daftar_ulang()->delete();
+                    }
+                },
+                function () use ($identitas) {
+                    if ($identitas->has('seragam')) { 
+                        $identitas->seragam()->delete();
+                    }
+                },
+                function () use ($identitas) {
+                    if ($identitas->has('duseragam')) { 
+                        $identitas->duseragam()->delete();
+                    }
+                },
+                function () use ($identitas) {
+                    if ($identitas->has('sponsorship')) { 
+                        $identitas->sponsorship()->delete();
+                    }
+                },
+                function () use ($identitas) {
+                    if ($identitas->has('user')) { 
+                        $identitas->user()->delete();
+                    }
+                },
+                function () use ($identitas) {
+                    if ($identitas->has('verifikasi')) { 
+                        $identitas->verifikasi()->delete();
+                    }
+                },
+                function () use ($identitas) {
+                    $identitas->delete();
+                },
+            ])->dispatch();
+
             return back()->withErrors([
                 'alerts' => ['success' => 'Berhasil menghapus peserta.']
             ]);
+            
         } catch (\Throwable $th) {
             return back()->withErrors([
                 'alerts' => ['success' => 'Maaf, terjadi kesalahan saat menghapus peserta.']

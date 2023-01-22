@@ -70,10 +70,15 @@ class TambahPeserta implements ShouldQueue
             'tagihan_seragam' => $identitas->jalur_pendaftaran->biaya_seragam,
             'identitas_id' => $identitas->id,
         ]);
+
         $pendaftaran = Pendaftaran::create([
-            'kode' => Pendaftaran::getKode(),
+            'kode' => '-',
             'identitas_id' => $identitas->id
         ]);
+        $pendaftaran->update([
+            'kode' => Pendaftaran::getKode($pendaftaran->id)
+        ]);
+        
         $jurusan = Jurusan::create([
             'nama' => $jurusan->nama,
             'slug' => $jurusan->slug,

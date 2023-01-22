@@ -13,6 +13,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -92,14 +93,16 @@ class UpdatePeserta implements ShouldQueue
         // Cache::add('tagihan_creden', $tagihan_creden, now()->addSeconds(10));
 
         // dd($tagihan_creden);
-        Log::debug(dd($tagihan_creden));
+        // Log::debug(dd($tagihan_creden));
 
         // Database Transaction
-        $identitas->jurusan->update($jurusan_creden);
-        $identitas->tagihan->update($tagihan_creden);
-        $identitas->verifikasi->update($verifikasi_creden);
-        $identitas->seragam->update($seragam_creden);
-        $identitas->update($identitas_creden);
+        Bus::chain([
+            $identitas->jurusan->update($jurusan_creden),
+            $identitas->tagihan->update($tagihan_creden),
+            $identitas->verifikasi->update($verifikasi_creden),
+            $identitas->seragam->update($seragam_creden),
+            $identitas->update($identitas_creden),
+        ])->dispatch();
         
     }
 

@@ -31,13 +31,15 @@ class Pendaftaran extends Model
         return $this->hasOneThrough(Status::class, Identitas::class);
     }
 
-    public static function getKode()
-	{
+    public static function getKode($id = null) {
 		$kode = static::$kode;
 
-        $model = Pendaftaran::select(['id'])->orderBy('id', 'DESC')->limit(1)->get()->first();
-        if (!$model) return $kode . '-001';
-        $nomor = $model->id + 1;
+        if (is_null($id)) {
+            $model = Pendaftaran::select(['id'])->orderBy('id', 'DESC')
+                ->whereNull('deleted_at')->limit(1)->get()->first();
+            if (!$model) return $kode . '-001';
+            $nomor = $model->id + 1;
+        } else $nomor = $id;
         
 		$xnomor = str_pad($nomor, 3, '0', STR_PAD_LEFT);
 		return $kode.'-'.$xnomor;

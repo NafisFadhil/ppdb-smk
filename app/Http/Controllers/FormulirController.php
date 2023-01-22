@@ -6,28 +6,16 @@ use App\Helpers\ModelHelper;
 use App\Jobs\ResetTagihan;
 use App\Jobs\ResetVerifikasi;
 use App\Jobs\TambahPeserta;
-use App\Jobs\UpdatePeserta;
-use App\Models\DUSeragam;
 use App\Models\Identitas;
 use App\Models\DataJalurPendaftaran;
 use App\Models\DataJenisKelamin;
 use App\Models\Jurusan;
-use App\Models\Pembayaran;
-use App\Models\Pendaftaran;
 use App\Models\Seragam;
-use App\Models\Tagihan;
-use App\Models\Verifikasi;
 use App\Validations\IdentitasValidation;
-use App\Validations\JurusanValidation;
 use App\Validations\SeragamValidation;
-use Illuminate\Bus\Batch;
-use Illuminate\Bus\Dispatcher;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Session;
 
 class FormulirController extends Controller
@@ -445,7 +433,6 @@ class FormulirController extends Controller
         ]);
     }
 
-    // protected $identitas;
     public function update(Request $req, Identitas $identitas)
     {
         $isadmin = $req->user()->level->name !== 'siswa';
@@ -468,29 +455,27 @@ class FormulirController extends Controller
 
                 // Alur Logika Jalur Pendaftaran
                 $identitas_creden = Identitas::getSubPrestasi($identitas_creden);
-                
+
                 // Parse Nama Jurusan
                 $jurusan = Jurusan::getJurusan($identitas_creden['nama_jurusan']);
                 unset($identitas_creden['nama_jurusan']);
-                
+
                 // Checking State
                 $pindah_jalur = (int) $identitas_creden['jalur_pendaftaran_id'] !== (int) $identitas->jalur_pendaftaran_id;
                 $pindah_jurusan = strtolower($jurusan->singkatan) !== strtolower($identitas->jurusan->singkatan);
     
                 // Get Jalur Pendaftaran
-                $jalur = DataJalurPendaftaran::getJalurPendaftaran(
-                    $identitas_creden['jalur_pendaftaran_id']
-                );
-    
+                $jalur = DataJalurPendaftaran::getJalurPendaftaran($identitas_creden['jalur_pendaftaran_id']);
+
                 // Handle Pindah Jalur
                 if ($pindah_jalur || $pindah_jurusan) {
                     
                     // Dispatch Job Reset Tagihan
-                    ResetTagihan::dispatchSync($identitas, $jalur);
-    
-                    // Dispatch Job Reset Verifikasi
-                    ResetVerifikasi::dispatchSync($identitas);
-    
+                    Bus::chain([
+                        new ResetTagihan($identitas, $jalur),
+                        new ResetVerifikasi($identitas)
+                    ])->dispatch();
+
                     // Jurusan Mocking
                     if ($pindah_jurusan) {
                         $jurusan_creden = [
@@ -499,20 +484,32 @@ class FormulirController extends Controller
                             'singkatan' => $jurusan->singkatan,
                         ];
                     }
-    
+
                     // Identitas Mocking
                     $identitas_creden['status_id'] = 1;
+
                 }
     
                 // Database Transaction
-                if (!empty($jurusan_creden)) $identitas->jurusan->update($jurusan_creden);
-                if (!empty($tagihan_creden)) $identitas->tagihan->update($tagihan_creden);
-                if (!empty($verifikasi_creden)) $identitas->verifikasi->update($verifikasi_creden);
-                if (!empty($seragam_creden)) $identitas->seragam->update($seragam_creden);
+                Bus::chain([
+                    function () use ($identitas, $jurusan_creden) {
+                        $identitas->jurusan()->update($jurusan_creden);
+                    },
+                    function () use ($identitas, $tagihan_creden) {
+                        $identitas->tagihan()->update($tagihan_creden);
+                    },
+                    function () use ($identitas, $verifikasi_creden) {
+                        $identitas->verifikasi()->update($verifikasi_creden);
+                    },
+                    function () use ($identitas, $seragam_creden) {
+                        $identitas->seragam()->update($seragam_creden);
+                    },
+                    function () use ($identitas, $identitas_creden) {
+                        $identitas->update($identitas_creden);
+                    },
+                ])->dispatch();
 
             }
-            
-            $identitas->update($identitas_creden);
 
             $alerts['success'] = ' Berhasil mengubah data.';
             $redir_path = session('oldpath', '/admin/peserta');
