@@ -1,18 +1,29 @@
-@if(session('session_id') && isset($siswa) && !empty($siswa) && count($siswa))
+@if((session('session_duplicated') || session('session_id')) && isset($siswa) && !empty($siswa) && count($siswa) > 0)
 	<?php 
 		$siswa = $siswa[0];
 		$kode = $siswa->pendaftaran->kode;
 		$tagihan = $siswa->tagihan->biaya_pendaftaran;
+		$duplicated = session('session_duplicated');
 	?>
 
 	<div id="modal" class="fixed top-0 right-0 left-0 bottom-0 grid place-items-center z-50 bg-black bg-opacity-25">
 		<div class="bg-white rounded-md border shadow max-w-[95vw]">
 			<div class="p-7">
 				<div id="popup">
-					<p class="text-2xl font-bold block text-center">Kode Pendaftaran :</p>
-					<h1 class="text-4xl md:text-6xl text-primary font-bold block text-center p-4">
+					@if($duplicated)
+						<p class="text-lg font-bold block text-center" style="color: red">
+							Maaf, anda sudah terdaftar dengan kode pendaftaran:
+						</p>
+					@else
+						<p class="text-2xl font-bold block text-center">Kode Pendaftaran :</p>
+					@endif
+
+					<h1 class="text-4xl sm:text-5xl md:text-6xl text-primary font-bold block text-center pt-4 pb-2">
 						{{ $kode }}
 					</h1>
+					
+					<p class="text-lg font-semibold block text-center">{{ $siswa->nama_lengkap }}</p>
+
 					<ol class="pl-3 list-decimal mt-4" style="line-height: 1.5rem">
 						<li class="mb-1">Screenshoot tampilan ini.</li>
 						<li class="mb-1">Silahkan datang ke SMK Muhammadiyah Bligo dengan membawa:

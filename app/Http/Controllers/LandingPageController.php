@@ -19,6 +19,12 @@ class LandingPageController extends Controller
                 ->where('session_id', Session::get('session_id'))->get();
         }
 
+        $duplicated = Session::has('session_duplicated');
+        if ($duplicated) {
+            $siswa = Identitas::with(['tagihan', 'pendaftaran'])
+                ->where('session_id', Session::get('session_duplicated'))->get();
+        }
+
         $data_jurusan = Jurusan::getJurusans();
         
         return view('pages.index', [

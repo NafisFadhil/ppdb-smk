@@ -89,11 +89,30 @@ class Identitas extends Model
         return $creden;
     }
 
-    public static function validateAge ($tanggal)
+    protected static function getAge ($birthday)
     {
-        $datetime = new \DateTime($tanggal);
+        $datetime = new \DateTime($birthday);
         $year = (int) $datetime->format('Y');
         $age = 2023 - $year;
+        return $age;
+    }
+
+    public static function validateAge ($tanggal)
+    {
+        $age = static::getAge($tanggal);
         return $age <= 21 && $age >= 14 ? $tanggal : false;
     }
+
+    public static function validateDuplicate(array $credentials)
+    {
+        // 08123456789
+        return Identitas::where([
+            'nama_lengkap' => $credentials['nama_lengkap'],
+            'no_wa_siswa' => $credentials['no_wa_siswa'],
+        ])->orWhere([
+            'nama_lengkap' => $credentials['nama_lengkap'],
+            'tanggal_lahir' => $credentials['tanggal_lahir']
+        ])->limit(1)->get();
+    }
+    
 }

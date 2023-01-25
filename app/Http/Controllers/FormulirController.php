@@ -380,6 +380,7 @@ class FormulirController extends Controller
         ));
         $onage = Identitas::validateAge($identitas_creden['tanggal_lahir']);
 
+        // Validate age
         if (!$onage) {
             return back()->withErrors([
                 'alerts' => [
@@ -387,6 +388,19 @@ class FormulirController extends Controller
                 ]
             ])->withInput($identitas_creden);
         }
+
+        // Validate duplicate data
+        $get_duplicated = Identitas::validateDuplicate($identitas_creden);
+        if ($get_duplicated->count()) {
+            $get_duplicated = $get_duplicated->first();
+            Session::put('session_duplicated', $get_duplicated->session_id);
+            return redirect('/')->withErrors([
+                'alerts' => [
+                    $isadmin?'danger':'error' => 'Maaf, data sudah terdaftar.'
+                ]
+            ]);
+        }
+
 
         try {
             
